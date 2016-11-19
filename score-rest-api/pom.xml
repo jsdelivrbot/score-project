@@ -7,33 +7,21 @@
         <groupId>org.soneira</groupId>
         <artifactId>score-project</artifactId>
         <version>0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
     </parent>
     
 	<artifactId>score-rest-api</artifactId>
 	<packaging>war</packaging>
-
-	<dependencyManagement>
-		<dependencies>
-        	<dependency>
-            	<groupId>org.springframework.boot</groupId>
-            	<artifactId>spring-boot-dependencies</artifactId>
-            	<version>1.4.2.RELEASE</version>
-            	<type>pom</type>
-            	<scope>import</scope>
-        	</dependency>
-    	</dependencies>
-	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.soneira</groupId>
 			<artifactId>score-junit</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -45,6 +33,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>
