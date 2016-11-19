@@ -5,29 +5,23 @@ import org.soneira.score.junit.annotations.Persist;
 import org.soneira.score.junit.persistence.PersistUnit;
 import org.soneira.score.junit.persistence.StaticMap;
 
-import com.couchbase.client.java.search.queries.NumericRangeQuery;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.reflect.ClassPath;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.InitializationError;
 import org.reflections.Reflections;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 
-	private static final Reflections reflections = new Reflections(System.getProperty("impl.subpackage"));
+	private static final Reflections REFLECT_UTIL = new Reflections(System.getProperty("impl.subpackage") == null ? "" : System.getProperty("impl.subpackage"));
 
 	private static final Map<Class<?>, Class<?>> IMPLEMENTATIONS = Maps.newConcurrentMap();
 	
@@ -76,7 +70,7 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 	}
 
 	private <T> Class<?> findImplementation(Class<T> type) throws ReflectiveOperationException {
-		Set<Class<? extends T>> classes = reflections.getSubTypesOf(type);
+		Set<Class<? extends T>> classes = REFLECT_UTIL.getSubTypesOf(type);
 
 		if (classes.isEmpty()) {
 			String gripe = InjectImpl.class.getSimpleName() + " annotated field " + type.getSimpleName()
