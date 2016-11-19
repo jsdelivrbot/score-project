@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.soneira.score.junit.persistence.StaticMap;
 
 @RunWith(ScoreBlockJUnit4ClassRunner.class)
-@Persist(StaticMap.class)
+@Persist(Couchbase.class)
 public class BattleCode2016Test {
 
 

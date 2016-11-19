@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="jumbotron starter-template">
+        <h3>Scores :</h3>
+        <div *ngFor="let scoreResult of scoresResult">
+            <span class="badge">{{scoreResult.team}}</span>
+            <div *ngFor="let score of scoreResult.scores">
+                <ul>
+                    <li>{{score.iteration}} : {{score.points}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

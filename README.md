@@ -2,10 +2,13 @@
 
 Project for coding dojos with tests in junit
 
-### Setup ###
+### Dependencies ###
 
 * Maven 3.X ou +
 * Java 8
+* Npm
+* Angular 2
+* Typings 1.X
 
 ## SCORE JUNIT ##
 
@@ -67,3 +70,7 @@ Spring boot application for share resuts form SCORE JUNIT
 ## SCORE IHM ##
 
 IHM on Angular to show the SCORE JUNIT results using the SCORE REST API
+
+### Execute ###
+npm install
+npm start
