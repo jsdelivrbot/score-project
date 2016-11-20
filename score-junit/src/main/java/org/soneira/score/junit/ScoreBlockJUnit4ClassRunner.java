@@ -12,6 +12,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.InitializationError;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -21,7 +22,9 @@ import java.util.Set;
 
 public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 
-	private static final Reflections REFLECT_UTIL = new Reflections(System.getProperty("impl.subpackage") == null ? "" : System.getProperty("impl.subpackage"));
+	private static final Reflections REFLECT_UTIL = new Reflections(
+			ClasspathHelper.forJavaClassPath(),
+			System.getProperty("impl.subpackage") == null ? "" : System.getProperty("impl.subpackage"));
 
 	private static final Map<Class<?>, Class<?>> IMPLEMENTATIONS = Maps.newConcurrentMap();
 	
