@@ -10,7 +10,6 @@
     </parent>
     
 	<artifactId>score-rest-api</artifactId>
-	<packaging>war</packaging>
 
 	<dependencies>
 		<dependency>
