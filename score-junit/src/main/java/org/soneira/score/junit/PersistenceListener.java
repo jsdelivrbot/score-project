@@ -7,9 +7,9 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
-import org.junit.runners.model.TestTimedOutException;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PersistenceListener extends RunListener {
 
@@ -21,8 +21,7 @@ public class PersistenceListener extends RunListener {
 
 	private final List<String> startedTests;
 
-	// FIXME si c'est en parallele???
-	private int totalPoints = 0;
+	private AtomicInteger totalPoints = new AtomicInteger(0);
 
 	public PersistenceListener(PersistUnit persistenceUnit) {
 		this.scoreService = new ScoreService(persistenceUnit);
@@ -39,7 +38,7 @@ public class PersistenceListener extends RunListener {
 	public void testFinished(Description description) throws Exception {
 		if (startedTests.contains(description.getMethodName())) {
 			int testScore = getPointsActualTest(description);
-			totalPoints += testScore;
+			totalPoints.addAndGet(testScore);
 			System.out.println("Test finished : " + description.getMethodName() + ", score : " + testScore + "\n");
 			startedTests.remove(description.getMethodName());
 		}
@@ -57,7 +56,7 @@ public class PersistenceListener extends RunListener {
 
 	@Override
 	public void testRunFinished(Result result) throws Exception {
-		scoreService.addScore(team, totalPoints);
+		scoreService.addScore(team, totalPoints.get());
 		startedTests.clear();
 		System.out.println("Total score : " + totalPoints + "\n");
 
