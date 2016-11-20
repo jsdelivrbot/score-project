@@ -1,6 +1,8 @@
-package org.soneira.score.junit;
+package org.soneira.score.example;
 
 import org.soneira.score.junit.annotations.Persist;
+import org.soneira.score.example.IBattleCode2016;
+import org.soneira.score.junit.ScoreBlockJUnit4ClassRunner;
 import org.soneira.score.junit.annotations.InjectImpl;
 import org.soneira.score.junit.annotations.Score;
 import org.soneira.score.junit.persistence.Couchbase;
@@ -9,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(ScoreBlockJUnit4ClassRunner.class)
-@Persist(Couchbase.class)
+//@Persist(Couchbase.class)
 public class BattleCode2016Test {
 
 

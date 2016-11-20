@@ -1,4 +1,6 @@
-package org.soneira.score.junit;
+package org.soneira.score.example;
+
+import org.soneira.score.example.IBattleCode2016;
 
 public class BattleCode2016 implements IBattleCode2016 {
 

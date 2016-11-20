@@ -1,4 +1,4 @@
-package org.soneira.score.junit;
+package org.soneira.score.example;
 
 public interface IBattleCode2016 {
 
