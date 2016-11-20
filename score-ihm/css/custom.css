@@ -1,4 +1,13 @@
-body {
-  padding-top: 70px;
-  padding-bottom: 30px;
+.container-fluid {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.navbar-inverse .navbar-brand {
+    color: coral;
 }

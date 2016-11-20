@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <base href="/" />
+    <base href="/"/>
     <title>Score IHM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
@@ -11,7 +11,7 @@
 <!-- 3. Display the application -->
 
 <body>
-    <score-app>Loading...</score-app>
+<score-app>Loading...</score-app>
 </body>
 
 <!-- 1. Load libraries -->
@@ -23,7 +23,9 @@
 <!-- 2. Configure SystemJS -->
 <script src="systemjs.config.js"></script>
 <script>
-      System.import('app').catch(function(err){ console.error(err); });
-    </script>
+    System.import('app').catch(function (err) {
+        console.error(err);
+    });
+</script>
 
 </html>

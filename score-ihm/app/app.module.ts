@@ -4,7 +4,6 @@ import { AppComponent }  from './app.component';
 import { Configuration } from './app.configuration';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
-
 import { ScoreDataService } from './score/score.dataservice';
 
 @NgModule({

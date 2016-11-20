@@ -1,13 +1,52 @@
-<div class="container">
-    <div class="jumbotron starter-template">
-        <h3>Scores :</h3>
-        <div *ngFor="let scoreResult of scoresResult">
-            <span class="badge">{{scoreResult.team}}</span>
-            <div *ngFor="let score of scoreResult.scores">
-                <ul>
-                    <li>{{score.iteration}} : {{score.points}}</li>
-                </ul>
+<nav class="navbar navbar-inverse">
+    <div class="navbar-header">
+        <h1 class="navbar-brand">SOFT Battle Code 2016</h1>
+    </div>
+</nav>
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-4"><h3>Rank :</h3></div>
+        <div class="col-sm-8"><h3>Scores :</h3></div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+
+            <table class="table">
+                <tr>
+                    <th class="col-md-2">#</th>
+                    <th class="col-md-2">Points</th>
+                    <th class="col-md-8">Team</th>
+                </tr>
+                <tr *ngFor="let rank of rankList; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{rank.points}}</td>
+                    <td>{{rank.team}}</td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="col-sm-8">
+            <div class="panel panel-default" *ngFor="let scoreResult of scoresResult">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{scoreResult.team}}</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <tr>
+                            <th *ngFor="let score of scoreResult.scores">IT.{{score.iteration}}</th>
+                        </tr>
+                        <tr>
+                            <td *ngFor="let score of scoreResult.scores">{{score.points}}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
+
     </div>
+
 </div>

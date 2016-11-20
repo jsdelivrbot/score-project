@@ -7,3 +7,8 @@ export class Score {
     public iteration: number;
     public points: number;
 }
+
+export class Rank {
+    public team: string;
+    public points: number;
+}

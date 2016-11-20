@@ -28,12 +28,12 @@ public class ScoreService {
 
 
     private Integer calculateNextSprint(ScoreResult score) {
-        return score == null ? 1 : score.getScores().stream().mapToInt(ScoreResult.Score::getIteration).max().orElse(0) + 1;
+        return score == null ? 1 : score.getScores().stream().mapToInt(Score::getIteration).max().orElse(0) + 1;
     }
 
     private Integer getLastTotalScore(ScoreResult score) {
         return score == null ? 0
-                : score.getScores().stream().max(Comparator.comparingInt(ScoreResult.Score::getIteration)).map(ScoreResult.Score::getPoints).orElse(0);
+                : score.getScores().stream().max(Comparator.comparingInt(Score::getIteration)).map(Score::getPoints).orElse(0);
     }
 
 }

@@ -1,6 +1,5 @@
 package org.soneira.score.junit;
 
-import org.junit.Ignore;
 import org.soneira.score.junit.annotations.Persist;
 import org.soneira.score.junit.annotations.InjectImpl;
 import org.soneira.score.junit.annotations.Score;
@@ -8,7 +7,6 @@ import org.soneira.score.junit.persistence.Couchbase;
 import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.soneira.score.junit.persistence.StaticMap;
 
 @RunWith(ScoreBlockJUnit4ClassRunner.class)
 @Persist(Couchbase.class)

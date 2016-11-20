@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, Output} from '@angular/core';
 import { ScoreDataService } from './score/score.dataservice';
-import {ScoreResult} from './score/ScoreResult';
+import {ScoreResult, Rank} from './score/ScoreResult';
 
 @Component({
     selector: 'score-app',
@@ -11,9 +11,11 @@ export class AppComponent implements OnInit {
     public ngOnInit(): any
     {
         this.GetAllScores();
+        this.GetRank();
     }
 
     scoresResult: ScoreResult[];
+    rankList: Rank[];
 
     constructor(private _scoreDataService: ScoreDataService) {
 
@@ -25,6 +27,16 @@ export class AppComponent implements OnInit {
             .subscribe((response: ScoreResult[]) => {
                     console.log("persons : " + JSON.stringify(response));
                     this.scoresResult = response;
+                },
+                error => console.log(error));
+    }
+
+    private GetRank = (): void => {
+        this._scoreDataService
+            .GetRank()
+            .subscribe((response: Rank[]) => {
+                    console.log("persons : " + JSON.stringify(response));
+                    this.rankList = response;
                 },
                 error => console.log(error));
     }
