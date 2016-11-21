@@ -4,7 +4,7 @@ Project for coding dojos with tests in junit
 
 ### Dependencies ###
 
-* Maven 3.X ou +
+* Maven 3 or +
 * Java 8
 * Npm
 * Angular 2
