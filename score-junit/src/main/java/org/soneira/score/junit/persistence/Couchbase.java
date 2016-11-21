@@ -10,12 +10,8 @@ import com.couchbase.client.java.env.CouchbaseEnvironment;
 import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.transcoder.JacksonTransformers;
-<<<<<<< 7b0f83cd69cdf0d6fe9f257fb3f09f1e5c56dd13
-import org.soneira.score.junit.ScoreResult;
-=======
-import org.soneira.score.junit.model.ScoreResult;
->>>>>>> Add 0 points itération if no implementation if errors on collectInitializationErrors
 import com.google.common.base.Strings;
+import org.soneira.score.junit.model.ScoreResult;
 
 import java.io.IOException;
 import java.util.List;
