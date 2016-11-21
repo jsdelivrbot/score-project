@@ -8,7 +8,6 @@ Project for coding dojos with tests in junit
 * Java 8
 * Npm
 * Angular 2
-* Typings 1.X
 
 ## SCORE JUNIT ##
 
@@ -72,5 +71,17 @@ Spring boot application for share resuts form SCORE JUNIT
 IHM on Angular to show the SCORE JUNIT results using the SCORE REST API
 
 ### Execute ###
+
+```
 npm install
+```
+```
 npm start
+```
+
+## SCORE EXERCISE EXAMPLE PROJECTS ##
+
+Example projects for 
+* score-exercise-example : Interfaces and models to implement.
+* score-exercise-example-impl : Implementation of the solution.
+* score-exercise-example-validation : Validation test for scoring.

@@ -1,18 +1,16 @@
 package org.soneira.score.example;
 
-import org.soneira.score.junit.annotations.Persist;
-import org.soneira.score.example.IBattleCode2016;
 import org.soneira.score.junit.ScoreBlockJUnit4ClassRunner;
 import org.soneira.score.junit.annotations.InjectImpl;
 import org.soneira.score.junit.annotations.Score;
-import org.soneira.score.junit.persistence.Couchbase;
-import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.fest.assertions.api.Assertions.assertThat;
+
 @RunWith(ScoreBlockJUnit4ClassRunner.class)
 //@Persist(Couchbase.class)
-public class BattleCode2016Test {
+public class BattleCode2016ValidationTest {
 
 
     @InjectImpl
@@ -20,7 +18,7 @@ public class BattleCode2016Test {
 
 
     @Test
-    @Score(10)
+    @Score
     public void checkSum_For2and2_then4() {
         // Setup
         int expected = 4;
@@ -29,7 +27,7 @@ public class BattleCode2016Test {
         int result = battleCode2016.sum(2,2);
 
         // Assertions
-        Assertions.assertThat(result).isEqualTo(expected);
+        assertThat(result).isEqualTo(expected);
     }
 
 
@@ -43,12 +41,12 @@ public class BattleCode2016Test {
         int result = battleCode2016.sum(2,2);
 
         // Assertions
-        Assertions.assertThat(result).isEqualTo(expected);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test(timeout = 1)
     @Score(value = 500, maxTimeOnly = true)
-    public void checkSum_longTretment() throws InterruptedException {
+    public void checkSum_longTreatment_KO() throws InterruptedException {
         // Setup
         int expected = 9;
 
@@ -59,12 +57,12 @@ public class BattleCode2016Test {
         int result = battleCode2016.sum(2,2);
 
         // Assertions
-        Assertions.assertThat(result).isEqualTo(expected);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test(timeout = 1000)
     @Score(value = 500, maxTimeOnly = true)
-    public void checkSum_longTretmentOk_butWrongScore() throws InterruptedException {
+    public void checkSum_longTretment_OK_butWrongScore() throws InterruptedException {
         // Setup
         int expected = 9;
 
@@ -72,12 +70,12 @@ public class BattleCode2016Test {
         int result = battleCode2016.sum(2,2);
 
         // Assertions
-        Assertions.assertThat(result).isEqualTo(expected);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test(timeout = 1000)
     @Score(value = 500, maxTimeOnly = true)
-    public void checkSum_longTretmentOk() throws InterruptedException {
+    public void checkSum_longTretment_OK() throws InterruptedException {
         // Setup
         int expected = 4;
 
@@ -85,6 +83,7 @@ public class BattleCode2016Test {
         int result = battleCode2016.sum(2,2);
 
         // Assertions
-        Assertions.assertThat(result).isEqualTo(expected);
+        assertThat(result).isEqualTo(expected);
     }
+
 }
