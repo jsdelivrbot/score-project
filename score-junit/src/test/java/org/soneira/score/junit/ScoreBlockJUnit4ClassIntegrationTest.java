@@ -26,7 +26,6 @@ public class ScoreBlockJUnit4ClassIntegrationTest {
 		assertThat(allScores).hasSize(1);
 		assertThat(allScores.get(0).getTeam()).isEqualTo("default_team");
 		assertThat(allScores.get(0).getScores()).hasSize(1);
-		assertThat(allScores.get(0).getScores().get(0).getIteration()).isEqualTo(1);
 		assertThat(allScores.get(0).getScores().get(0).getPoints()).isEqualTo(560);
 
 	}

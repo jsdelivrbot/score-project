@@ -35,7 +35,7 @@ public class ScoreController {
                 .map(scoreResult ->
                         new Rank(scoreResult.getTeam(),
                                 scoreResult.getScores().stream()
-                                        .max(Comparator.comparing(Score::getIteration))
+                                        .max(Comparator.comparing(Score::getSprint))
                                         .map(Score::getPoints).orElse(0)))
                 .sorted(Comparator.comparing(Rank::getPoints).reversed())
                 .collect(Collectors.toList());

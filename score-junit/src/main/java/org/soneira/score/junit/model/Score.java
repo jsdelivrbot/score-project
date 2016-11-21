@@ -1,23 +1,31 @@
 package org.soneira.score.junit.model;
 
+import com.couchbase.client.deps.com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class Score {
-        private Integer iteration;
 
-        private Integer points;
+    public static final String JSON_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'z'";
 
-        public Score() {
-        }
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = JSON_DATE_PATTERN)
+	private Date sprint;
 
-        public Score(Integer iteration, Integer points) {
-            this.iteration = iteration;
-            this.points = points;
-        }
+	private Integer points;
 
-        public Integer getIteration() {
-            return iteration;
-        }
+	public Score() {
+	}
 
-        public Integer getPoints() {
-            return points;
-        }
+	public Score(Date sprint, Integer points) {
+		this.sprint = sprint;
+		this.points = points;
+	}
+
+	public Date getSprint() {
+		return sprint;
+	}
+
+	public Integer getPoints() {
+		return points;
+	}
 }

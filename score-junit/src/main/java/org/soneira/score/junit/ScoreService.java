@@ -5,6 +5,7 @@ import org.soneira.score.junit.model.ScoreResult;
 import org.soneira.score.junit.persistence.PersistUnit;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class ScoreService {
@@ -17,9 +18,8 @@ public class ScoreService {
 
     public ScoreResult addScore(String team, int score) {
         ScoreResult scoreResult = persistUnit.getScore(team);
-        Integer sprint = calculateNextSprint(scoreResult);
         Integer lastScore = getLastTotalScore(scoreResult);
-        scoreResult.put(sprint, lastScore + score);
+        scoreResult.put(new Date(), lastScore + score);
         persistUnit.putScore(team, scoreResult);
         return scoreResult;
     }
@@ -28,14 +28,9 @@ public class ScoreService {
         return persistUnit.getAllScores();
     }
 
-
-    private Integer calculateNextSprint(ScoreResult score) {
-        return score == null ? 1 : score.getScores().stream().mapToInt(Score::getIteration).max().orElse(0) + 1;
-    }
-
     private Integer getLastTotalScore(ScoreResult score) {
         return score == null ? 0
-                : score.getScores().stream().max(Comparator.comparingInt(Score::getIteration)).map(Score::getPoints).orElse(0);
+                : score.getScores().stream().max(Comparator.comparing(Score::getSprint)).map(Score::getPoints).orElse(0);
     }
 
 }

@@ -37,7 +37,7 @@
                 <div class="panel-body">
                     <table class="table">
                         <tr>
-                            <th *ngFor="let score of scoreResult.scores">IT.{{score.iteration}}</th>
+                            <th *ngFor="let score of scoreResult.scores">{{score.sprint | date: 'HH:mm:ss'}}</th>
                         </tr>
                         <tr>
                             <td *ngFor="let score of scoreResult.scores">{{score.points}}</td>

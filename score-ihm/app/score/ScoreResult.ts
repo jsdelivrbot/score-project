@@ -4,7 +4,7 @@ export class ScoreResult {
 }
 
 export class Score {
-    public iteration: number;
+    public sprint: Date;
     public points: number;
 }
 
