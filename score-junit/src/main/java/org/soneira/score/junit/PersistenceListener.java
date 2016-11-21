@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class PersistenceListener extends RunListener {
 
-	private final static String DEFAULT_TEAM = "TOTO_TEAM";
+	private final static String DEFAULT_TEAM = "default_team";
 
 	private final String team;
 

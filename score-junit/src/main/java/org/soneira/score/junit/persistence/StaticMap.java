@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class StaticMap implements PersistUnit {
 
-    private final Map<String, ScoreResult> SCORE_MAP = Maps.newConcurrentMap();
+    private static final Map<String, ScoreResult> SCORE_MAP = Maps.newConcurrentMap();
 
     @Override
     public void putScore(String team, ScoreResult result) {
@@ -25,5 +25,9 @@ public class StaticMap implements PersistUnit {
     @Override
     public List<ScoreResult> getAllScores() {
         return Lists.newArrayList(SCORE_MAP.values());
+    }
+
+    public void clear() {
+        SCORE_MAP.clear();
     }
 }

@@ -13,11 +13,11 @@ public class ScoreServiceTest {
 
     private ScoreService scoreService;
 
-    private StaticMap persistUnit;
+    private StaticMap persistUnit = new StaticMap();
 
     @Before
     public void initSevice() {
-        persistUnit = new StaticMap();
+        persistUnit.clear();
         scoreService = new ScoreService(persistUnit);
     }
 
