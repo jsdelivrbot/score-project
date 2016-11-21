@@ -82,6 +82,7 @@ npm start
 ## SCORE EXERCISE EXAMPLE PROJECTS ##
 
 Example projects for 
-* score-exercise-example : Interfaces and models to implement.
-* score-exercise-example-impl : Implementation of the solution.
-* score-exercise-example-validation : Validation test for scoring.
+* https://github.com/emmanuel-vasseur/score-exercise-example : Interfaces and models to implement.
+* https://github.com/emmanuel-vasseur/score-exercise-team1-impl : Implementation of the solution.
+* https://github.com/emmanuel-vasseur/score-exercise-team2-impl : Another implementation of the solution.
+* https://github.com/emmanuel-vasseur/score-exercise-example-validation : Validation test with jenkins configuration for scoring.
