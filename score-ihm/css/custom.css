@@ -7,7 +7,3 @@ table {
     table-layout: fixed;
     word-wrap: break-word;
 }
-
-.navbar-inverse .navbar-brand {
-    color: coral;
-}
