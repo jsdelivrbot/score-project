@@ -1,6 +1,6 @@
 package org.soneira.score.junit.persistence;
 
-import org.soneira.score.junit.ScoreResult;
+import org.soneira.score.junit.model.ScoreResult;
 
 import java.util.List;
 

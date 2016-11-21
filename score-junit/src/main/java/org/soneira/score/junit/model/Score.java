@@ -1,4 +1,4 @@
-package org.soneira.score.junit;
+package org.soneira.score.junit.model;
 
 public class Score {
         private Integer iteration;

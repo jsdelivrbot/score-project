@@ -10,9 +10,12 @@ import com.couchbase.client.java.env.CouchbaseEnvironment;
 import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.transcoder.JacksonTransformers;
+<<<<<<< 7b0f83cd69cdf0d6fe9f257fb3f09f1e5c56dd13
 import org.soneira.score.junit.ScoreResult;
+=======
+import org.soneira.score.junit.model.ScoreResult;
+>>>>>>> Add 0 points itération if no implementation if errors on collectInitializationErrors
 import com.google.common.base.Strings;
-import org.soneira.score.junit.ScoreResultJacksonTransformerMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,7 +44,7 @@ public class Couchbase implements PersistUnit {
 	@Override
 	public void putScore(String team, ScoreResult result) {
 		try {
-			JsonDocument document = JsonDocument.create(team, JsonObject.fromJson(ScoreResultJacksonTransformerMapper.toJSONString(result)));
+			JsonDocument document = JsonDocument.create(team, JsonObject.fromJson(Couchbase.toJSONString(result)));
 			bucket.upsert(document);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
@@ -67,8 +70,20 @@ public class Couchbase implements PersistUnit {
 		return bucket
 				.query(N1qlQuery.simple("select `scoring` from " + bucket.name()))
 				.allRows().stream()
-				.map(row -> row.value().get(bucket.name()).toString()).map(ScoreResultJacksonTransformerMapper::fromJSON)
+				.map(row -> row.value().get(bucket.name()).toString()).map(Couchbase::fromJSON)
 				.collect(Collectors.toList());
 
+	}
+
+	private static ScoreResult fromJSON(String json) {
+		try {
+			return JacksonTransformers.MAPPER.readValue(json, ScoreResult.class);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static String toJSONString(ScoreResult score) throws JsonProcessingException {
+		return JacksonTransformers.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(score);
 	}
 }

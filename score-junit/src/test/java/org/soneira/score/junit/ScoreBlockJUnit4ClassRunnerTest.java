@@ -53,15 +53,15 @@ public class ScoreBlockJUnit4ClassRunnerTest {
 		@Test public void test() {}
 	}
 
-	public static interface NoImplementation {}
+	public interface NoImplementation {}
 
 	public static class NoImplementationTest extends ParentForTestClass {
 		@InjectImpl NoImplementation noImplementation;
 	}
 
-	public static interface OnlyOneImplementation {}
+	public interface OnlyOneImplementation {}
 
-	public static interface AnotherOnlyOneImplementation {}
+	public interface AnotherOnlyOneImplementation {}
 
 	public static class OneImplementation implements OnlyOneImplementation, AnotherOnlyOneImplementation {}
 
@@ -70,7 +70,7 @@ public class ScoreBlockJUnit4ClassRunnerTest {
 		@InjectImpl AnotherOnlyOneImplementation anotherOnlyOneImplementation;
 	}
 
-	public static interface MultipleImplementations {}
+	public interface MultipleImplementations {}
 
 	public static class FirstImplementation implements MultipleImplementations {}
 
@@ -80,7 +80,7 @@ public class ScoreBlockJUnit4ClassRunnerTest {
 		@InjectImpl MultipleImplementations multipleImplementations;
 	}
 
-	public static interface NotVisibleDefaultConstructorImplementation {}
+	public interface NotVisibleDefaultConstructorImplementation {}
 
 	public static class PrivateDefaultConstructor implements NotVisibleDefaultConstructorImplementation {
 		protected PrivateDefaultConstructor() {}

@@ -27,22 +27,24 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 			System.getProperty("impl.subpackage") == null ? "" : System.getProperty("impl.subpackage"));
 
 	private static final Map<Class<?>, Class<?>> IMPLEMENTATIONS = Maps.newConcurrentMap();
-	
+
+	private PersistenceListener persistenceListener;
+
 	public ScoreBlockJUnit4ClassRunner(Class<?> klass) throws InitializationError {
 		super(klass);
 	}
 
 	@Override
 	public void run(RunNotifier notifier) {
-		addPersistenceListener(notifier);
+		notifier.addListener(persistenceListener);
 		super.run(notifier);
 	}
 
-	private void addPersistenceListener(RunNotifier notifier) {
+	private void initPersistenceListener() {
 		try {
 			Persist annotation = this.getTestClass().getAnnotation(Persist.class);
 			Class<? extends PersistUnit> persistenceUnitClass = annotation == null ? StaticMap.class : annotation.value();
-			notifier.addListener(new PersistenceListener(persistenceUnitClass.newInstance()));
+			persistenceListener = new PersistenceListener(persistenceUnitClass.newInstance());
 		} catch (ReflectiveOperationException e) {
 			Throwables.propagate(e);
 		}
@@ -52,6 +54,14 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 	protected void collectInitializationErrors(List<Throwable> errors) {
 		super.collectInitializationErrors(errors);
 		this.validateImplementationInjection(errors);
+		initPersistenceListener();
+		if (!errors.isEmpty()) {
+			try {
+				persistenceListener.testRunFinished(null);
+			} catch (Exception e) {
+				Throwables.propagate(e);
+			}
+		}
 	}
 
 	protected void validateImplementationInjection(List<Throwable> errors) {
@@ -69,6 +79,7 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 			IMPLEMENTATIONS.put(field.getType(), implementation);
 		} catch(ReflectiveOperationException e) {
 			errors.add(e);
+
 		}
 	}
 

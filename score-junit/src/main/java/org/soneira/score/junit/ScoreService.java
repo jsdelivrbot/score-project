@@ -1,5 +1,7 @@
 package org.soneira.score.junit;
 
+import org.soneira.score.junit.model.Score;
+import org.soneira.score.junit.model.ScoreResult;
 import org.soneira.score.junit.persistence.PersistUnit;
 
 import java.util.Comparator;

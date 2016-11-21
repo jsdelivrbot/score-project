@@ -1,7 +1,7 @@
 package org.soneira.score;
 
-import org.soneira.score.junit.Score;
-import org.soneira.score.junit.ScoreResult;
+import org.soneira.score.junit.model.Score;
+import org.soneira.score.junit.model.ScoreResult;
 import org.soneira.score.junit.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

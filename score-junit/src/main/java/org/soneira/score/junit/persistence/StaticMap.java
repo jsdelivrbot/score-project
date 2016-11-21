@@ -1,7 +1,7 @@
 package org.soneira.score.junit.persistence;
 
 import com.google.common.collect.Lists;
-import org.soneira.score.junit.ScoreResult;
+import org.soneira.score.junit.model.ScoreResult;
 import com.google.common.collect.Maps;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class StaticMap implements PersistUnit {
 
-    private final static Map<String, ScoreResult> SCORE_MAP = Maps.newConcurrentMap();
+    private final Map<String, ScoreResult> SCORE_MAP = Maps.newConcurrentMap();
 
     @Override
     public void putScore(String team, ScoreResult result) {

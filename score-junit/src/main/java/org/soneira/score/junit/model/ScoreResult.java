@@ -1,4 +1,4 @@
-package org.soneira.score.junit;
+package org.soneira.score.junit.model;
 
 import com.google.common.collect.Lists;
 
