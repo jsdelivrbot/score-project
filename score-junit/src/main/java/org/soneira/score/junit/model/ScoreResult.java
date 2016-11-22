@@ -18,7 +18,7 @@ public class ScoreResult {
 		this.team = team;
 	}
 
-	public void put(Date sprint, Integer newScore) {
+	public void put(Integer sprint, Integer newScore) {
 		scores.add(new Score(sprint, newScore));
 	}
 
