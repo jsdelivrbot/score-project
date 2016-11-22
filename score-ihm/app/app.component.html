@@ -1,50 +1,34 @@
 <nav class="navbar navbar-inverse">
     <div class="navbar-header">
-        <h1 class="navbar-brand"><strong>SOFT Battle Code 2016</strong></h1>
+        <h1 style="margin-left: 20px"><strong>SOFT - Battle Code 2016</strong></h1>
     </div>
 </nav>
 
 <div class="container-fluid">
 
     <div class="row">
-        <div class="col-sm-4"><h3>Rank :</h3></div>
-        <div class="col-sm-8"><h3>Scores :</h3></div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-sm-4">
 
-            <table class="table">
+        <div class="col-sm-9">
+            <h2><strong>Scores :</strong></h2>
+            <hr/>
+            <score-chart></score-chart>
+        </div>
+
+        <div class="col-sm-3">
+            <h2><strong>Rank :</strong></h2>
+            <hr/>
+            <table class="table" style="font-size: 1.8em;">
                 <tr>
-                    <th class="col-md-2">#</th>
-                    <th class="col-md-2">Points</th>
+                    <th class="col-md-1">#</th>
+                    <th class="col-md-3">Points</th>
                     <th class="col-md-8">Team</th>
                 </tr>
                 <tr *ngFor="let rank of rankList; let i = index">
-                    <td>{{i+1}}</td>
+                    <td>{{i+1}}.</td>
                     <td>{{rank.points}}</td>
                     <td>{{rank.team}}</td>
                 </tr>
             </table>
-
-        </div>
-
-        <div class="col-sm-8">
-            <div class="panel panel-default" *ngFor="let scoreResult of scoresResult">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{scoreResult.team}}</h3>
-                </div>
-                <div class="panel-body">
-                    <table class="table">
-                        <tr>
-                            <th *ngFor="let score of scoreResult.scores">{{score.sprint | date: 'HH:mm:ss'}}</th>
-                        </tr>
-                        <tr>
-                            <td *ngFor="let score of scoreResult.scores">{{score.points}}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
         </div>
 
     </div>

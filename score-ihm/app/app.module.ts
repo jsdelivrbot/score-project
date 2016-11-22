@@ -5,17 +5,21 @@ import { Configuration } from './app.configuration';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { ScoreDataService } from './score/score.dataservice';
+import { ScoreChartComponent } from "./score/scorechart.component";
+import { ChartsModule } from "./charts/chart.module";
 
 @NgModule({
     imports: [
         BrowserModule,
         HttpModule,
         JsonpModule,
-        FormsModule
+        FormsModule,
+        ChartsModule
     ],
 
     declarations: [
-        AppComponent
+        AppComponent,
+        ScoreChartComponent
     ],
 
     providers: [

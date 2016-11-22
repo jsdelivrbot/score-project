@@ -1,11 +1,11 @@
 package org.soneira.score.junit;
 
+import com.google.common.collect.Lists;
 import org.soneira.score.junit.model.Score;
 import org.soneira.score.junit.model.ScoreResult;
 import org.soneira.score.junit.persistence.PersistUnit;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class ScoreService {
@@ -56,4 +56,27 @@ public class ScoreService {
                 : score.getScores().stream().max(Comparator.comparing(Score::getSprint)).orElse(FIRST_SCORE);
     }
 
+    public List<ScoreResult> getAllScoresFilled() {
+        Integer globalLastSprint = persistUnit.getAllScores().stream().map(ScoreService::getLastScore).max(Comparator.comparing(Score::getSprint)).orElse(FIRST_SCORE).getSprint();
+        List<ScoreResult> allScoresNew = Lists.newArrayList();
+
+        getAllScores().stream().forEach(scoreResult -> {
+            ScoreResult newScoreResult = new ScoreResult(scoreResult.getTeam());
+            newScoreResult.getScores().addAll(createAndCompleteScoreResults(scoreResult.getScores(), globalLastSprint));
+            allScoresNew.add(newScoreResult);
+        });
+
+        return allScoresNew;
+    }
+
+    private List<Score> createAndCompleteScoreResults(List<Score> scores, Integer globalLastSprint) {
+        List<Score> newScoreResult = Lists.newArrayList();
+
+        IntStream.range(1, globalLastSprint+1).forEach(sprint -> {
+            Score newScore = new Score(sprint, scores.stream().filter(score -> score.getSprint() <= sprint).sorted(Comparator.comparing(Score::getSprint).reversed()).findFirst().map(Score::getPoints).orElse(0));
+            newScoreResult.add(newScore);
+        });
+
+        return newScoreResult;
+    }
 }

@@ -20,7 +20,7 @@ public class ScoreController {
 
     @RequestMapping("/scores")
     public List<ScoreResult> scores() {
-        return scoreService.getAllScores();
+        return scoreService.getAllScoresFilled();
     }
 
     @RequestMapping(value = "/score/{team}/{points}", method = RequestMethod.POST)

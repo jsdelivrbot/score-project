@@ -1,11 +1,15 @@
 package org.soneira.score.junit;
 
+import org.fest.assertions.api.Assertions;
+import org.fest.assertions.api.BigDecimalAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.soneira.score.junit.model.ScoreResult;
 import org.soneira.score.junit.persistence.StaticMap;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -116,7 +120,7 @@ public class ScoreServiceTest {
     }
 
     @Test
-    public void checkAddScore_multipleTeamsWithTeam2EnteringLate() {
+    public void checkGetAllScoredFilled_multipleTeamsWithTeam2EnteringLate() {
         // Setup
         String teamName = "team";
         String teamName2 = "team2";
@@ -128,27 +132,35 @@ public class ScoreServiceTest {
         scoreService.addScore(teamName, pointsTeam1);
         scoreService.addScore(teamName2, pointsTeam2);
         scoreService.addScore(teamName, pointsTeam1);
-        ScoreResult resultTeam1 = scoreService.addScore(teamName, pointsTeam1);
-        ScoreResult resultTeam2 = scoreService.addScore(teamName2, pointsTeam2);
-        List<ScoreResult> allScores = scoreService.getAllScores();
+        scoreService.addScore(teamName, pointsTeam1);
+        scoreService.addScore(teamName2, pointsTeam2);
+        scoreService.addScore(teamName2, pointsTeam2);
+        List<ScoreResult> allScores = scoreService.getAllScoresFilled();
 
         // Assertions
-        assertThat(allScores).hasSize(2).containsOnly(resultTeam1, resultTeam2);
+        assertThat(allScores).hasSize(2);
+        ScoreResult resultTeam1 = allScores.stream().filter(scoreResult -> scoreResult.getTeam().equals(teamName)).findFirst().orElse(null);
+        ScoreResult resultTeam2 = allScores.stream().filter(scoreResult -> scoreResult.getTeam().equals(teamName2)).findFirst().orElse(null);
         assertThat(resultTeam1.getTeam()).isEqualTo(teamName);
-        assertThat(resultTeam1.getScores()).hasSize(3);
+        assertThat(resultTeam1.getScores()).hasSize(4);
         assertThat(resultTeam1.getScores().get(0).getSprint()).isEqualTo(1);
         assertThat(resultTeam1.getScores().get(0).getPoints()).isEqualTo(pointsTeam1);
         assertThat(resultTeam1.getScores().get(1).getSprint()).isEqualTo(2);
         assertThat(resultTeam1.getScores().get(1).getPoints()).isEqualTo(pointsTeam1*2);
         assertThat(resultTeam1.getScores().get(2).getSprint()).isEqualTo(3);
         assertThat(resultTeam1.getScores().get(2).getPoints()).isEqualTo(pointsTeam1*3);
+        assertThat(resultTeam1.getScores().get(3).getSprint()).isEqualTo(4);
+        assertThat(resultTeam1.getScores().get(3).getPoints()).isEqualTo(pointsTeam1*3);
         assertThat(resultTeam2.getTeam()).isEqualTo(teamName2);
-        assertThat(resultTeam2.getScores()).hasSize(3);
+        assertThat(resultTeam2.getScores()).hasSize(4);
         assertThat(resultTeam2.getScores().get(0).getSprint()).isEqualTo(1);
         assertThat(resultTeam2.getScores().get(0).getPoints()).isEqualTo(pointsTeam2);
         assertThat(resultTeam2.getScores().get(1).getSprint()).isEqualTo(2);
         assertThat(resultTeam2.getScores().get(1).getPoints()).isEqualTo(pointsTeam2);
         assertThat(resultTeam2.getScores().get(2).getSprint()).isEqualTo(3);
         assertThat(resultTeam2.getScores().get(2).getPoints()).isEqualTo(pointsTeam2*2);
+        assertThat(resultTeam2.getScores().get(3).getSprint()).isEqualTo(4);
+        assertThat(resultTeam2.getScores().get(3).getPoints()).isEqualTo(pointsTeam2*3);
     }
+
 }
