@@ -623,7 +623,7 @@ pre code{padding:0;font-size:inherit;color:inherit;white-space:pre-wrap;border-r
 }
 caption{padding-top:6px;padding-bottom:6px;color:#4e5d6c}
 .table{width:100%;max-width:100%;margin-bottom:21px}
-.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th{padding:6px;line-height:1.42857143;vertical-align:top;border-top:1px solid #4e5d6c}
+.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th{padding:2px;line-height:1.42857143;vertical-align:top;border-top:1px solid #4e5d6c}
 .table>thead>tr>th{vertical-align:bottom;border-bottom:2px solid #4e5d6c}
 .table>caption+thead>tr:first-child>td,.table>caption+thead>tr:first-child>th,.table>colgroup+thead>tr:first-child>td,.table>colgroup+thead>tr:first-child>th,.table>thead:first-child>tr:first-child>td,.table>thead:first-child>tr:first-child>th{border-top:0}
 .table>tbody+tbody{border-top:2px solid #4e5d6c}
