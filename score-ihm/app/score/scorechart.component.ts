@@ -1,4 +1,4 @@
-import {Component, Output, OnInit} from '@angular/core';
+import {Component, Output, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ScoreDataService} from "./score.dataservice";
 import {ScoreResult} from "./ScoreResult";
 
@@ -11,26 +11,21 @@ import {ScoreResult} from "./ScoreResult";
                 [legend]="lineChartLegend"
                 [chartType]="lineChartType"></base-chart>`
 })
-export class ScoreChartComponent implements OnInit {
+export class ScoreChartComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
-        this.GetAllScores();
+        this.initFlag = true;
     }
 
-    constructor(private _scoreDataService: ScoreDataService) {
+    public initFlag: boolean = false;
 
+    ngOnChanges(changes: SimpleChanges): void {
+        if (this.initFlag) {
+            this.updateData(this.scoreResultList);
+        }
     }
 
-    private GetAllScores = (): void => {
-        this._scoreDataService
-            .GetAllScores()
-            .subscribe((response: ScoreResult[]) => {
-                    var scoreResultList = response;
-                    this.updateData(scoreResultList);
-                },
-                error => console.log(error));
-    }
-
+    @Input() scoreResultList: ScoreResult[];
 
     // lineChart
     @Output() public lineChartData: Array<any>;

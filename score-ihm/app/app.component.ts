@@ -1,6 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output} from '@angular/core';
 import { ScoreDataService } from './score/score.dataservice';
-import { Rank } from './score/ScoreResult';
+import {Rank, ScoreResult} from './score/ScoreResult';
+import { Configuration } from "./app.configuration";
+import {Observable} from "rxjs/Observable";
 
 @Component({
     selector: 'score-app',
@@ -8,14 +10,24 @@ import { Rank } from './score/ScoreResult';
 })
 export class AppComponent implements OnInit {
 
+
     public ngOnInit(): any
     {
-        this.GetRank();
+        this.scoreIhmTitle = this._configuration.title;
+        this.timer3Sec = Observable.interval(3000);
+        this.timer3Sec.subscribe(this.GetRank);
+        this.timer3Sec.subscribe(this.GetAllScores);
+
     }
 
-    rankList: Rank[];
+    public timer3Sec: Observable<number>;
 
-    constructor(private _scoreDataService: ScoreDataService) {
+    rankList: Rank[];
+    @Output() scoreResultList: ScoreResult[];
+
+    scoreIhmTitle: string;
+
+    constructor(private _scoreDataService: ScoreDataService, private _configuration: Configuration) {
 
     }
 
@@ -25,6 +37,15 @@ export class AppComponent implements OnInit {
             .subscribe((response: Rank[]) => {
                     console.log("persons : " + JSON.stringify(response));
                     this.rankList = response;
+                },
+                error => console.log(error));
+    }
+
+    private GetAllScores = (): void => {
+        this._scoreDataService
+            .GetAllScores()
+            .subscribe((response: ScoreResult[]) => {
+                    this.scoreResultList = response;
                 },
                 error => console.log(error));
     }

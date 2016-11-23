@@ -1,6 +1,6 @@
 <nav class="navbar navbar-inverse">
     <div class="navbar-header">
-        <h1 style="margin-left: 20px"><strong>SOFT - Battle Code 2016</strong></h1>
+        <h1 style="margin-left: 20px"><strong>{{scoreIhmTitle}}</strong></h1>
     </div>
 </nav>
 
@@ -11,7 +11,7 @@
         <div class="col-sm-9">
             <h2><strong>Scores :</strong></h2>
             <hr/>
-            <score-chart></score-chart>
+            <score-chart [scoreResultList]="scoreResultList"></score-chart>
         </div>
 
         <div class="col-sm-3">
