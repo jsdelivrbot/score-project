@@ -18,7 +18,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.soneira</groupId>
+			<groupId>com.dojocoders</groupId>
 			<artifactId>score-junit</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
