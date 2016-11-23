@@ -15,7 +15,7 @@ export class ScoreChartComponent implements OnInit, OnChanges {
     public initFlag: boolean = false;
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.initFlag) {
+        if (this.initFlag && this.scoreResultList.length > 0) {
             this.updateData(this.scoreResultList);
         }
     }
@@ -31,7 +31,15 @@ export class ScoreChartComponent implements OnInit, OnChanges {
 
     public lineChartOptions: any = {
         animation: false,
-        responsive: true
+        responsive: true,
+        scaleShowLabels : false,
+        elements: { point: { radius: 0 } },
+        scales:
+            {
+                xAxes: [{
+                    display: false
+                }]
+            }
     };
 
     public lineChartLegend: boolean = false;

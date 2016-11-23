@@ -208,6 +208,10 @@ function formatLineColor(colors: Array<number>): Color {
     };
 }
 
+function rgba(colour: Array<number>, alpha: number): string {
+    return 'rgba(' + colour.concat(alpha).join(',') + ')';
+}
+
 function formatBarColor(colors: Array<number>): Color {
     return {
         backgroundColor: rgba(colors, 0.6),
