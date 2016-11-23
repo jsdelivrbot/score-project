@@ -60,7 +60,6 @@ export class BaseChartComponent implements OnDestroy, OnChanges, OnInit {
     }
 
     public ngOnChanges(changes: SimpleChanges): any {
-        console.log("CHANGE! " + JSON.stringify(changes));
         if (this.initFlag) {
             this.refresh();
         }
@@ -193,9 +192,6 @@ export interface Colors extends Color {
     label?: string;
 }
 
-function rgba(colour: Array<number>, alpha: number): string {
-    return 'rgba(' + colour.concat(alpha).join(',') + ')';
-}
 
 function getRandomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;

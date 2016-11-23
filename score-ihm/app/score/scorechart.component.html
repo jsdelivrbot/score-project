@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="col-sm-9">
+        <h2><strong>Scores :</strong></h2>
+        <hr/>
+        <base-chart class="chart"
+                    [datasets]="lineChartData"
+                    [labels]="lineChartLabels"
+                    [options]="lineChartOptions"
+                    [legend]="lineChartLegend"
+                    [colors]="lineColors"
+                    [chartType]="lineChartType"></base-chart>
+    </div>
+
+    <div class="col-sm-3">
+        <h2><strong>Rank :</strong></h2>
+        <hr/>
+        <table class="table" style="font-size: 1.8em;">
+            <tr>
+                <th class="col-md-1">#</th>
+                <th class="col-md-3">Points</th>
+                <th class="col-md-8">Team</th>
+            </tr>
+            <tr *ngFor="let scoreResult of scoreResultList; let i = index">
+                <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{i+1}}.</td>
+                <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{scoreResult.maxPoints}}</td>
+                <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{scoreResult.team}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

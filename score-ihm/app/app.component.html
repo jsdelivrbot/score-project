@@ -6,31 +6,6 @@
 
 <div class="container-fluid">
 
-    <div class="row">
-
-        <div class="col-sm-9">
-            <h2><strong>Scores :</strong></h2>
-            <hr/>
-            <score-chart [scoreResultList]="scoreResultList"></score-chart>
-        </div>
-
-        <div class="col-sm-3">
-            <h2><strong>Rank :</strong></h2>
-            <hr/>
-            <table class="table" style="font-size: 1.8em;">
-                <tr>
-                    <th class="col-md-1">#</th>
-                    <th class="col-md-3">Points</th>
-                    <th class="col-md-8">Team</th>
-                </tr>
-                <tr *ngFor="let rank of rankList; let i = index">
-                    <td>{{i+1}}.</td>
-                    <td>{{rank.points}}</td>
-                    <td>{{rank.team}}</td>
-                </tr>
-            </table>
-        </div>
-
-    </div>
+        <score-chart [scoreResultList]="scoreResultList"></score-chart>
 
 </div>
