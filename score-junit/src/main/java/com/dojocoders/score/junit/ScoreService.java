@@ -32,10 +32,6 @@ public class ScoreService {
         return scoreResult;
     }
 
-    public List<ScoreResult> getAllScores() {
-        return persistUnit.getAllScores();
-    }
-
     private Integer getNextSprint(ScoreResult score) {
         Integer lastTeamSprint = getLastScore(score).getSprint();
 
@@ -60,7 +56,7 @@ public class ScoreService {
         Integer globalLastSprint = persistUnit.getAllScores().stream().map(ScoreService::getLastScore).max(Comparator.comparing(Score::getSprint)).orElse(FIRST_SCORE).getSprint();
         List<ScoreResult> allScoresNew = Lists.newArrayList();
 
-        getAllScores().stream().forEach(scoreResult -> {
+        persistUnit.getAllScores().stream().forEach(scoreResult -> {
             ScoreResult newScoreResult = new ScoreResult(scoreResult.getTeam());
             newScoreResult.getScores().addAll(createAndCompleteScoreResults(scoreResult.getScores(), globalLastSprint));
             allScoresNew.add(newScoreResult);

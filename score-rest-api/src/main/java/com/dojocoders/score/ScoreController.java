@@ -28,16 +28,4 @@ public class ScoreController {
         return scoreService.addScore(team, points);
     }
 
-    @RequestMapping("/rank")
-    public List<Rank> rank() {
-        return scoreService.getAllScores()
-                .stream()
-                .map(scoreResult ->
-                        new Rank(scoreResult.getTeam(),
-                                scoreResult.getScores().stream()
-                                        .max(Comparator.comparing(Score::getSprint))
-                                        .map(Score::getPoints).orElse(0)))
-                .sorted(Comparator.comparing(Rank::getPoints).reversed())
-                .collect(Collectors.toList());
-    }
 }
