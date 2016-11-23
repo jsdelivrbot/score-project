@@ -14,13 +14,12 @@ export class AppComponent implements OnInit {
     public ngOnInit(): any
     {
         this.scoreIhmTitle = this._configuration.title;
-        this.timer3Sec = Observable.interval(3000);
         this.timer3Sec.subscribe(this.GetRank);
         this.timer3Sec.subscribe(this.GetAllScores);
 
     }
 
-    public timer3Sec: Observable<number>;
+    timer3Sec: Observable<number> = Observable.interval(3000);
 
     rankList: Rank[];
     @Output() scoreResultList: ScoreResult[];
