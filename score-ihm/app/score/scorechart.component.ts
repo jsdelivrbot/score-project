@@ -1,6 +1,6 @@
 import {Component, Output, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ScoreResult} from "./ScoreResult";
-import {BaseChartComponent} from "../charts/chart.module";
+import {Observable} from "rxjs/Observable";
 
 @Component({
     selector: 'score-chart',
@@ -10,6 +10,7 @@ export class ScoreChartComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         this.initFlag = true;
+        Observable.interval(1000).subscribe(this.updateLaunchNextSprintCountdown);
     }
 
     public initFlag: boolean = false;
@@ -19,6 +20,8 @@ export class ScoreChartComponent implements OnInit, OnChanges {
             this.updateData(this.scoreResultList);
         }
     }
+
+    @Input() public sprintTimelaps:number;
 
     @Input() scoreResultList: ScoreResult[];
 
@@ -32,19 +35,21 @@ export class ScoreChartComponent implements OnInit, OnChanges {
     public lineChartOptions: any = {
         animation: false,
         responsive: true,
-        scaleShowLabels : false,
-        elements: { point: { radius: 0 } },
-        scales:
-            {
-                xAxes: [{
-                    display: false
-                }]
-            }
+        scaleShowLabels: false,
+        elements: {point: {radius: 0}},
+        scales: {
+            xAxes: [{
+                display: false
+            }]
+        }
     };
 
     public lineChartLegend: boolean = false;
 
     public lineChartType: string = 'line';
+
+    public prepareNextSprintCountdown:number = 0;
+
 
     private updateData(scoreResultList: ScoreResult[]): void {
 
@@ -75,6 +80,15 @@ export class ScoreChartComponent implements OnInit, OnChanges {
             pointHoverBackgroundColor: '#fff',
             pointHoverBorderColor: this.rgba(colors, 0.8)
         };
+    }
+
+    private updateLaunchNextSprintCountdown = (): void => {
+        if (this.prepareNextSprintCountdown > 0) {
+            this.prepareNextSprintCountdown = this.prepareNextSprintCountdown - 1;
+        } else {
+            // TODO launch jenkins from here
+            this.prepareNextSprintCountdown = this.sprintTimelaps;
+        }
     }
 
 }

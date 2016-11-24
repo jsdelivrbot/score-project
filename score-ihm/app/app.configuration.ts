@@ -4,4 +4,5 @@ import { Injectable } from '@angular/core';
 export class Configuration {
     baseUrlLocal: string = "http://localhost:8080/";
     title: string = "SOFT - Battle Code 2016";
+    sprintTimelaps: number = 180;
 }

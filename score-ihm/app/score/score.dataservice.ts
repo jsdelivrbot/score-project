@@ -14,7 +14,7 @@ export class ScoreDataService {
     }
 
     public GetAllScores = (): Observable<ScoreResult[]> => {
-        return this._http.get(this.actionUrl + '/scores')
+        return this._http.get(this.actionUrl + '/scores/50')
             .map((response: Response) => <ScoreResult[]>response.json())
             .catch(this.handleError);
     }

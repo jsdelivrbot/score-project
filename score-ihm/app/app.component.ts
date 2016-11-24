@@ -13,6 +13,7 @@ export class AppComponent implements OnInit {
     public ngOnInit(): any
     {
         this.scoreIhmTitle = this._configuration.title;
+        this.sprintTimelaps = this._configuration.sprintTimelaps;
         Observable.interval(3000).subscribe(this.GetAllScores);
 
     }
@@ -43,7 +44,11 @@ export class AppComponent implements OnInit {
 
     @Output() scoreResultList: ScoreResult[];
 
+    lastSprint: number = 0;
+
     scoreIhmTitle: string;
+
+    sprintTimelaps: number;
 
     constructor(private _scoreDataService: ScoreDataService, private _configuration: Configuration) {
 
@@ -72,8 +77,15 @@ export class AppComponent implements OnInit {
             .GetAllScores()
             .subscribe((response: ScoreResult[]) => {
                     this.scoreResultList = this.GenerateTeamColors(response);
+                    this.updateLastSprint();
                 },
                 error => console.log(error));
+    }
+
+    private updateLastSprint = (): void => {
+        if (this.scoreResultList.length > 0) {
+            this.lastSprint = this.scoreResultList[0].scores[this.scoreResultList[0].scores.length - 1].sprint;
+        }
     }
 
 }

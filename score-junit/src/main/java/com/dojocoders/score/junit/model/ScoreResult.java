@@ -17,7 +17,12 @@ public class ScoreResult {
 		this.team = team;
 	}
 
-	public void put(Integer sprint, Integer newScore) {
+    public ScoreResult(String team, List<Score> scores) {
+		this.team = team;
+		this.scores = scores;
+    }
+
+    public void put(Integer sprint, Integer newScore) {
 		scores.add(new Score(sprint, newScore));
 	}
 
