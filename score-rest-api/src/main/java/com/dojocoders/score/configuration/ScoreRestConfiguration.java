@@ -1,9 +1,9 @@
-package com.dojocoders.score;
+package com.dojocoders.score.configuration;
 
-import com.dojocoders.score.junit.persistence.Couchbase;
-import com.dojocoders.score.junit.persistence.PersistUnit;
-import com.dojocoders.score.junit.ScoreService;
-import com.dojocoders.score.junit.persistence.StaticMap;
+import com.dojocoders.score.persistence.Couchbase;
+import com.dojocoders.score.persistence.PersistUnit;
+import com.dojocoders.score.junit.persistence.TestStaticMap;
+import com.dojocoders.score.persistence.StaticMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,12 +24,9 @@ public class ScoreRestConfiguration {
     @Value("${persist.scope}")
     private String persistScope;
 
-    @Bean
-    public ScoreService scoreService() {
-        return new ScoreService(persistUnit());
-    }
 
-    private PersistUnit persistUnit() {
+    @Bean
+    public PersistUnit persistUnit() {
         return "couchbase".equals(persistScope) ?
                 new Couchbase(couchbaseHosts.split(","), bucketName, bucketPassword)
                 : new StaticMap();

@@ -1,7 +1,7 @@
 package com.dojocoders.score.junit.annotations;
 
-import com.dojocoders.score.junit.persistence.PersistUnit;
-import com.dojocoders.score.junit.persistence.StaticMap;
+import com.dojocoders.score.junit.persistence.TestPersistUnit;
+import com.dojocoders.score.junit.persistence.TestStaticMap;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface Persist {
 
-    Class<? extends PersistUnit> value() default StaticMap.class;
+    Class<? extends TestPersistUnit> value() default TestStaticMap.class;
 }

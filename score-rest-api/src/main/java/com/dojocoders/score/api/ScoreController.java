@@ -1,8 +1,8 @@
-package com.dojocoders.score;
+package com.dojocoders.score.api;
 
-import com.dojocoders.score.junit.model.ScoreResult;
-import com.dojocoders.score.junit.model.Score;
-import com.dojocoders.score.junit.ScoreService;
+import com.dojocoders.score.model.ScoreResult;
+import com.dojocoders.score.model.Score;
+import com.dojocoders.score.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +37,7 @@ public class ScoreController {
     }
 
     @RequestMapping(value = "/score/{team}/{points}", method = RequestMethod.POST)
-    public ScoreResult teamPoints(@PathVariable String team, @PathVariable Integer points) {
+    public ScoreResult addScoreTeamPoints(@PathVariable String team, @PathVariable Integer points) {
         return scoreService.addScore(team, points);
     }
 

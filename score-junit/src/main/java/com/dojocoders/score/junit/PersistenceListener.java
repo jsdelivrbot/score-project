@@ -1,6 +1,6 @@
 package com.dojocoders.score.junit;
 
-import com.dojocoders.score.junit.persistence.PersistUnit;
+import com.dojocoders.score.junit.persistence.TestPersistUnit;
 import com.dojocoders.score.junit.annotations.Score;
 import com.google.common.collect.Lists;
 import org.junit.runner.Description;
@@ -17,14 +17,14 @@ public class PersistenceListener extends RunListener {
 
 	private final String team;
 
-	private final ScoreService scoreService;
+	private final TestPersistUnit testPersistUnit;
 
 	private final List<String> startedTests;
 
 	private AtomicInteger totalPoints = new AtomicInteger(0);
 
-	public PersistenceListener(PersistUnit persistenceUnit) {
-		this.scoreService = new ScoreService(persistenceUnit);
+	public PersistenceListener(TestPersistUnit persistenceUnit) {
+		this.testPersistUnit = persistenceUnit;
 		this.team = System.getProperty("team") == null ? DEFAULT_TEAM : System.getProperty("team");
 		this.startedTests = Lists.newArrayList();
 	}
@@ -56,7 +56,7 @@ public class PersistenceListener extends RunListener {
 
 	@Override
 	public void testRunFinished(Result result) throws Exception {
-		scoreService.addScore(team, totalPoints.get());
+		testPersistUnit.putScore(team, totalPoints.get());
 		startedTests.clear();
 		System.out.println("Total score : " + totalPoints + "\n");
 

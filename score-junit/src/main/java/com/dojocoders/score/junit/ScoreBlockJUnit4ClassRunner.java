@@ -2,8 +2,8 @@ package com.dojocoders.score.junit;
 
 import com.dojocoders.score.junit.annotations.InjectImpl;
 import com.dojocoders.score.junit.annotations.Persist;
-import com.dojocoders.score.junit.persistence.PersistUnit;
-import com.dojocoders.score.junit.persistence.StaticMap;
+import com.dojocoders.score.junit.persistence.TestPersistUnit;
+import com.dojocoders.score.junit.persistence.TestStaticMap;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
@@ -43,7 +43,7 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 	private void initPersistenceListener() {
 		try {
 			Persist annotation = this.getTestClass().getAnnotation(Persist.class);
-			Class<? extends PersistUnit> persistenceUnitClass = annotation == null ? StaticMap.class : annotation.value();
+			Class<? extends TestPersistUnit> persistenceUnitClass = annotation == null ? TestStaticMap.class : annotation.value();
 			persistenceListener = new PersistenceListener(persistenceUnitClass.newInstance());
 		} catch (ReflectiveOperationException e) {
 			Throwables.propagate(e);

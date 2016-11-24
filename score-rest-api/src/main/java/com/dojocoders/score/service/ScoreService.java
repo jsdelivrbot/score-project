@@ -1,17 +1,21 @@
-package com.dojocoders.score.junit;
+package com.dojocoders.score.service;
 
-import com.dojocoders.score.junit.model.ScoreResult;
-import com.dojocoders.score.junit.persistence.PersistUnit;
+import com.dojocoders.score.model.ScoreResult;
+import com.dojocoders.score.persistence.PersistUnit;
 import com.google.common.collect.Lists;
-import com.dojocoders.score.junit.model.Score;
+import com.dojocoders.score.model.Score;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.IntStream;
 
+@Service
 public class ScoreService {
 
     private final static Score FIRST_SCORE = new Score(0,0);
 
+    @Autowired
     private PersistUnit persistUnit;
 
     public ScoreService(PersistUnit persistenceUnit) {

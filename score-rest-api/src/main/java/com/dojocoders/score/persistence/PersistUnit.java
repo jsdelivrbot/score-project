@@ -1,8 +1,8 @@
-package com.dojocoders.score.junit.persistence;
-
-import com.dojocoders.score.junit.model.ScoreResult;
+package com.dojocoders.score.persistence;
 
 import java.util.List;
+
+import com.dojocoders.score.model.ScoreResult;
 
 public interface PersistUnit {
 

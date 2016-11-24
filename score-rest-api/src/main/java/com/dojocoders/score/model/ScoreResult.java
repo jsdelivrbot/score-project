@@ -1,4 +1,4 @@
-package com.dojocoders.score.junit.model;
+package com.dojocoders.score.model;
 
 import com.google.common.collect.Lists;
 

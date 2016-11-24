@@ -1,10 +1,10 @@
-package com.dojocoders.score.junit;
+package com.dojocoders.score.service;
 
-import com.dojocoders.score.junit.model.ScoreResult;
+import com.dojocoders.score.model.ScoreResult;
+import com.dojocoders.score.persistence.StaticMap;
 import org.fest.assertions.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import com.dojocoders.score.junit.persistence.StaticMap;
 
 import java.util.List;
 

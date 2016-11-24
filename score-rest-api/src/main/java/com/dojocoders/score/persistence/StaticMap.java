@@ -1,11 +1,11 @@
-package com.dojocoders.score.junit.persistence;
-
-import com.dojocoders.score.junit.model.ScoreResult;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+package com.dojocoders.score.persistence;
 
 import java.util.List;
 import java.util.Map;
+
+import com.dojocoders.score.model.ScoreResult;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class StaticMap implements PersistUnit {
 
@@ -21,7 +21,6 @@ public class StaticMap implements PersistUnit {
         return  SCORE_MAP.containsKey(team)? SCORE_MAP.get(team) : new ScoreResult(team);
     }
 
-
     @Override
     public List<ScoreResult> getAllScores() {
         return Lists.newArrayList(SCORE_MAP.values());
@@ -30,4 +29,5 @@ public class StaticMap implements PersistUnit {
     public void clear() {
         SCORE_MAP.clear();
     }
+
 }
