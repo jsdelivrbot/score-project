@@ -1,6 +1,7 @@
 export class ScoreResult {
     public team: string;
     public maxPoints: number;
+    public increment: number;
     public color: number[];
     public scores: Score[];
 }

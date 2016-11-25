@@ -1,12 +1,13 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent }  from './app.component';
-import { Configuration } from './app.configuration';
-import { HttpModule, JsonpModule } from '@angular/http';
-import { FormsModule } from '@angular/forms';
-import { ScoreDataService } from './score/score.dataservice';
-import { ScoreChartComponent } from "./score/scorechart.component";
-import { ChartsModule } from "./charts/chart.module";
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {AppComponent}  from './app.component';
+import {Configuration} from './app.configuration';
+import {HttpModule, JsonpModule} from '@angular/http';
+import {FormsModule} from '@angular/forms';
+import {ScoreDataService} from './score/score.dataservice';
+import {ScoreChartComponent} from "./score/scorechart.component";
+import {ChartsModule} from "./charts/chart.module";
+import {JenkinsLauncher} from "./score/jenkins.launcher";
 
 @NgModule({
     imports: [
@@ -24,10 +25,12 @@ import { ChartsModule } from "./charts/chart.module";
 
     providers: [
         Configuration,
-        ScoreDataService
+        ScoreDataService,
+        JenkinsLauncher
     ],
 
     bootstrap: [AppComponent]
 })
 
-export class AppModule { }
+export class AppModule {
+}

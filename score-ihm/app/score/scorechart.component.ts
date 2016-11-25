@@ -1,6 +1,10 @@
 import {Component, Output, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ScoreResult} from "./ScoreResult";
 import {Observable} from "rxjs/Observable";
+import {JenkinsLauncher} from "./jenkins.launcher";
+import {Response} from "@angular/http";
+import {Subject} from "rxjs/Subject";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'score-chart',
@@ -10,15 +14,22 @@ export class ScoreChartComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         this.initFlag = true;
-        Observable.interval(1000).subscribe(this.updateLaunchNextSprintCountdown);
+        this.observableTimer =  Observable.interval(1000);
     }
 
     public initFlag: boolean = false;
+
+    private subscription: Subscription;
+    private observableTimer: Observable<any>;
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.initFlag && this.scoreResultList.length > 0) {
             this.updateData(this.scoreResultList);
         }
+    }
+
+    constructor(private _jenkinsLauncher: JenkinsLauncher) {
+
     }
 
     @Input() public sprintTimelaps:number;
@@ -49,7 +60,6 @@ export class ScoreChartComponent implements OnInit, OnChanges {
     public lineChartType: string = 'line';
 
     public prepareNextSprintCountdown:number = 0;
-
 
     private updateData(scoreResultList: ScoreResult[]): void {
 
@@ -82,11 +92,27 @@ export class ScoreChartComponent implements OnInit, OnChanges {
         };
     }
 
+    public started: boolean = false;
+
+    pauseClicked(event) {
+        this.started = false;
+        this.subscription.unsubscribe();
+    }
+
+    startClicked(event) {
+        this.started = true;
+        this.subscription = this.observableTimer.subscribe(this.updateLaunchNextSprintCountdown);
+    }
+
     private updateLaunchNextSprintCountdown = (): void => {
         if (this.prepareNextSprintCountdown > 0) {
             this.prepareNextSprintCountdown = this.prepareNextSprintCountdown - 1;
         } else {
-            // TODO launch jenkins from here
+            this._jenkinsLauncher.LaunchJob()
+                .subscribe((response: Response) => {
+                        console.log("Job launched : " + JSON.stringify(response));
+                    },
+                    error => console.log(error));;
             this.prepareNextSprintCountdown = this.sprintTimelaps;
         }
     }

@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
     {
         this.scoreIhmTitle = this._configuration.title;
         this.sprintTimelaps = this._configuration.sprintTimelaps;
+        this.GetAllScores()
         Observable.interval(3000).subscribe(this.GetAllScores);
 
     }
@@ -58,6 +59,7 @@ export class AppComponent implements OnInit {
         for (let i = 0; i < scoreResults.length; i++) {
             scoreResults[i].color =  this.teamColorCache[scoreResults[i].team]|| this.scoreChartColors[i] || this.GetRandomColor();
             scoreResults[i].maxPoints = scoreResults[i].scores[scoreResults[i].scores.length -1].points;
+            scoreResults[i].increment = scoreResults[i].maxPoints - scoreResults[i].scores[scoreResults[i].scores.length -2].points
             this.teamColorCache[scoreResults[i].team] = scoreResults[i].color;
         }
 

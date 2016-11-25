@@ -10,7 +10,7 @@ export class ScoreDataService {
     private actionUrl: string;
 
     constructor(private _http: Http, private _configuration: Configuration) {
-        this.actionUrl = _configuration.baseUrlLocal + 'api';
+        this.actionUrl = _configuration.scoreRestApiUrl + 'api';
     }
 
     public GetAllScores = (): Observable<ScoreResult[]> => {

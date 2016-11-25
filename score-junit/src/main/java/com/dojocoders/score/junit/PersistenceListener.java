@@ -3,6 +3,7 @@ package com.dojocoders.score.junit;
 import com.dojocoders.score.junit.persistence.TestPersistUnit;
 import com.dojocoders.score.junit.annotations.Score;
 import com.google.common.collect.Lists;
+import org.fest.util.Strings;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -21,12 +22,15 @@ public class PersistenceListener extends RunListener {
 
 	private final List<String> startedTests;
 
-	private AtomicInteger totalPoints = new AtomicInteger(0);
+	private AtomicInteger totalPoints;
 
 	public PersistenceListener(TestPersistUnit persistenceUnit) {
 		this.testPersistUnit = persistenceUnit;
 		this.team = System.getProperty("team") == null ? DEFAULT_TEAM : System.getProperty("team");
 		this.startedTests = Lists.newArrayList();
+		Integer bonus = Strings.isNullOrEmpty(System.getProperty("bonus")) ? 0 : Integer.valueOf(System.getProperty("bonus"));
+		Integer malus = Strings.isNullOrEmpty(System.getProperty("malus")) ? 0 :Integer.valueOf(System.getProperty("malus"));
+		this.totalPoints = new AtomicInteger(bonus - malus);
 	}
 
 	@Override

@@ -10,7 +10,17 @@
                     [colors]="lineColors"
                     [chartType]="lineChartType"></base-chart>
         <hr/>
-        <h2>Preparing next Sprint in : {{prepareNextSprintCountdown}} seconds</h2>
+        <table>
+            <tr>
+                <td class = "col-md-9" style="font-size: 4em;">Preparing next Sprint in : {{prepareNextSprintCountdown}} seconds</td>
+                <td class = "col-md-3">
+                    <div class="btn-group">
+                        <button (click)="pauseClicked()" class="btn btn-warning btn-lg" [disabled]="!started"><strong>Pause</strong></button>
+                        <button (click)="startClicked()" class="btn btn-info btn-lg" [disabled]="started"><strong>Start</strong></button>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div class="col-sm-4">
@@ -19,11 +29,18 @@
         <table class="table" style="font-size: 1.8em;">
             <tr>
                 <th class="col-md-1">#</th>
+                <th class="col-md-2"></th>
                 <th class="col-md-3">Points</th>
-                <th class="col-md-8">Team</th>
+                <th class="col-md-6">Team</th>
             </tr>
+
             <tr *ngFor="let scoreResult of scoreResultList; let i = index">
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{i+1}}.</td>
+                <td [style.color]="'rgba(' + scoreResult.color + ',1)'">
+                    <span class="label" style="position: relative;top: 8px;" [ngClass]="scoreResult.increment <=0 ? 'label-danger' : 'label-success'">
+                        <strong>{{scoreResult.increment}}</strong>
+                    </span>
+                </td>
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{scoreResult.maxPoints}}</td>
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{scoreResult.team}}</td>
             </tr>
