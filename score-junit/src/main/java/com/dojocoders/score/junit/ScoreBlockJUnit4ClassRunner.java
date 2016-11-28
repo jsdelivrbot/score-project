@@ -3,7 +3,6 @@ package com.dojocoders.score.junit;
 import com.dojocoders.score.junit.annotations.InjectImpl;
 import com.dojocoders.score.junit.annotations.Persist;
 import com.dojocoders.score.junit.persistence.TestPersistUnit;
-import com.dojocoders.score.junit.persistence.TestStaticMap;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
@@ -22,9 +21,7 @@ import java.util.Set;
 
 public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 
-	private static final Reflections REFLECT_UTIL = new Reflections(
-			ClasspathHelper.forJavaClassPath(),
-			System.getProperty("impl.subpackage") == null ? "" : System.getProperty("impl.subpackage"));
+	private static final Reflections REFLECT_UTIL = new Reflections(ClasspathHelper.forJavaClassPath(), TestConfiguration.getImplementationSubpackage());
 
 	private static final Map<Class<?>, Class<?>> IMPLEMENTATIONS = Maps.newConcurrentMap();
 
@@ -43,7 +40,7 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 	private void initPersistenceListener() {
 		try {
 			Persist annotation = this.getTestClass().getAnnotation(Persist.class);
-			Class<? extends TestPersistUnit> persistenceUnitClass = annotation == null ? TestStaticMap.class : annotation.value();
+			Class<? extends TestPersistUnit> persistenceUnitClass = annotation == null ? TestConfiguration.DEFAULT_TEST_PERSISTENCE_CLASS : annotation.value();
 			persistenceListener = new PersistenceListener(persistenceUnitClass.newInstance());
 		} catch (ReflectiveOperationException e) {
 			Throwables.propagate(e);
@@ -79,7 +76,6 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 			IMPLEMENTATIONS.put(field.getType(), implementation);
 		} catch(ReflectiveOperationException e) {
 			errors.add(e);
-
 		}
 	}
 

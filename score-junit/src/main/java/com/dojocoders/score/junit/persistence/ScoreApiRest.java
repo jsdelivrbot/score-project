@@ -1,5 +1,6 @@
 package com.dojocoders.score.junit.persistence;
 
+import com.dojocoders.score.junit.TestConfiguration;
 import com.google.common.base.Throwables;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -11,7 +12,7 @@ public class ScoreApiRest implements TestPersistUnit {
 
 	@Override
 	public void putScore(String team, Integer points) {
-		String scoreIhmUrl = System.getProperty("score.ihm.url");
+		String scoreIhmUrl = TestConfiguration.getRestApiUrl();
 		HttpPost post = new HttpPost(scoreIhmUrl + "/api/score/" + team + "/" + String.valueOf(points));
         try {
             System.out.println("Calling  : " + post.toString());

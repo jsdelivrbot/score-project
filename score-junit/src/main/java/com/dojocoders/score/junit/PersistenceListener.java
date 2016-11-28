@@ -3,7 +3,6 @@ package com.dojocoders.score.junit;
 import com.dojocoders.score.junit.persistence.TestPersistUnit;
 import com.dojocoders.score.junit.annotations.Score;
 import com.google.common.collect.Lists;
-import org.fest.util.Strings;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -13,8 +12,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PersistenceListener extends RunListener {
-
-	private final static String DEFAULT_TEAM = "default_team";
 
 	private final String team;
 
@@ -26,10 +23,10 @@ public class PersistenceListener extends RunListener {
 
 	public PersistenceListener(TestPersistUnit persistenceUnit) {
 		this.testPersistUnit = persistenceUnit;
-		this.team = System.getProperty("team") == null ? DEFAULT_TEAM : System.getProperty("team");
+		this.team = TestConfiguration.getTeam();
 		this.startedTests = Lists.newArrayList();
-		Integer bonus = Strings.isNullOrEmpty(System.getProperty("bonus")) ? 0 : Integer.valueOf(System.getProperty("bonus"));
-		Integer malus = Strings.isNullOrEmpty(System.getProperty("malus")) ? 0 :Integer.valueOf(System.getProperty("malus"));
+		Integer bonus = TestConfiguration.getBonus();
+		Integer malus = TestConfiguration.getMalus();
 		this.totalPoints = new AtomicInteger(bonus - malus);
 	}
 
@@ -68,7 +65,7 @@ public class PersistenceListener extends RunListener {
 
 	private int getPointsActualTest(Description description) {
 		Score score = description.getAnnotation(Score.class);
-		return score == null ? 10 : score.value();
+		return score == null ? TestConfiguration.DEFAULT_METHOD_POINTS : score.value();
 	}
 
 }
