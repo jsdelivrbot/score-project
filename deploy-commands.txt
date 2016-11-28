@@ -1,0 +1,41 @@
+** Docker :
+See docker documentation : https://docs.docker.com/engine/installation/linux/
+
+** Gitlab :
+docker run -d \
+  --hostname fedora \
+  --name gitlab \
+  --restart unless-stopped \
+  --publish 443:443 --publish 80:80 --publish 2222:22 \
+  --volume /srv/gitlab/config:/etc/gitlab \
+  --volume /srv/gitlab/logs:/var/log/gitlab \
+  --volume /srv/gitlab/data:/var/opt/gitlab \
+  --volume /srv/gitlab/logs/reconfigure:/var/log/gitlab/reconfigure \
+  gitlab/gitlab-ce:latest
+
+** Jenkins :
+docker run -d \
+  --name jenkins \
+  --restart unless-stopped \
+  --publish 8888:8080 --publish 50000:50000 \
+  --volume /srv/jenkins/data:/var/jenkins_home \
+  jenkins:alpine
+
++ configuration seed
+
+** Rest API :
+dnf -y install java-1.8.0-openjdk
+scp score-rest-api/target/score-rest-api-0.1-SNAPSHOT.jar $user@$hostname:/srv/score-rest-api.jar
+java -jar score-rest-api.jar \
+  --persist.scope=static --server.port=8080 \
+  >> score-rest-api.out 2>> score-rest-api.err &
+
+** IHM/Front :
+scp score-ihm/target/score-ihm-0.1-SNAPSHOT.zip $user@$hostname:/srv/score-ihm.zip
+cd /srv && rm -fr score-ihm && unzip -q score-ihm.zip
+docker run -d \
+  --name nginx \
+  --restart unless-stopped \
+  --publish 3000:80 \
+  --volume /srv/score-ihm:/usr/share/nginx/html:ro \
+  nginx:stable-alpine
