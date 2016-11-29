@@ -1,26 +1,31 @@
 package com.dojocoders.score.service;
 
 import com.dojocoders.score.model.ScoreResult;
-import com.dojocoders.score.persistence.StaticMap;
+import com.dojocoders.score.repository.ScoreResultRepository;
 import org.fest.assertions.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ScoreServiceTest {
 
+    @InjectMocks
     private ScoreService scoreService;
 
-    private StaticMap persistUnit = new StaticMap();
+    @Mock
+    private ScoreResultRepository repository;
 
-    @Before
-    public void initSevice() {
-        persistUnit.clear();
-        scoreService = new ScoreService(persistUnit);
-    }
+    @Mock
+    private SprintService sprintService;
 
 
     @Test
@@ -40,8 +45,7 @@ public class ScoreServiceTest {
         String teamName2 = "team2";
         ScoreResult scoreResult = new ScoreResult(teamName);
         ScoreResult scoreResult2 = new ScoreResult(teamName2);
-        persistUnit.putScore(teamName, scoreResult);
-        persistUnit.putScore(teamName2, scoreResult2);
+        Mockito.when(repository.findAll()).thenReturn(Arrays.asList(scoreResult,scoreResult2));
 
         // Test
         List<ScoreResult> result = scoreService.getAllScores();

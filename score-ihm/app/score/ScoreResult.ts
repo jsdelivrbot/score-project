@@ -10,3 +10,8 @@ export class Score {
     public sprint: number;
     public points: number;
 }
+
+export class SprintTimer {
+    public countdown: number;
+    public started: boolean;
+}

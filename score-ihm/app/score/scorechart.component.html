@@ -10,17 +10,7 @@
                     [colors]="lineColors"
                     [chartType]="lineChartType"></base-chart>
         <hr/>
-        <table>
-            <tr>
-                <td class = "col-md-9" style="font-size: 4em;">Preparing next Sprint in : {{prepareNextSprintCountdown}} seconds</td>
-                <td class = "col-md-3">
-                    <div class="btn-group">
-                        <button (click)="pauseClicked()" class="btn btn-warning btn-lg" [disabled]="!started"><strong>Pause</strong></button>
-                        <button (click)="startClicked()" class="btn btn-info btn-lg" [disabled]="started"><strong>Start</strong></button>
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <score-timer></score-timer>
     </div>
 
     <div class="col-sm-4">

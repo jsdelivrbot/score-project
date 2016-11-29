@@ -6,9 +6,6 @@ public class Score {
 
 	private Integer points;
 
-	public Score() {
-	}
-
 	public Score(Integer sprint, Integer points) {
 		this.sprint = sprint;
 		this.points = points;

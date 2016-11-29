@@ -7,7 +7,7 @@ import {FormsModule} from '@angular/forms';
 import {ScoreDataService} from './score/score.dataservice';
 import {ScoreChartComponent} from "./score/scorechart.component";
 import {ChartsModule} from "./charts/chart.module";
-import {JenkinsLauncher} from "./score/jenkins.launcher";
+import {SprintTimerComponent} from "./score/sprinttimer.component";
 
 @NgModule({
     imports: [
@@ -20,13 +20,13 @@ import {JenkinsLauncher} from "./score/jenkins.launcher";
 
     declarations: [
         AppComponent,
-        ScoreChartComponent
+        ScoreChartComponent,
+        SprintTimerComponent
     ],
 
     providers: [
         Configuration,
-        ScoreDataService,
-        JenkinsLauncher
+        ScoreDataService
     ],
 
     bootstrap: [AppComponent]

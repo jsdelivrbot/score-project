@@ -1,7 +1,7 @@
-import {Component, OnInit, Output } from '@angular/core';
-import { ScoreDataService } from './score/score.dataservice';
-import { ScoreResult } from './score/ScoreResult';
-import { Configuration } from "./app.configuration";
+import {Component, OnInit, Output} from '@angular/core';
+import {ScoreDataService} from './score/score.dataservice';
+import {ScoreResult} from './score/ScoreResult';
+import {Configuration} from "./app.configuration";
 import {Observable} from "rxjs/Observable";
 
 @Component({
@@ -10,14 +10,13 @@ import {Observable} from "rxjs/Observable";
 })
 export class AppComponent implements OnInit {
 
-    public ngOnInit(): any
-    {
+    public ngOnInit(): any {
         this.scoreIhmTitle = this._configuration.title;
-        this.sprintTimelaps = this._configuration.sprintTimelaps;
         this.GetAllScores()
         Observable.interval(3000).subscribe(this.GetAllScores);
 
     }
+
     public scoreChartColors: Array<number[]> = [
         [255, 99, 132],
         [54, 162, 235],
@@ -49,17 +48,15 @@ export class AppComponent implements OnInit {
 
     scoreIhmTitle: string;
 
-    sprintTimelaps: number;
-
     constructor(private _scoreDataService: ScoreDataService, private _configuration: Configuration) {
 
     }
 
     private GenerateTeamColors = (scoreResults: ScoreResult[]): ScoreResult[] => {
         for (let i = 0; i < scoreResults.length; i++) {
-            scoreResults[i].color =  this.teamColorCache[scoreResults[i].team]|| this.scoreChartColors[i] || this.GetRandomColor();
-            scoreResults[i].maxPoints = scoreResults[i].scores[scoreResults[i].scores.length -1].points;
-            scoreResults[i].increment = scoreResults[i].maxPoints - scoreResults[i].scores[scoreResults[i].scores.length -2].points
+            scoreResults[i].color = this.teamColorCache[scoreResults[i].team] || this.scoreChartColors[i] || this.GetRandomColor();
+            scoreResults[i].maxPoints = scoreResults[i].scores[scoreResults[i].scores.length - 1].points;
+            scoreResults[i].increment = scoreResults[i].maxPoints - scoreResults[i].scores[scoreResults[i].scores.length - 2].points
             this.teamColorCache[scoreResults[i].team] = scoreResults[i].color;
         }
 

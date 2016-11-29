@@ -11,32 +11,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/scores")
 @CrossOrigin
 public class ScoreController {
 
     @Autowired
     private ScoreService scoreService;
 
-    @RequestMapping("/scores")
+    @RequestMapping
     public List<ScoreResult> scores() {
         return scoreService.getAllScoresFilled();
     }
 
-    @RequestMapping("/scores/{lastItems}")
-    public List<ScoreResult> scoresLastItems(@PathVariable Integer lastItems) {
-        return scoreService.getAllScoresFilled()
-                .stream()
-                .map(scoreResult ->
-                        new ScoreResult(scoreResult.getTeam(),
-                                scoreResult.getScores()
-                                        .stream()
-                                        .sorted(Comparator.comparing(Score::getSprint).reversed())
-                                        .limit(lastItems).sorted(Comparator.comparing(Score::getSprint)).collect(Collectors.toList())))
-                .collect(Collectors.toList());
-    }
-
-    @RequestMapping(value = "/score/{team}/{points}", method = RequestMethod.POST)
+    @RequestMapping(value = "/add/{team}/{points}", method = RequestMethod.POST)
     public ScoreResult addScoreTeamPoints(@PathVariable String team, @PathVariable Integer points) {
         return scoreService.addScore(team, points);
     }

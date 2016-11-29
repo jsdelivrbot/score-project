@@ -10,7 +10,8 @@
     <packaging>pom</packaging>
 
 	<properties>
-		<spring-boot.version>1.4.2.RELEASE</spring-boot.version>
+        <spring-boot.version>1.4.2.RELEASE</spring-boot.version>
+        <spring-boot.couchbase.version>2.1.5.RELEASE</spring-boot.couchbase.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -73,15 +74,15 @@
         	</dependency>
 
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>19.0</version>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-couchbase</artifactId>
+                <version>${spring-boot.couchbase.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.couchbase.client</groupId>
-                <artifactId>java-client</artifactId>
-                <version>2.3.5</version>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
             </dependency>
 
             <dependency>
@@ -107,6 +108,13 @@
                 <groupId>org.easytesting</groupId>
                 <artifactId>fest-assert-core</artifactId>
                 <version>2.0M10</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.10.19</version>
                 <scope>test</scope>
             </dependency>
 
