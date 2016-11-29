@@ -16,10 +16,14 @@ public class Sprint {
     private String gameName = SPRINT_ID;
 
     @Field
-    private Integer number = 1;
+    private Integer number;
 
     @Field
     private List<String> teams = Lists.newArrayList();
+
+    public Sprint(Integer number) {
+        this.number = number;
+    }
 
     public String getGameName() {
         return gameName;

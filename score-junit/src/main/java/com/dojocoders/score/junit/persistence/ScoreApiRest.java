@@ -13,7 +13,7 @@ public class ScoreApiRest implements TestPersistUnit {
 	@Override
 	public void putScore(String team, Integer points) {
 		String scoreIhmUrl = TestConfiguration.getRestApiUrl();
-		HttpPost post = new HttpPost(scoreIhmUrl + "/api/score/" + team + "/" + String.valueOf(points));
+		HttpPost post = new HttpPost(scoreIhmUrl + "/api/scores/add/" + team + "/" + String.valueOf(points));
         try {
             System.out.println("Calling  : " + post.toString());
             createHttpClient().execute(post);

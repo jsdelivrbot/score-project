@@ -30,7 +30,7 @@ public class SprintService {
     }
 
     public Sprint getSprint() {
-        return MoreObjects.firstNonNull(sprintRepository.findOne(Sprint.SPRINT_ID), new Sprint());
+        return MoreObjects.firstNonNull(sprintRepository.findOne(Sprint.SPRINT_ID), new Sprint(1));
     }
 
     public int getSprintTime() {

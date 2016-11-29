@@ -5,12 +5,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import com.dojocoders.score.junit.annotations.InjectImpl;
 import com.dojocoders.score.junit.annotations.Persist;
 import com.dojocoders.score.junit.persistence.ScoreApiRest;
+import com.dojocoders.score.junit.persistence.TestStaticMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.dojocoders.score.junit.annotations.Score;
 
 @RunWith(ScoreBlockJUnit4ClassRunner.class)
-@Persist(ScoreApiRest.class)
+@Persist(TestStaticMap.class)
 public class ScoreBlockJUnit4ClassRunnerValidationTest {
 
 	@InjectImpl

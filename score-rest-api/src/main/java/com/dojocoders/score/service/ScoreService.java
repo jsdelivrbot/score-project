@@ -23,44 +23,27 @@ public class ScoreService {
 	@Autowired
 	private SprintService sprintService;
 
+	@Autowired
+	private ScoreFillerService scoreFillerService;
+
 	public ScoreResult addScore(String team, int score) {
-		ScoreResult scoreResult = fillScores(MoreObjects.firstNonNull(scoreResultRepository.findOne(team), new ScoreResult(team)));
-		scoreResult.getScores().add(new Score(sprintService.prepareNextSprintFor(team).getNumber(), getLastScore(scoreResult).getPoints() + score));
+		Sprint nextSprint = sprintService.prepareNextSprintFor(team);
+		ScoreResult scoreResult = scoreFillerService.fillScores(MoreObjects.firstNonNull(scoreResultRepository.findOne(team), new ScoreResult(team)), nextSprint.getNumber() - 1);
+		scoreResult.getScores().add(new Score(nextSprint.getNumber(), getLastScore(scoreResult).getPoints() + score));
         scoreResultRepository.save(scoreResult);
 		return scoreResult;
 	}
 
     public List<ScoreResult> getAllScoresFilled() {
-		return getAllScores().stream().map(this::fillScores).collect(Collectors.toList());
+		Sprint sprint = sprintService.getSprint();
+		return getAllScores().stream().map(scoreResult -> scoreFillerService.fillScores(scoreResult, sprint.getNumber())).collect(Collectors.toList());
 	}
 
 	public List<ScoreResult> getAllScores() {
-		return Lists.newArrayList(scoreResultRepository.findAll());
+		return Lists.newArrayList(MoreObjects.firstNonNull(scoreResultRepository.findAll(), Lists.newArrayList()));
 	}
 
 	private static Score getLastScore(ScoreResult score) {
 		return score.getScores().stream().max(Comparator.comparing(Score::getSprint)).orElseThrow(RuntimeException::new);
-	}
-
-    private ScoreResult fillScores(ScoreResult scoreResult) {
-        Sprint sprint = sprintService.getSprint();
-
-        ScoreResult newScoreResult = new ScoreResult(scoreResult.getTeam());
-        newScoreResult.getScores().addAll(createAndCompleteScoreResults(scoreResult.getScores(), sprint.getNumber()));
-
-        return newScoreResult;
-    }
-
-	private List<Score> createAndCompleteScoreResults(List<Score> scores, Integer globalLastSprint) {
-
-		List<Score> newScoreResult = Lists.newArrayList();
-
-		IntStream.range(1, globalLastSprint + 1).forEach(sprint -> {
-			Score newScore = new Score(sprint, scores.stream().filter(score -> score.getSprint() <= sprint)
-					.sorted(Comparator.comparing(Score::getSprint).reversed()).findFirst().map(Score::getPoints).orElse(0));
-			newScoreResult.add(newScore);
-		});
-
-		return newScoreResult;
 	}
 }
