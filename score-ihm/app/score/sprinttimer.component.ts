@@ -57,6 +57,7 @@ export class SprintTimerComponent implements OnInit {
         if (this.sprintTimer.countdown > 0) {
             this.sprintTimer.countdown = this.sprintTimer.countdown - 1;
         } else {
+            this.sprintTimer.countdown = 0;
             this.launchOnceSynchroCounter();
         }
     }
