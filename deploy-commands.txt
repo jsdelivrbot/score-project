@@ -28,17 +28,20 @@ docker run -d \
 dnf -y install java-1.8.0-openjdk
 scp score-rest-api/target/score-rest-api-0.1-SNAPSHOT.jar $user@$hostname:/srv/score-rest-api.jar
 java -jar score-rest-api.jar \
-  --persist.scope=static --server.port=8080 \
+  --persist.scope=static --server.port=9000 \
   >> score-rest-api.out 2>> score-rest-api.err &
 
 ** IHM/Front :
 scp score-ihm/target/score-ihm-0.1-SNAPSHOT.zip $user@$hostname:/srv/score-ihm.zip
-cd /srv && rm -fr score-ihm && unzip -q score-ihm.zip
+export SCORE_REST_API_URL=http://$url:9000
+cd /srv && rm -fr score-ihm score-nginx && unzip -q score-ihm.zip
+envsubst < score-nginx/score.template > score-nginx/score.conf
 docker run -d \
   --name nginx \
   --restart unless-stopped \
-  --publish 3000:80 \
-  --volume /srv/score-ihm:/usr/share/nginx/html:ro \
+  --publish 8080:80 \
+  --volume /srv/score-nginx:/etc/nginx/conf.d:ro \
+  --volume /srv/score-ihm:/usr/share/nginx/score:ro \
   nginx:stable-alpine
 
 + proxy config vers rest-api

@@ -2,13 +2,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
   <id>${project.artifactId}</id>
-  <baseDirectory>${project.artifactId}</baseDirectory>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
   <formats>
     <format>zip</format>
   </formats>
+
   <fileSets>
     <fileSet>
       <directory>${project.basedir}</directory>
+      <outputDirectory>score-ihm</outputDirectory>
       <useDefaultExcludes>true</useDefaultExcludes>
       <includes>
         <include>app/**</include>
@@ -19,6 +22,12 @@
         <include>*.js</include>
         <include>*.json</include>
       </includes>
+    </fileSet>
+
+    <fileSet>
+      <directory>${project.basedir}/config</directory>
+      <outputDirectory>score-nginx</outputDirectory>
+      <useDefaultExcludes>true</useDefaultExcludes>
     </fileSet>
   </fileSets>
 </assembly>
