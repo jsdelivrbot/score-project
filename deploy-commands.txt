@@ -19,9 +19,10 @@ docker run -d \
   --restart unless-stopped \
   --publish 8888:8080 --publish 50000:50000 \
   --volume /srv/jenkins/data:/var/jenkins_home \
+  --link gitlab:gitlab \
   jenkins:alpine
 
-+ configuration seed
++ security, plugins (dsl, node), proxy ?, tools (jgit, maven, node), credentials, slaves & configuration seed ...
 
 ** Rest API :
 dnf -y install java-1.8.0-openjdk
@@ -39,3 +40,5 @@ docker run -d \
   --publish 3000:80 \
   --volume /srv/score-ihm:/usr/share/nginx/html:ro \
   nginx:stable-alpine
+
++ proxy config vers rest-api

@@ -7,7 +7,6 @@ export class Configuration {
 
     /// A externaliser dans un json, avec un json par défaut, pour un deploiement plus easy
     /// see https://medium.com/@hasan.hameed/reading-configuration-files-in-angular-2-9d18b7a6aa4#.byxyfdx09
-    scoreRestApiUrl: string = "http://localhost:8080/";
     jenkinsUrl: string = "http://localhost:8888";
     jenkinsJobName: string = "TEST";
     jenkinsJobToken: string = "TOKEN-JOB";
