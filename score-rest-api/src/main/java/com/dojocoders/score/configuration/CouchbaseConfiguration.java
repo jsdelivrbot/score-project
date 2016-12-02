@@ -2,6 +2,7 @@ package com.dojocoders.score.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
 import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepositories;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Configuration
 @EnableCouchbaseRepositories
+@Profile("couchbase-persistence")
 public class CouchbaseConfiguration extends AbstractCouchbaseConfiguration {
 
     @Value("${couchbase.bucket}")
@@ -20,9 +22,6 @@ public class CouchbaseConfiguration extends AbstractCouchbaseConfiguration {
 
     @Value("${couchbase.hosts}")
     private String hosts;
-
-    @Value("${persist.scope}")
-    private String persistScope;
 
     @Override
     protected List<String> getBootstrapHosts() {
