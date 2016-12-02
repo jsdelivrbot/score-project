@@ -26,22 +26,27 @@ docker run -d \
 
 ** Rest API :
 dnf -y install java-1.8.0-openjdk
-scp score-rest-api/target/score-rest-api-0.1-SNAPSHOT.jar $user@$hostname:/srv/score-rest-api.jar
-java -jar score-rest-api.jar \
-  --persist.scope=static --server.port=9000 \
+scp score-rest-api/target/score-rest-api-0.1-SNAPSHOT.jar $user@$hostname:/data/battlecode-2016/score-rest-api.jar
+cd /data/battlecode-2016 && java -jar score-rest-api.jar \
+  --server.port=7000 \
+  --config.id=battlecode \
+  --spring.profiles.active=couchbase-persistence \
+  --couchbase.hosts=127.0.0.1 \
+  --couchbase.bucket=battlecode \
+  --couchbase.password=battlecode \
   >> score-rest-api.out 2>> score-rest-api.err &
 
 ** IHM/Front :
-scp score-ihm/target/score-ihm-0.1-SNAPSHOT.zip $user@$hostname:/srv/score-ihm.zip
-export SCORE_REST_API_URL=http://$url:9000
-cd /srv && rm -fr score-ihm score-nginx && unzip -q score-ihm.zip
+scp score-ihm/target/score-ihm-0.1-SNAPSHOT.zip $user@$hostname:/data/battlecode-2016/score-ihm.zip
+export SCORE_REST_API_URL=http://dvdsi320w.creteil.francetelecom.fr:7000/
+cd /data/battlecode-2016 && rm -fr score-ihm score-nginx && unzip -q score-ihm.zip
 envsubst < score-nginx/score.template > score-nginx/score.conf
 docker run -d \
   --name nginx \
   --restart unless-stopped \
-  --publish 8080:80 \
-  --volume /srv/score-nginx:/etc/nginx/conf.d:ro \
-  --volume /srv/score-ihm:/usr/share/nginx/score:ro \
+  --publish 8000:80 \
+  --volume /data/battlecode-2016/score-nginx:/etc/nginx/conf.d:ro \
+  --volume /data/battlecode-2016/score-ihm:/usr/share/nginx/score:ro \
   nginx:stable-alpine
 
 + proxy config vers rest-api
