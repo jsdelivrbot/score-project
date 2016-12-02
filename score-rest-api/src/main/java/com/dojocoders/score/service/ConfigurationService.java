@@ -3,6 +3,7 @@ package com.dojocoders.score.service;
 import com.dojocoders.score.model.Configuration;
 import com.dojocoders.score.repository.ConfigurationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
@@ -15,13 +16,19 @@ public class ConfigurationService {
     private static final String JENKINS_JOB_NAME = "jenkinsJobName";
     private static final String JENKINS_JOB_TOKEN = "jenkinsJobToken";
 
+    @Value("${config.id}")
+    private String currentConfigurationId;
+
     @Autowired
     private ConfigurationRepository repository;
+
+    public Configuration getCurrentConfiguration() {
+        return getConfiguration(currentConfigurationId);
+    }
 
     public Configuration getConfiguration(String mode) {
         return repository.findOne(mode);
     }
-
 
     public Configuration setConfiguration(Configuration conf) {
         return repository.save(conf);
@@ -49,6 +56,5 @@ public class ConfigurationService {
 
         return repository.save(conf);
     }
-
 
 }

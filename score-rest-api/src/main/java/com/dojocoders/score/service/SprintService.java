@@ -8,11 +8,6 @@ import com.dojocoders.score.timer.SprintTimerComponent;
 import com.google.common.base.MoreObjects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rx.Observable;
-import rx.Subscription;
-import rx.schedulers.Schedulers;
-
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class SprintService {
@@ -48,7 +43,7 @@ public class SprintService {
 
 	private int getSprintTime() {
 		Integer sprint = getSprint().getNumber();
-		Integer sprintTime = configurationService.getConfiguration(System.getProperty("mode")).getSprintTime();
+		Integer sprintTime = configurationService.getCurrentConfiguration().getSprintTime();
 		if (sprint > 10) {
 			sprintTime = Math.round(sprintTime / 2);
 		}
@@ -61,7 +56,7 @@ public class SprintService {
         } else {
             sprintTimer.start(sprintTimer.getTimer().getCountdown());
         }
-        Configuration configuration = configurationService.getConfiguration(System.getProperty("mode"));
+        Configuration configuration = configurationService.getCurrentConfiguration();
         sprintTimer.addScheduler(() -> jenkinsService.launchJobJenkins(configuration.getJenkinsUrl(), configuration.getJenkinsJobName(), configuration.getJenkinsJobToken()));
         sprintTimer.addScheduler(() -> {
             int sprinttime = getSprintTime();

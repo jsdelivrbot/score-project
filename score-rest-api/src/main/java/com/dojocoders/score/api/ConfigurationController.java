@@ -1,12 +1,9 @@
 package com.dojocoders.score.api;
 
 import com.dojocoders.score.model.Configuration;
-import com.dojocoders.score.repository.ConfigurationRepository;
 import com.dojocoders.score.service.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.InvalidParameterException;
 
 @RestController
 @RequestMapping("/api/conf")
@@ -15,6 +12,11 @@ public class ConfigurationController {
 
 	@Autowired
 	private ConfigurationService configurationService;
+
+	@RequestMapping
+	public Configuration current() {
+		return configurationService.getCurrentConfiguration();
+	}
 
 	@RequestMapping("/{mode}")
 	public Configuration get(@PathVariable String mode) {
