@@ -2,7 +2,6 @@ package com.dojocoders.score.service;
 
 import com.dojocoders.score.model.Sprint;
 import com.dojocoders.score.repository.SprintRepository;
-import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

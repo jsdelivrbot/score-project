@@ -2,7 +2,6 @@ package com.dojocoders.score.junit;
 
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
 import com.dojocoders.score.junit.persistence.TestStaticMap;
 
 import java.util.Map;
@@ -18,7 +17,7 @@ public class ScoreBlockJUnit4ClassIntegrationTest {
 		staticMap.clear();
 
 		// Test
-		Result result = JUnitCore.runClasses(ScoreBlockJUnit4ClassRunnerValidationTest.class);
+		JUnitCore.runClasses(ScoreBlockJUnit4ClassRunnerValidationTest.class);
 
 		// Assertions
 		Map<String, Integer> allScores = staticMap.getAllScores();

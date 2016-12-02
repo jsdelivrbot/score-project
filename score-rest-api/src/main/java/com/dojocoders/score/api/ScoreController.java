@@ -1,14 +1,11 @@
 package com.dojocoders.score.api;
 
 import com.dojocoders.score.model.ScoreResult;
-import com.dojocoders.score.model.Score;
 import com.dojocoders.score.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/scores")
