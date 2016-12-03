@@ -23,7 +23,6 @@ public class SprintTimerComponent {
         return sprintTimer;
     }
 
-
     public void addScheduler(EndSprintAction scheduler) {
         schedulers.add(scheduler);
     }
@@ -37,7 +36,7 @@ public class SprintTimerComponent {
             sprintTimer.setCountdown(countdownTimer);
             subscription = Observable.interval(1, TimeUnit.SECONDS).timeInterval().observeOn(Schedulers.newThread()).subscribe(aLong -> {
                 int countdown = sprintTimer.getCountdown();
-                if (countdown >= 0) {
+                if (countdown > 0) {
                     sprintTimer.setCountdown(countdown - 1);
                 } else {
                     for (EndSprintAction scheduler : schedulers) {
