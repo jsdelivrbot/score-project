@@ -58,10 +58,7 @@ public class SprintService {
         }
         Configuration configuration = configurationService.getCurrentConfiguration();
         sprintTimer.addScheduler(() -> jenkinsService.launchJobJenkins(configuration.getJenkinsUrl(), configuration.getJenkinsJobName(), configuration.getJenkinsJobToken()));
-        sprintTimer.addScheduler(() -> {
-            int sprinttime = getSprintTime();
-            sprintTimer.getTimer().setCountdown(sprinttime);
-        });
+        sprintTimer.addScheduler(() -> sprintTimer.getTimer().setCountdown(getSprintTime()));
         return sprintTimer.getTimer();
 	}
 
