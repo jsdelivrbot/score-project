@@ -1,4 +1,4 @@
-package com.dojocoders.score.configuration;
+package com.dojocoders.score.configuration.embedded;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-abstract public class EmbeddedConfiguration<V, K extends Serializable> implements CrudRepository<V, K> {
+abstract public class AbstractEmbeddedCrudRepository<V, K extends Serializable> implements CrudRepository<V, K> {
 
 	private Map<K, V> values = Maps.newHashMap();
 
