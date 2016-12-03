@@ -41,28 +41,14 @@ public class SprintService {
 		return MoreObjects.firstNonNull(sprintRepository.findOne(Sprint.SPRINT_ID), new Sprint(1));
 	}
 
-	private int getSprintTime() {
-		Integer sprint = getSprint().getNumber();
-		Integer sprintTime = configurationService.getCurrentConfiguration().getSprintTime();
-		if (sprint > 10) {
-			sprintTime = Math.round(sprintTime / 2);
-		}
-		return sprintTime;
-	}
-
 	public SprintTimer startSprintTimer() {
-        if (sprintTimer.getTimer().getCountdown() <= 0) {
-            sprintTimer.start(getSprintTime());
-        } else {
-            sprintTimer.start(sprintTimer.getTimer().getCountdown());
-        }
-        Configuration configuration = configurationService.getCurrentConfiguration();
-        sprintTimer.addScheduler(() -> jenkinsService.launchJobJenkins(configuration.getJenkinsUrl(), configuration.getJenkinsJobName(), configuration.getJenkinsJobToken()));
-        sprintTimer.addScheduler(() -> sprintTimer.getTimer().setCountdown(getSprintTime()));
+        sprintTimer.start(getPreviousCountdown());
+        sprintTimer.addScheduler(this::resetCountdown);
+        sprintTimer.addScheduler(this::launchJob);
         return sprintTimer.getTimer();
 	}
 
-    public SprintTimer pauseSprintTimer() {
+	public SprintTimer pauseSprintTimer() {
         sprintTimer.stop();
         sprintTimer.clearSchedulers();
         return sprintTimer.getTimer();
@@ -71,5 +57,23 @@ public class SprintService {
     public SprintTimer getSprintTimer() {
         return sprintTimer.getTimer();
     }
+
+	private int getPreviousCountdown() {
+        if (sprintTimer.getTimer().getCountdown() <= 0) {
+            return configurationService.getCurrentConfiguration().getSprintTime();
+        } else {
+            return sprintTimer.getTimer().getCountdown();
+        }
+	}
+
+	private void resetCountdown() {
+		int countdown = configurationService.getCurrentConfiguration().getSprintTime();
+		sprintTimer.getTimer().setCountdown(countdown);
+	}
+
+	private void launchJob() {
+        Configuration configuration = configurationService.getCurrentConfiguration();
+		jenkinsService.launchJobJenkins(configuration.getJenkinsUrl(), configuration.getJenkinsJobName(), configuration.getJenkinsJobToken());
+	}
 
 }
