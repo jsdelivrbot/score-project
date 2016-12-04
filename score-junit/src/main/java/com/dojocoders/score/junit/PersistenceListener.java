@@ -25,9 +25,7 @@ public class PersistenceListener extends RunListener {
 		this.testPersistUnit = persistenceUnit;
 		this.team = TestConfiguration.getTeam();
 		this.startedTests = Lists.newArrayList();
-		Integer bonus = TestConfiguration.getBonus();
-		Integer malus = TestConfiguration.getMalus();
-		this.totalPoints = new AtomicInteger(bonus - malus);
+		this.totalPoints = new AtomicInteger();
 	}
 
 	@Override
@@ -57,9 +55,10 @@ public class PersistenceListener extends RunListener {
 
 	@Override
 	public void testRunFinished(Result result) throws Exception {
-		testPersistUnit.putScore(team, totalPoints.get());
+		long score = Math.round(totalPoints.get()*TestConfiguration.getScoreCoefficient()) + TestConfiguration.getBonusMalus();
+		testPersistUnit.putScore(team, score);
 		startedTests.clear();
-		System.out.println("Total score : " + totalPoints + "\n");
+		System.out.println("Total score : " + score + "\n");
 
 	}
 

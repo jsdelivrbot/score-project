@@ -11,7 +11,7 @@ import java.io.IOException;
 public class ScoreApiRest implements TestPersistUnit {
 
 	@Override
-	public void putScore(String team, Integer points) {
+	public void putScore(String team, Long points) {
 		String scoreIhmUrl = TestConfiguration.getRestApiUrl();
 		HttpPost post = new HttpPost(scoreIhmUrl + "/api/scores/add/" + team + "/" + String.valueOf(points));
         try {

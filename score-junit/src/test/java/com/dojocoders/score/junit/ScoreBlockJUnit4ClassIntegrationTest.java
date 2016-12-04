@@ -20,9 +20,9 @@ public class ScoreBlockJUnit4ClassIntegrationTest {
 		JUnitCore.runClasses(ScoreBlockJUnit4ClassRunnerValidationTest.class);
 
 		// Assertions
-		Map<String, Integer> allScores = staticMap.getAllScores();
+		Map<String, Long> allScores = staticMap.getAllScores();
 		assertThat(allScores).hasSize(1);
-		assertThat(allScores).containsKey("default_team").containsValue(560);
+		assertThat(allScores).containsKey("default_team").containsValue(560L);
 
 	}
 
