@@ -58,7 +58,8 @@ public class PersistenceListener extends RunListener {
 		long score = Math.round(totalPoints.get()*TestConfiguration.getScoreCoefficient()) + TestConfiguration.getBonusMalus();
 		testPersistUnit.putScore(team, score);
 		startedTests.clear();
-		System.out.println("Total score : " + score + "\n");
+		System.out.println("Total score : " + totalPoints.get());
+		System.out.println("Sprint points : " + score + "\n");
 
 	}
 

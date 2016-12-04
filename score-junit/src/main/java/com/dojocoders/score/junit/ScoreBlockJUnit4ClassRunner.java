@@ -52,13 +52,7 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 		super.collectInitializationErrors(errors);
 		this.validateImplementationInjection(errors);
 		initPersistenceListener();
-		if (!errors.isEmpty()) {
-			try {
-				persistenceListener.testRunFinished(null);
-			} catch (Exception e) {
-				Throwables.propagate(e);
-			}
-		}
+		persistResultOnInstantiationError(errors);
 	}
 
 	protected void validateImplementationInjection(List<Throwable> errors) {
@@ -107,6 +101,16 @@ public class ScoreBlockJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 	private boolean containsOnlyOneConstructorWithoutArguments(Class<?> injImplClass) {
 		Constructor<?>[] constructors = injImplClass.getConstructors();
 		return constructors.length == 1 && constructors[0].getTypeParameters().length == 0;
+	}
+
+	private void persistResultOnInstantiationError(List<Throwable> errors) {
+		if (!errors.isEmpty()) {
+			try {
+				persistenceListener.testRunFinished(null);
+			} catch (Exception e) {
+				Throwables.propagate(e);
+			}
+		}
 	}
 
 	@Override
