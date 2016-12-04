@@ -1,10 +1,9 @@
 package com.dojocoders.score.service;
 
-import com.google.common.base.Throwables;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -25,15 +24,14 @@ public class JenkinsService {
         HttpPost post = new HttpPost(jenkinsUrl + "/buildByToken/build?job=" + jenkinsJobName + "&token=" + jenkinsJobToken);
         try {
             HttpResponse postResponse = CLIENT.execute(post);
-            LOG.info("status of call {} : {}", post, postResponse.getStatusLine().getStatusCode());
+            LOG.info("Status of call {} : {}", post, postResponse.getStatusLine().getStatusCode());
 
             if(hasFailed(postResponse)) {
-                LOG.error("raison of fail : {}", postResponse.getStatusLine().getReasonPhrase());
-                LOG.warn("body of fail : {}", EntityUtils.toString(postResponse.getEntity()));
+                throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() +
+                		", code " + postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
             }
         } catch (IOException e) {
-            LOG.error("exception when call " + post + " :", e);
-            Throwables.propagate(e);
+        	LOG.error("Exception when call " + post, e);
         }
     }
 
