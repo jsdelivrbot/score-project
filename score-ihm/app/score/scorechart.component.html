@@ -23,8 +23,8 @@
                 <th class="col-md-3">Points</th>
                 <th class="col-md-6">Team</th>
             </tr>
-
-            <tr *ngFor="let scoreResult of scoreResultList; let i = index">
+            <template ngFor let-scoreResult [ngForOf]="scoreResultList" let-i="index">
+            <tr>
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{i+1}}.</td>
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">
                     <span class="label" style="position: relative;top: 8px;" [ngClass]="scoreResult.increment <=0 ? 'label-danger' : 'label-success'">
@@ -34,6 +34,11 @@
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{scoreResult.maxPoints}}</td>
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{scoreResult.team}}</td>
             </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="2">{{scoreResult.buildStatus}} - {{scoreResult.testsStatus}} - {{scoreResult.coverageStatus}} - {{scoreResult.complexityStatus}}</td>
+            </tr>
+            </template>
         </table>
     </div>
 </div>
