@@ -2,6 +2,10 @@ package com.dojocoders.score.service;
 
 import com.dojocoders.score.model.Metrics;
 import com.dojocoders.score.repository.MetricsRepository;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,10 @@ public class MetricsService {
 
     @Autowired
     private MetricsRepository repository;
+
+	public List<Metrics> getAllMetrics() {
+		return Lists.newArrayList(MoreObjects.firstNonNull(repository.findAll(), Lists.newArrayList()));
+	}
 
     public Metrics getMetrics(String team) {
         return repository.findOne(team);
