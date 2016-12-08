@@ -17,7 +17,7 @@ export class ScoreResult {
 
 export class Metric {
     public team: string;
-    public metrics: Map<string, string>;
+    public metrics: Object;
 }
 
 export class Score {

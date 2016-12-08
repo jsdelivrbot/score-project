@@ -36,7 +36,11 @@
             </tr>
             <tr>
                 <td colspan="2"></td>
-                <td colspan="2">{{scoreResult.buildStatus}} - {{scoreResult.testsStatus}} - {{scoreResult.coverageStatus}} - {{scoreResult.complexityStatus}}</td>
+                <td colspan="2">
+                    <img *ngIf="scoreResult.buildStatus != null" src="http://img.shields.io/badge/job-{{scoreResult.buildStatus}}-{{scoreResult.buildStatusColor}}.svg">
+                    <img *ngIf="scoreResult.testsStatus != null" src="http://img.shields.io/badge/tests-{{scoreResult.testsStatus}}-{{scoreResult.testsStatusColor}}.svg">
+                    <img *ngIf="scoreResult.coverageStatus != null" src="http://img.shields.io/badge/coverage-{{scoreResult.coverageStatus}}-{{scoreResult.coverageStatusColor}}.svg">
+                </td>
             </tr>
             </template>
         </table>

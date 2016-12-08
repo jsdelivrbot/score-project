@@ -1,7 +1,7 @@
 module.exports = {
   server: {
     middleware: {
-      2: require('http-proxy-middleware')('http://localhost:8080/api')
+      2: require('http-proxy-middleware')('http://dvdsi320w.creteil.francetelecom.fr:7000/api')
     }
   }
 };

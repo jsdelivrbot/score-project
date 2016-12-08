@@ -14,7 +14,6 @@ export class AppComponent implements OnInit {
         this.scoreIhmTitle = this._configuration.title;
         this.RefreshScoresAndMetrics()
         Observable.interval(3000).subscribe(this.RefreshScoresAndMetrics);
-
     }
 
     public scoreChartColors: Array<number[]> = [
@@ -65,9 +64,13 @@ export class AppComponent implements OnInit {
     }
 
     private BindMetricsToScoreResult = (scoreResults: ScoreResult[], metricsList: Metric[]) => {
-        let metricsByTeam: Map<string, Map<string,string>> = new Map<string, Map<string,string>>()
+        let metricsByTeam = new Map<string, Map<string,string>>()
         for (let i = 0; i < metricsList.length; i++) {
-            metricsByTeam.set(metricsList[i].team, metricsList[i].metrics)
+            let metrics = new Map<string,string>()
+            for(var key in metricsList[i].metrics) {
+                metrics.set(key, metricsList[i].metrics[key])
+            }
+            metricsByTeam.set(metricsList[i].team.substring("metrics-".length), metrics)
         }
 
         for (let i = 0; i < scoreResults.length; i++) {
@@ -77,31 +80,25 @@ export class AppComponent implements OnInit {
                 this.ComputeBuildStatus(teamMetrics, scoreResults[i])
                 this.ComputeTestResultStatus(teamMetrics, scoreResults[i])
                 this.ComputeCoverageStatus(teamMetrics, scoreResults[i])
-
-                if(teamMetrics.get("complexity") != null) {
-                    scoreResults[i].complexityStatus = Math.round( +teamMetrics.get("complexity") )
-                }
             }
         }
     }
 
     private ResetMetricsInScoreResult = (scoreResult: ScoreResult) => {
         scoreResult.buildStatus = "pending"
-        scoreResult.buildStatusColor = "gray"
+        scoreResult.buildStatusColor = "lightgrey"
         scoreResult.testsStatus = null
         scoreResult.testsStatusColor = null
         scoreResult.coverageStatus = null
         scoreResult.coverageStatusColor = null
-        scoreResult.complexityStatus = null
-        scoreResult.complexityStatusColor = "orange"
     }
 
     private ComputeBuildStatus = (teamMetrics: Map<string,string>, scoreResult: ScoreResult) => {
-        if(teamMetrics.get("build") == null) {
+        if(teamMetrics.get("job") == null) {
             return
         }
 
-        let build = teamMetrics.get("build")
+        let build = teamMetrics.get("job")
         scoreResult.buildStatus = build
         if(build == "success") {
             scoreResult.buildStatusColor = "green"
@@ -139,7 +136,7 @@ export class AppComponent implements OnInit {
             scoreResult.testsStatus = "no tests"
             scoreResult.testsStatusColor = "red"
         } else if(numberOfFailures == 0) {
-            scoreResult.testsStatus = "pass"
+            scoreResult.testsStatus = "success"
             scoreResult.testsStatusColor = "green"
         } else {
             let percent = Math.round( 100 * (numberOfTests - numberOfFailures) / numberOfTests)
