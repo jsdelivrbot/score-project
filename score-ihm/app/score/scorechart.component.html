@@ -10,10 +10,10 @@
                     [colors]="lineColors"
                     [chartType]="lineChartType"></base-chart>
         <hr/>
-        <score-timer></score-timer>
+        <score-timer id="timer"></score-timer>
     </div>
 
-    <div class="col-sm-4">
+    <div id="scores" class="col-sm-4">
         <h2><strong>Rank :</strong></h2>
         <hr/>
         <table class="table" style="font-size: 1.8em;">
@@ -34,9 +34,8 @@
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{scoreResult.maxPoints}}</td>
                 <td [style.color]="'rgba(' + scoreResult.color + ',1)'">{{scoreResult.team}}</td>
             </tr>
-            <tr>
-                <td colspan="2"></td>
-                <td colspan="2">
+            <tr class="jenkins-badges">
+                <td colspan="4">
                     <img *ngIf="scoreResult.buildStatus != null" src="http://img.shields.io/badge/job-{{scoreResult.buildStatus}}-{{scoreResult.buildStatusColor}}.svg">
                     <img *ngIf="scoreResult.testsStatus != null" src="http://img.shields.io/badge/tests-{{scoreResult.testsStatus}}-{{scoreResult.testsStatusColor}}.svg">
                     <img *ngIf="scoreResult.coverageStatus != null" src="http://img.shields.io/badge/coverage-{{scoreResult.coverageStatus}}-{{scoreResult.coverageStatusColor}}.svg">
