@@ -7,17 +7,14 @@ import {SprintTimer} from "./ScoreResult";
 @Component({
     selector: 'score-timer',
     template: `
-        <table>
-            <tr>
-                <td class = "col-md-9" style="font-size: 4em;">Preparing next Sprint in : {{sprintTimer.countdown}} seconds</td>
-                <td class = "col-md-3">
-                    <div class="btn-group">
-                        <button (click)="pauseClicked()" class="btn btn-warning btn-lg" [disabled]="!sprintTimer.started"><strong>Pause</strong></button>
-                        <button (click)="startClicked()" class="btn btn-info btn-lg" [disabled]="sprintTimer.started"><strong>Start</strong></button>
-                    </div>
-                </td>
-            </tr>
-        </table>`
+        <div class="col-md-12">Prochain décollage dans :</div>
+        <div class="col-md-8">{{sprintTimer.countdown}} secondes</div>
+        <div class="col-md-4">
+            <div class="btn-group">
+                <button (click)="pauseClicked()" class="btn btn-warning btn-lg" [disabled]="!sprintTimer.started"><strong>Pause</strong></button>
+                <button (click)="startClicked()" class="btn btn-info btn-lg" [disabled]="sprintTimer.started"><strong>Start</strong></button>
+            </div>
+        </div>`
 })
 export class SprintTimerComponent implements OnInit {
 

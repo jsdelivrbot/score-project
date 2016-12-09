@@ -1,6 +1,6 @@
 import {Component, OnInit, Output} from '@angular/core';
 import {ScoreDataService} from './score/score.dataservice';
-import {ScoreResult} from './score/ScoreResult';
+import {ScoreResult, Metric} from './score/ScoreResult';
 import {Configuration} from "./app.configuration";
 import {Observable} from "rxjs/Observable";
 
@@ -12,9 +12,8 @@ export class AppComponent implements OnInit {
 
     public ngOnInit(): any {
         this.scoreIhmTitle = this._configuration.title;
-        this.GetAllScores()
-        Observable.interval(3000).subscribe(this.GetAllScores);
-
+        this.RefreshScoresAndMetrics()
+        Observable.interval(3000).subscribe(this.RefreshScoresAndMetrics);
     }
 
     public scoreChartColors: Array<number[]> = [
@@ -42,7 +41,8 @@ export class AppComponent implements OnInit {
 
     teamColorCache = {};
 
-    @Output() scoreResultList: ScoreResult[];
+    @Output() scoreResultList: ScoreResult[] = [];
+    metrics: Metric[] = [];
 
     lastSprint: number = 0;
 
@@ -63,6 +63,92 @@ export class AppComponent implements OnInit {
         return scoreResults.sort((score1, score2) => score2.maxPoints - score1.maxPoints);
     }
 
+    private BindMetricsToScoreResult = (scoreResults: ScoreResult[], metricsList: Metric[]) => {
+        let metricsByTeam = new Map<string, Map<string,string>>()
+        for (let i = 0; i < metricsList.length; i++) {
+            let metrics = new Map<string,string>()
+            for(var key in metricsList[i].metrics) {
+                metrics.set(key, metricsList[i].metrics[key])
+            }
+            metricsByTeam.set(metricsList[i].team.substring("metrics-".length), metrics)
+        }
+
+        for (let i = 0; i < scoreResults.length; i++) {
+            this.ResetMetricsInScoreResult(scoreResults[i])
+            let teamMetrics = metricsByTeam.get(scoreResults[i].team)
+            if(teamMetrics != null) {
+                this.ComputeBuildStatus(teamMetrics, scoreResults[i])
+                this.ComputeTestResultStatus(teamMetrics, scoreResults[i])
+                this.ComputeCoverageStatus(teamMetrics, scoreResults[i])
+            }
+        }
+    }
+
+    private ResetMetricsInScoreResult = (scoreResult: ScoreResult) => {
+        scoreResult.buildStatus = "pending"
+        scoreResult.buildStatusColor = "lightgrey"
+        scoreResult.testsStatus = null
+        scoreResult.testsStatusColor = null
+        scoreResult.coverageStatus = null
+        scoreResult.coverageStatusColor = null
+    }
+
+    private ComputeBuildStatus = (teamMetrics: Map<string,string>, scoreResult: ScoreResult) => {
+        if(teamMetrics.get("job") == null) {
+            return
+        }
+
+        let build = teamMetrics.get("job")
+        scoreResult.buildStatus = build
+        if(build == "success") {
+            scoreResult.buildStatusColor = "green"
+        } else if(build == "failure") {
+            scoreResult.buildStatusColor = "red"
+        } else {
+            scoreResult.buildStatusColor = "orange"
+        }
+    }
+
+    private ComputeCoverageStatus = (teamMetrics: Map<string,string>, scoreResult: ScoreResult) => {
+        if(teamMetrics.get("lineCoverage") == null) {
+            return
+        }
+
+        let coverage = Math.round( +teamMetrics.get("lineCoverage") )
+        scoreResult.coverageStatus = coverage + "%"
+        if(coverage > 80) {
+            scoreResult.coverageStatusColor = "green"
+        } else if(coverage > 40) {
+            scoreResult.coverageStatusColor = "orange"
+        } else {
+            scoreResult.coverageStatusColor = "red"
+        }
+    }
+
+    private ComputeTestResultStatus = (teamMetrics: Map<string,string>, scoreResult: ScoreResult) => {
+        if(teamMetrics.get("numberOfTests") == null || teamMetrics.get("numberOfFailures") == null || teamMetrics.get("numberOfSkippedTests") == null) {
+            return
+        }
+
+        let numberOfTests = +teamMetrics.get("numberOfTests")
+        let numberOfFailures = +teamMetrics.get("numberOfFailures") + +teamMetrics.get("numberOfSkippedTests")
+        if(numberOfTests == 0) {
+            scoreResult.testsStatus = "no tests"
+            scoreResult.testsStatusColor = "red"
+        } else if(numberOfFailures == 0) {
+            scoreResult.testsStatus = "success"
+            scoreResult.testsStatusColor = "green"
+        } else {
+            let percent = Math.round( 100 * (numberOfTests - numberOfFailures) / numberOfTests)
+            scoreResult.testsStatus = percent + "%"
+            if(percent > 60) {
+                scoreResult.testsStatusColor = "orange"
+            } else {
+                scoreResult.testsStatusColor = "red"
+            }
+        }
+    }
+
     private GetRandomColor = (): number[] => {
         return [this.GetRandomInt(0, 255), this.GetRandomInt(0, 255), this.GetRandomInt(0, 255)];
     }
@@ -71,14 +157,30 @@ export class AppComponent implements OnInit {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    private GetAllScores = (): void => {
+    private GetAllScores = () => {
         this._scoreDataService
             .GetAllScores()
             .subscribe((response: ScoreResult[]) => {
                     this.scoreResultList = this.GenerateTeamColors(response);
+                    this.BindMetricsToScoreResult(this.scoreResultList, this.metrics)
                     this.updateLastSprint();
                 },
                 error => console.log(error));
+    }
+
+    private GetMetrics = () => {
+        this._scoreDataService
+            .GetMetrics()
+            .subscribe((response: Metric[]) => {
+                    this.metrics = response
+                    this.BindMetricsToScoreResult(this.scoreResultList, this.metrics)
+                },
+                error => console.log(error));
+    }
+
+    private RefreshScoresAndMetrics = () => {
+        this.GetAllScores()
+        this.GetMetrics()
     }
 
     private updateLastSprint = (): void => {

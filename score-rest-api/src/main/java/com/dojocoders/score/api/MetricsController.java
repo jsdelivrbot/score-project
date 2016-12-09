@@ -3,6 +3,8 @@ package com.dojocoders.score.api;
 import com.dojocoders.score.model.Metrics;
 import com.dojocoders.score.service.MetricsService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,11 @@ public class MetricsController {
 
 	@Autowired
 	private MetricsService metricsService;
+
+	@RequestMapping
+	public List<Metrics> getAllMetrics() {
+		return metricsService.getAllMetrics();
+	}
 
 	@RequestMapping("/{team}")
 	public Metrics getMetrics(@PathVariable String team) {

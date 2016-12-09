@@ -117,7 +117,7 @@ public class ScoreServiceTest {
 
 
         // Test
-        ScoreResult result = scoreService.addScore(teamName, points);
+        ScoreResult result = scoreService.incrementScore(teamName, points);
 
         // Assertions
         assertThat(result.getTeam()).isEqualTo(teamName);
@@ -147,7 +147,7 @@ public class ScoreServiceTest {
 
 
         // Test
-        ScoreResult result = scoreService.addScore(teamName, points);
+        ScoreResult result = scoreService.incrementScore(teamName, points);
 
         // Assertions
         assertThat(result.getTeam()).isEqualTo(teamName);
@@ -182,7 +182,7 @@ public class ScoreServiceTest {
 
 
         // Test
-        ScoreResult result = scoreService.addScore(teamName, points);
+        ScoreResult result = scoreService.incrementScore(teamName, points);
 
         // Assertions
         assertThat(result.getTeam()).isEqualTo(teamName);
