@@ -22,7 +22,7 @@ public class ScoreController {
 
     @RequestMapping(value = "/add/{team}/{points}", method = RequestMethod.POST)
     public ScoreResult addScoreTeamPoints(@PathVariable String team, @PathVariable Integer points) {
-        return scoreService.addScore(team, points);
+        return scoreService.incrementScore(team, points);
     }
 
 }

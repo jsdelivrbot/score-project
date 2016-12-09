@@ -25,11 +25,27 @@ public class ScoreService {
 	@Autowired
 	private ScoreFillerService scoreFillerService;
 
-	public ScoreResult addScore(String team, int score) {
+	public ScoreResult addScore(ScoreResult scoreResult) {
+		return scoreResultRepository.save(scoreResult);
+	}
+
+	public ScoreResult getScore(String team) {
+		return scoreResultRepository.findOne(team);
+	}
+
+	public void deleteScore(String team) {
+		ScoreResult scoreResult = scoreResultRepository.findOne(team);
+		if (scoreResult == null) {
+			throw new RuntimeException("Team doesn't exists");
+		}
+		scoreResultRepository.delete(scoreResult);
+	}
+
+	public ScoreResult incrementScore(String team, int score) {
 		Sprint nextSprint = sprintService.prepareNextSprintFor(team);
 		ScoreResult scoreResult = scoreFillerService.fillScores(MoreObjects.firstNonNull(scoreResultRepository.findOne(team), new ScoreResult(team)), nextSprint.getNumber() - 1);
 		scoreResult.getScores().add(new Score(nextSprint.getNumber(), getLastScore(scoreResult).getPoints() + score));
-        scoreResultRepository.save(scoreResult);
+		scoreResultRepository.save(scoreResult);
 		return scoreResult;
 	}
 

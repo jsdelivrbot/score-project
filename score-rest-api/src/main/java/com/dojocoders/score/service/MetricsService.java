@@ -50,4 +50,7 @@ public class MetricsService {
         repository.save(currentMetrics);
     }
 
+    public void deleteMetrics(Metrics metrics) {
+	    repository.delete(metrics);
+    }
 }
