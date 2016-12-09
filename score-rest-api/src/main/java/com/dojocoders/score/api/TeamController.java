@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.dojocoders.score.model.Metrics;
 import com.dojocoders.score.model.ScoreResult;
@@ -15,6 +19,8 @@ import com.dojocoders.score.service.ScoreService;
 @RequestMapping("/api/team")
 @CrossOrigin
 public class TeamController {
+
+	private static final String METRICS_ID_PREFIX = "metrics-";
 
 	@Autowired
 	private ScoreService scoreService;
@@ -46,9 +52,9 @@ public class TeamController {
 		newScoreResult.getScores().addAll(scoreResult.getScores());
 		scoreService.deleteScore(team);
 
-		Metrics metrics = metricsService.getMetrics(team + "-metrics");
+		Metrics metrics = metricsService.getMetrics(METRICS_ID_PREFIX + team);
 		if (metrics != null) {
-			Metrics newMetrics = new Metrics(team + "-metrics");
+			Metrics newMetrics = new Metrics(METRICS_ID_PREFIX + team);
 			newMetrics.getMetrics().putAll(metrics.getMetrics());
 
 			metricsService.deleteMetrics(metrics);
@@ -73,7 +79,7 @@ public class TeamController {
 		if (scoreResults != null) {
 			for (ScoreResult scoreResult : scoreResults) {
 				scoreService.deleteScore(scoreResult.getTeam());
-				Metrics metrics = metricsService.getMetrics(scoreResult.getTeam() + "-metrics");
+				Metrics metrics = metricsService.getMetrics(METRICS_ID_PREFIX + scoreResult.getTeam());
 				if (metrics != null) {
 					metricsService.deleteMetrics(metrics);
 				}
