@@ -117,7 +117,7 @@ export class AppComponent implements OnInit {
             return
         }
 
-        let coverage = Math.round( +teamMetrics.get("lineCoverage") )
+        let coverage = Math.round( +teamMetrics.get("lineCoverage")*100 )
         scoreResult.coverageStatus = coverage + "%"
         if(coverage > 80) {
             scoreResult.coverageStatusColor = "green"
@@ -158,7 +158,7 @@ export class AppComponent implements OnInit {
         }
 
         scoreResult.validationStatus = teamMetrics.get("validation")
-        if(scoreResult.validationStatus.substring(0, 2) == "0/") {
+        if(scoreResult.validationStatus.substring(0, 1) == "0") {
             scoreResult.validationStatusColor = "red"
         } else {
             scoreResult.validationStatusColor = "green"
