@@ -139,7 +139,7 @@ export class AppComponent implements OnInit {
             scoreResult.testsStatus = "no tests"
             scoreResult.testsStatusColor = "red"
         } else if(numberOfFailures == 0) {
-            scoreResult.testsStatus = "success"
+            scoreResult.testsStatus = "pass"
             scoreResult.testsStatusColor = "green"
         } else {
             let percent = Math.round( 100 * (numberOfTests - numberOfFailures) / numberOfTests)
