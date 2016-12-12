@@ -13,6 +13,8 @@ export class ScoreResult {
     public coverageStatusColor: string;
     public complexityStatus: number;
     public complexityStatusColor: string;
+    public validationStatus: string;
+    public validationStatusColor: string;
 }
 
 export class Metric {
