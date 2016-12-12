@@ -80,6 +80,7 @@ export class AppComponent implements OnInit {
                 this.ComputeBuildStatus(teamMetrics, scoreResults[i])
                 this.ComputeTestResultStatus(teamMetrics, scoreResults[i])
                 this.ComputeCoverageStatus(teamMetrics, scoreResults[i])
+                this.ComputeValidationStatus(teamMetrics, scoreResults[i])
             }
         }
     }
@@ -91,18 +92,20 @@ export class AppComponent implements OnInit {
         scoreResult.testsStatusColor = null
         scoreResult.coverageStatus = null
         scoreResult.coverageStatusColor = null
+        scoreResult.validationStatus = null
+        scoreResult.validationStatusColor = null
     }
 
     private ComputeBuildStatus = (teamMetrics: Map<string,string>, scoreResult: ScoreResult) => {
-        if(teamMetrics.get("job") == null) {
+        if(teamMetrics.get("build") == null) {
             return
         }
 
-        let build = teamMetrics.get("job")
+        let build = teamMetrics.get("build")
         scoreResult.buildStatus = build
-        if(build == "success") {
+        if(build == "pass") {
             scoreResult.buildStatusColor = "green"
-        } else if(build == "failure") {
+        } else if(build == "fail") {
             scoreResult.buildStatusColor = "red"
         } else {
             scoreResult.buildStatusColor = "orange"
@@ -146,6 +149,19 @@ export class AppComponent implements OnInit {
             } else {
                 scoreResult.testsStatusColor = "red"
             }
+        }
+    }
+
+    private ComputeValidationStatus = (teamMetrics: Map<string,string>, scoreResult: ScoreResult) => {
+        if(teamMetrics.get("validation") == null) {
+            return
+        }
+
+        scoreResult.validationStatus = teamMetrics.get("validation")
+        if(scoreResult.validationStatus.substring(0, 2) == "0/") {
+            scoreResult.validationStatusColor = "red"
+        } else {
+            scoreResult.validationStatusColor = "green"
         }
     }
 
