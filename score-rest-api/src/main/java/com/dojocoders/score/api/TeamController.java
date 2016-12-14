@@ -42,28 +42,6 @@ public class TeamController {
 		return scoreService.addScore(scoreResult);
 	}
 
-	@RequestMapping(value = "/{team}/{newTeam}", method = RequestMethod.PUT)
-	public ScoreResult updateTeam(@PathVariable String team, @PathVariable String newTeam) {
-		ScoreResult scoreResult = scoreService.getScore(team);
-		if (scoreResult == null) {
-			throw new RuntimeException("Team doesn't exists");
-		}
-		ScoreResult newScoreResult = new ScoreResult(newTeam);
-		newScoreResult.getScores().addAll(scoreResult.getScores());
-		scoreService.deleteScore(team);
-
-		Metrics metrics = metricsService.getMetrics(METRICS_ID_PREFIX + team);
-		if (metrics != null) {
-			Metrics newMetrics = new Metrics(METRICS_ID_PREFIX + team);
-			newMetrics.getMetrics().putAll(metrics.getMetrics());
-
-			metricsService.deleteMetrics(metrics);
-			metricsService.addOrUpdateMetrics(newMetrics);
-		}
-
-		return scoreService.addScore(newScoreResult);
-	}
-
 	@RequestMapping(value = "/{team}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String team) {
 		ScoreResult scoreResult = scoreService.getScore(team);
