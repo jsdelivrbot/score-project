@@ -86,7 +86,7 @@ export class AppComponent implements OnInit {
     }
 
     private ResetMetricsInScoreResult = (scoreResult: ScoreResult) => {
-        scoreResult.buildStatus = "pending"
+        scoreResult.buildStatus = "en attente"
         scoreResult.buildStatusColor = "lightgrey"
         scoreResult.testsStatus = null
         scoreResult.testsStatusColor = null
@@ -102,22 +102,30 @@ export class AppComponent implements OnInit {
         }
 
         let build = teamMetrics.get("build")
-        scoreResult.buildStatus = build
         if(build == "pass") {
+            scoreResult.buildStatus = "succès"
             scoreResult.buildStatusColor = "green"
         } else if(build == "fail") {
+            scoreResult.buildStatus = "crash"
             scoreResult.buildStatusColor = "red"
         } else {
             scoreResult.buildStatusColor = "orange"
+               if(build == "building") {
+                   scoreResult.buildStatus = "embarquement"
+               } else if(build == "validating") {
+                   scoreResult.buildStatus = "décollage"
+               } else {
+                   scoreResult.buildStatus = build
+               }
         }
     }
 
     private ComputeCoverageStatus = (teamMetrics: Map<string,string>, scoreResult: ScoreResult) => {
-        if(teamMetrics.get("lineCoverage") == null) {
+        if(teamMetrics.get("branchCoverage") == null) {
             return
         }
 
-        let coverage = Math.round( +teamMetrics.get("lineCoverage")*100 )
+        let coverage = Math.round( +teamMetrics.get("branchCoverage")*100 )
         scoreResult.coverageStatus = coverage + "%"
         if(coverage > 80) {
             scoreResult.coverageStatusColor = "green"
