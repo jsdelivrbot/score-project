@@ -1,71 +1,72 @@
 package com.dojocoders.score.junit;
 
-import com.dojocoders.score.junit.persistence.TestPersistUnit;
-import com.dojocoders.score.junit.annotations.Score;
-import com.google.common.collect.Lists;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.dojocoders.score.junit.annotations.Score;
+import com.dojocoders.score.junit.config.PersistenceConfiguration;
+import com.dojocoders.score.junit.persistence.ScorePersistenceUnit;
+import com.google.common.collect.Sets;
 
 public class PersistenceListener extends RunListener {
 
-	private final String team;
+	private static final int UNDEFINED_SCORE_POINTS = 0;
 
-	private final TestPersistUnit testPersistUnit;
+	private final PersistenceConfiguration persistenceConfiguration;
 
-	private final List<String> startedTests;
+	private final ScorePersistenceUnit scorePersistenceUnit;
+
+	private final Collection<String> failedTests;
 
 	private AtomicInteger totalPoints;
 
-	public PersistenceListener(TestPersistUnit persistenceUnit) {
-		this.testPersistUnit = persistenceUnit;
-		this.team = TestConfiguration.getTeam();
-		this.startedTests = Lists.newArrayList();
+	public PersistenceListener(ScorePersistenceUnit scorePersistenceUnit, PersistenceConfiguration persistenceConfiguration) {
+		this.scorePersistenceUnit = scorePersistenceUnit;
+		this.persistenceConfiguration = persistenceConfiguration;
+		this.failedTests = Sets.newConcurrentHashSet();
 		this.totalPoints = new AtomicInteger();
 	}
 
 	@Override
-	public void testStarted(Description description) throws Exception {
-		startedTests.add(description.getMethodName());
-	}
-
-	@Override
-	public void testFinished(Description description) throws Exception {
-		if (startedTests.contains(description.getMethodName())) {
-			int testScore = getPointsActualTest(description);
-			totalPoints.addAndGet(testScore);
-			System.out.println("Test finished : " + description.getMethodName() + ", score : " + testScore + "\n");
-			startedTests.remove(description.getMethodName());
-		}
+	public void testIgnored(Description description) throws Exception {
+		failedTests.add(computeId(description));
 	}
 
 	@Override
 	public void testFailure(Failure failure) throws Exception {
-		startedTests.remove(failure.getDescription().getMethodName());
+		failedTests.add(computeId(failure.getDescription()));
 	}
 
 	@Override
 	public void testAssumptionFailure(Failure failure) {
-		startedTests.remove(failure.getDescription().getMethodName());
+		failedTests.add(computeId(failure.getDescription()));
+	}
+
+	@Override
+	public void testFinished(Description description) throws Exception {
+		if (!failedTests.contains(computeId(description))) {
+			int testScore = getPointsActualTest(description);
+			totalPoints.addAndGet(testScore);
+		}
 	}
 
 	@Override
 	public void testRunFinished(Result result) throws Exception {
-		long score = Math.round(totalPoints.get()*TestConfiguration.getScoreCoefficient()) + TestConfiguration.getBonusMalus();
-		testPersistUnit.putScore(team, score);
-		startedTests.clear();
-		System.out.println("Total score : " + totalPoints.get());
-		System.out.println("Sprint points : " + score + "\n");
+		scorePersistenceUnit.putScore(persistenceConfiguration.getTeam(), totalPoints.get());
+	}
 
+	private String computeId(Description description) {
+		return description.getClassName() + '.' + description.getMethodName();
 	}
 
 	private int getPointsActualTest(Description description) {
 		Score score = description.getAnnotation(Score.class);
-		return score == null ? TestConfiguration.DEFAULT_METHOD_POINTS : score.value();
+		return score != null ? score.value() : UNDEFINED_SCORE_POINTS;
 	}
 
 }

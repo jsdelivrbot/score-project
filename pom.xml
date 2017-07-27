@@ -40,9 +40,10 @@
 	</distributionManagement>
 
 	<modules>
-		<module>score-junit</module>
 		<module>score-rest-api</module>
 		<module>score-ihm</module>
+		<module>score-junit</module>
+		<module>score-validation</module>
 	</modules>
 
 	<build>
@@ -137,7 +138,7 @@
 
 			<dependency>
 				<groupId>org.mockito</groupId>
-				<artifactId>mockito-all</artifactId>
+				<artifactId>mockito-core</artifactId>
 				<version>1.10.19</version>
 				<scope>test</scope>
 			</dependency>
