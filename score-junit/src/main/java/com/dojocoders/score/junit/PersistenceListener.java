@@ -33,12 +33,12 @@ public class PersistenceListener extends RunListener {
 	}
 
 	@Override
-	public void testIgnored(Description description) throws Exception {
+	public void testIgnored(Description description) {
 		failedTests.add(computeId(description));
 	}
 
 	@Override
-	public void testFailure(Failure failure) throws Exception {
+	public void testFailure(Failure failure) {
 		failedTests.add(computeId(failure.getDescription()));
 	}
 
@@ -48,7 +48,7 @@ public class PersistenceListener extends RunListener {
 	}
 
 	@Override
-	public void testFinished(Description description) throws Exception {
+	public void testFinished(Description description) {
 		if (!failedTests.contains(computeId(description))) {
 			int testScore = getPointsActualTest(description);
 			totalPoints.addAndGet(testScore);
@@ -56,7 +56,7 @@ public class PersistenceListener extends RunListener {
 	}
 
 	@Override
-	public void testRunFinished(Result result) throws Exception {
+	public void testRunFinished(Result result) {
 		scorePersistenceUnit.putScore(persistenceConfiguration.getTeam(), totalPoints.get());
 	}
 
