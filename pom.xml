@@ -42,7 +42,6 @@
 	<modules>
 		<module>score-rest-api</module>
 		<module>score-ihm</module>
-		<module>score-junit</module>
 		<module>score-validation</module>
 	</modules>
 
@@ -111,12 +110,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.reflections</groupId>
-				<artifactId>reflections</artifactId>
-				<version>0.9.10</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.5.2</version>
@@ -145,5 +138,22 @@
 
 		</dependencies>
 	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-assert-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>
