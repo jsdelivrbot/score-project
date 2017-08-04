@@ -11,21 +11,19 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import com.dojocoders.score.validation.config.RestApiPersistenceConfiguration;
-
-public class RestApiScorePersistenceUnit implements ScorePersistenceUnit {
+public class RestApiScorePublisher implements ScorePublisher {
 
 	private static final HttpClient DEFAULT_HTTP_CLIENT = HttpClientBuilder.create().build();
 
-	public RestApiPersistenceConfiguration restApiPersistenceConfiguration;
+	public RestApiScorePublisherConfiguration restApiPersistenceConfiguration;
 
 	private HttpClient client;
 
-	public RestApiScorePersistenceUnit() {
-		this(DEFAULT_HTTP_CLIENT, new RestApiPersistenceConfiguration());
+	public RestApiScorePublisher() {
+		this(DEFAULT_HTTP_CLIENT, new RestApiScorePublisherConfiguration());
 	}
 
-	public RestApiScorePersistenceUnit(HttpClient client, RestApiPersistenceConfiguration restApiPersistenceConfiguration) {
+	public RestApiScorePublisher(HttpClient client, RestApiScorePublisherConfiguration restApiPersistenceConfiguration) {
 		this.client = client;
 		this.restApiPersistenceConfiguration = restApiPersistenceConfiguration;
 	}

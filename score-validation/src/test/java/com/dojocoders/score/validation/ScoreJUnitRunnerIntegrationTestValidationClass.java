@@ -8,10 +8,10 @@ import org.junit.runner.RunWith;
 import com.dojocoders.score.validation.ScoreJUnitRunner;
 import com.dojocoders.score.validation.annotations.Persist;
 import com.dojocoders.score.validation.annotations.Score;
-import com.dojocoders.score.validation.persistence.InMemoryScorePersistenceUnit;
+import com.dojocoders.score.validation.persistence.InMemoryScorePublisher;
 
 @RunWith(ScoreJUnitRunner.class)
-@Persist(InMemoryScorePersistenceUnit.class)
+@Persist(InMemoryScorePublisher.class)
 public class ScoreJUnitRunnerIntegrationTestValidationClass {
 
 	protected IIntefaceToImplement intefaceImpl = new InterfaceToImplementImpl();

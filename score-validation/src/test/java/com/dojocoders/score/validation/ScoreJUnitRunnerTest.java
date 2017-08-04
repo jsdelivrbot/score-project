@@ -16,16 +16,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.dojocoders.score.validation.PersistenceListener;
 import com.dojocoders.score.validation.ScoreJUnitRunner;
 import com.dojocoders.score.validation.annotations.Persist;
-import com.dojocoders.score.validation.persistence.ScorePersistenceUnit;
+import com.dojocoders.score.validation.listener.ScorePublisherListener;
+import com.dojocoders.score.validation.persistence.ScorePublisher;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScoreJUnitRunnerTest {
 
 	@Mock
-	private ScorePersistenceUnit mockedPersistUnit;
+	private ScorePublisher mockedPersistUnit;
 
 	@Before
 	public void setup() {
@@ -41,7 +41,7 @@ public class ScoreJUnitRunnerTest {
 		new ScoreJUnitRunner(CorrectTestClass.class).run(notifier);
 
 		// Assert
-		verify(notifier).addListener(isA(PersistenceListener.class));
+		verify(notifier).addListener(isA(ScorePublisherListener.class));
 	}
 
 	@Test
@@ -65,11 +65,11 @@ public class ScoreJUnitRunnerTest {
 		}
 	}
 
-	public static class MockedPersistUnit implements ScorePersistenceUnit {
+	public static class MockedPersistUnit implements ScorePublisher {
 
-		private static ScorePersistenceUnit delegate;
+		private static ScorePublisher delegate;
 
-		private static void setup(ScorePersistenceUnit mockedPersistUnit) {
+		private static void setup(ScorePublisher mockedPersistUnit) {
 			MockedPersistUnit.delegate = mockedPersistUnit;
 		}
 

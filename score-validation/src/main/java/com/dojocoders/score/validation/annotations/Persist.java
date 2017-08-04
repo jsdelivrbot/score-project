@@ -5,12 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.dojocoders.score.validation.persistence.ScorePersistenceUnit;
+import com.dojocoders.score.validation.persistence.ScorePublisher;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Persist {
 
-	Class<? extends ScorePersistenceUnit> value();
+	Class<? extends ScorePublisher> value();
 
 }

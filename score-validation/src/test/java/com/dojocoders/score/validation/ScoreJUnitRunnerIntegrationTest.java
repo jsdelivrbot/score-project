@@ -7,15 +7,15 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 
-import com.dojocoders.score.validation.config.PersistenceConfiguration;
-import com.dojocoders.score.validation.persistence.InMemoryScorePersistenceUnit;
+import com.dojocoders.codingwars.validation.PersistenceConfiguration;
+import com.dojocoders.score.validation.persistence.InMemoryScorePublisher;
 
 public class ScoreJUnitRunnerIntegrationTest {
 
 	@Test
 	public void checkRun_validationTest() {
 		// Setup
-		InMemoryScorePersistenceUnit staticMap = new InMemoryScorePersistenceUnit();
+		InMemoryScorePublisher staticMap = new InMemoryScorePublisher();
 		staticMap.clear();
 		System.setProperty(PersistenceConfiguration.TEAM_PARAMETER, "myTeam");
 

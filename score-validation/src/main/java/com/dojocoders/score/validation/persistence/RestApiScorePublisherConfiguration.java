@@ -1,6 +1,8 @@
-package com.dojocoders.score.validation.config;
+package com.dojocoders.score.validation.persistence;
 
-public class RestApiPersistenceConfiguration {
+import com.dojocoders.codingwars.validation.PersistenceConfiguration;
+
+public class RestApiScorePublisherConfiguration {
 
 	public static final String REST_API_URL_PARAMETER = "score.rest-api.url";
 	public static final String REST_API_URL_TEAM_PARAM = "${team}";
