@@ -1,0 +1,23 @@
+.navbar-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 80%;
+}
+.navbar-brand {
+    align-self: center;
+}
+.screens {
+    align-self: center;
+    margin-left:120px;
+}
+
+.nav-pills {
+    font-size: 1.8em;
+}
+
+.navbar-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}

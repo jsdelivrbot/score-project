@@ -1,0 +1,19 @@
+.trips-view {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+app-messages,
+app-course {
+    /* height: 100%; */
+}
+
+app-messages {
+    width: 15%;
+}
+
+app-course {
+    width: 85%;
+}
