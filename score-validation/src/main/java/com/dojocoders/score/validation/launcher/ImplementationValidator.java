@@ -22,7 +22,7 @@ public class ImplementationValidator<Implementation> {
 	public void validate(Iterable<ValidationCase<Implementation>> cases) {
 		validationListeners.forEach(listener -> listener.startValidation());
 
-		cases.forEach(oneCase -> threadPool.submit(() -> validate(oneCase)));
+		cases.forEach(oneCase -> threadPool.submit(() -> validateCase(oneCase)));
 
 		threadPool.shutdown();
 		try {
@@ -35,7 +35,7 @@ public class ImplementationValidator<Implementation> {
 		}
 	}
 
-	private void validate(ValidationCase<Implementation> oneCase) {
+	private void validateCase(ValidationCase<Implementation> oneCase) {
 		validationListeners.forEach(listener -> listener.startCase(oneCase.getCaseDescription()));
 		try {
 			oneCase.getCaseAccessor().accept(implementation);

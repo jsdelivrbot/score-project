@@ -1,9 +1,10 @@
 package com.dojocoders.score.validation.launcher;
 
+import static org.fest.assertions.api.Assertions.assertThat;
+
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 
 public class ValidationCaseTest {
@@ -14,8 +15,8 @@ public class ValidationCaseTest {
 		ValidationCase<AtomicInteger> validationCase = new ValidationCase<>(this::directCase);
 
 		// Assert
-		Assertions.assertThat(validationCase.getCaseDescription().getName()).isEqualTo("directCase");
-		Assertions.assertThat(validationCase.getCaseDescription().getDeclaringClass().getSimpleName()).isEqualTo("ValidationCaseTest");
+		assertThat(validationCase.getCaseDescription().getName()).isEqualTo("directCase");
+		assertThat(validationCase.getCaseDescription().getDeclaringClass().getSimpleName()).isEqualTo("ValidationCaseTest");
 	}
 
 	@Test
@@ -24,8 +25,8 @@ public class ValidationCaseTest {
 		ValidationCase<AtomicInteger> validationCase = new ValidationCase<>(this::indirectCase);
 
 		// Assert
-		Assertions.assertThat(validationCase.getCaseDescription().getName()).isEqualTo("indirectCase");
-		Assertions.assertThat(validationCase.getCaseDescription().getDeclaringClass().getSimpleName()).isEqualTo("ValidationCaseTest");
+		assertThat(validationCase.getCaseDescription().getName()).isEqualTo("indirectCase");
+		assertThat(validationCase.getCaseDescription().getDeclaringClass().getSimpleName()).isEqualTo("ValidationCaseTest");
 	}
 
 	@Test
@@ -39,7 +40,7 @@ public class ValidationCaseTest {
 		validationCase.getCaseAccessor().accept(i);
 
 		// Assert
-		Assertions.assertThat(i.get()).isEqualTo(1);
+		assertThat(i.get()).isEqualTo(1);
 	}
 
 	@Test
@@ -53,7 +54,7 @@ public class ValidationCaseTest {
 		validationCase.getCaseAccessor().accept(i);
 
 		// Assert
-		Assertions.assertThat(i.get()).isEqualTo(-1);
+		assertThat(i.get()).isEqualTo(-1);
 	}
 
 	private void indirectCase(AtomicInteger value) {

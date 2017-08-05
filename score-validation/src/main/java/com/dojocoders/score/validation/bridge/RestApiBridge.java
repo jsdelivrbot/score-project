@@ -18,17 +18,17 @@ public class RestApiBridge {
 
 	private static final HttpClient DEFAULT_HTTP_CLIENT = HttpClientBuilder.create().build();
 
-	public RestApiBridgeConfiguration restApiBridgeConfiguration;
+	public String remoteApiUrl;
 
 	private HttpClient client;
 
-	public RestApiBridge() {
-		this(DEFAULT_HTTP_CLIENT, new RestApiBridgeConfiguration());
+	public RestApiBridge(String remoteApiUrl) {
+		this(DEFAULT_HTTP_CLIENT, remoteApiUrl);
 	}
 
-	public RestApiBridge(HttpClient client, RestApiBridgeConfiguration restApiBridgeConfiguration) {
+	public RestApiBridge(HttpClient client, String remoteApiUrl) {
 		this.client = client;
-		this.restApiBridgeConfiguration = restApiBridgeConfiguration;
+		this.remoteApiUrl = remoteApiUrl;
 	}
 
 	public <Request, Response> Response execute(Request request, Class<Response> responseClass) {
@@ -36,14 +36,13 @@ public class RestApiBridge {
 			ObjectMapper jsonMapper = new ObjectMapper();
 			String jsonInString = jsonMapper.writeValueAsString(request);
 
-			HttpPost post = new HttpPost(restApiBridgeConfiguration.getRestApiUrl());
+			HttpPost post = new HttpPost(remoteApiUrl);
 			post.setEntity(new StringEntity(jsonInString));
 
 			HttpResponse postResponse = client.execute(post);
 
 			if (postResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() + ", code "
-						+ postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
+				throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() + ", code " + postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
 			}
 
 			return jsonMapper.readValue(postResponse.getEntity().getContent(), responseClass);

@@ -1,17 +1,18 @@
 package com.dojocoders.score.validation.listener;
 
+import static com.google.common.base.Throwables.propagate;
+import static org.mockito.Mockito.verify;
+
 import java.lang.reflect.Method;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.dojocoders.score.validation.annotations.Score;
 import com.dojocoders.score.validation.persistence.ScorePublisher;
-import com.google.common.base.Throwables;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScorePublisherListenerTest {
@@ -29,7 +30,7 @@ public class ScorePublisherListenerTest {
 			METHOD_WITH_SCORE_19 = ScorePublisherListenerTest.class.getDeclaredMethod("methodWithScore19");
 			METHOD_WITH_SCORE_47 = ScorePublisherListenerTest.class.getDeclaredMethod("methodWithScore47");
 		} catch (NoSuchMethodException e) {
-			throw Throwables.propagate(e);
+			throw propagate(e);
 		}
 	}
 
@@ -50,7 +51,7 @@ public class ScorePublisherListenerTest {
 		persistenceListener.validationFinished();
 
 		// Assert
-		Mockito.verify(scorePublisher).putScore(TEAM, 0);
+		verify(scorePublisher).putScore(TEAM, 0);
 	}
 
 	@Test
@@ -62,7 +63,7 @@ public class ScorePublisherListenerTest {
 		persistenceListener.validationFinished();
 
 		// Assert
-		Mockito.verify(scorePublisher).putScore(TEAM, 22);
+		verify(scorePublisher).putScore(TEAM, 22);
 	}
 
 	@Test
@@ -76,7 +77,7 @@ public class ScorePublisherListenerTest {
 		persistenceListener.validationFinished();
 
 		// Assert
-		Mockito.verify(scorePublisher).putScore(TEAM, 41);
+		verify(scorePublisher).putScore(TEAM, 41);
 	}
 
 	@Test
@@ -88,7 +89,7 @@ public class ScorePublisherListenerTest {
 		persistenceListener.validationFinished();
 
 		// Assert
-		Mockito.verify(scorePublisher).putScore(TEAM, 0);
+		verify(scorePublisher).putScore(TEAM, 0);
 	}
 
 	@Test
@@ -101,7 +102,7 @@ public class ScorePublisherListenerTest {
 		persistenceListener.validationFinished();
 
 		// Assert
-		Mockito.verify(scorePublisher).putScore(TEAM, 0);
+		verify(scorePublisher).putScore(TEAM, 0);
 	}
 
 	@Test
@@ -118,7 +119,7 @@ public class ScorePublisherListenerTest {
 		persistenceListener.validationFinished();
 
 		// Assert
-		Mockito.verify(scorePublisher).putScore(TEAM, 69);
+		verify(scorePublisher).putScore(TEAM, 69);
 	}
 
 	protected void methodWithNoScore() {
