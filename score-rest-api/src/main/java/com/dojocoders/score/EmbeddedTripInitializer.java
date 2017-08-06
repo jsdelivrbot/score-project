@@ -45,12 +45,13 @@ public class EmbeddedTripInitializer {
 	}
 	
 	private void setupTrip(String team) {
+		Date date = new Date();
 		Trip trip = new Trip();
 		trip.setMessages(buildMessages(team));
 		trip.setGrid(buildGrid(team));
 		trip.setTeam(team);
-		Date date = new Date();
 		trip.setId(String.valueOf(date.getTime()));
+		trip.setCourse(buildLocations(team));
 		tripController.addTrip(trip);
 	}
 	
@@ -58,6 +59,26 @@ public class EmbeddedTripInitializer {
 		List<String> msg = new ArrayList<String>();
 		msg.add(team + "! Gonna crush you !");
 		return msg;
+	}
+	
+	private List<Location> buildLocations(String team) {
+		List<Location> locations = new ArrayList<Location>();
+		int posMax = team.length();
+		int maxXorY = 0;
+		int posX = 0;
+		int posY = 0;
+		Double random;
+		while (maxXorY < posMax) {
+			random = (Math.random() * 2) + 1;
+			if (random.intValue() > 1) {
+				posX++;
+			} else {
+				posY++;
+			}
+			locations.add(new Location(posX, posY));
+			maxXorY = (posX > posY) ? posX : posY;
+		}
+		return locations;
 	}
 	
 	private Grid buildGrid(String team) {
@@ -86,5 +107,6 @@ public class EmbeddedTripInitializer {
 
 		return new Item(letter.toUpperCase(), position);
 	}
+	
 }
 

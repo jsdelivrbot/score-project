@@ -11,6 +11,8 @@ public class Trip {
 	private List<String> messages;
 	
 	private Grid grid;
+	
+	private List<Location> course;
 
 	public String getId() {
 		return id;
@@ -42,5 +44,13 @@ public class Trip {
 
 	public void setGrid(Grid grid) {
 		this.grid = grid;
+	}
+
+	public List<Location> getCourse() {
+		return course;
+	}
+
+	public void setCourse(List<Location> course) {
+		this.course = course;
 	}
 }
