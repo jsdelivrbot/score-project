@@ -7,7 +7,7 @@ export class TripAnimation {
                 transition('* => true', [
                     query('#loc', [style({ opacity: 0 })], { optional: true }),
                     query('#loc', [
-                        stagger('.2s', animate('350ms ease-out', style({ opacity: 1})))
+                        stagger('.1s', animate('250ms ease-out', style({ opacity: 1})))
                     ], { optional: true })])
             ])
         ];

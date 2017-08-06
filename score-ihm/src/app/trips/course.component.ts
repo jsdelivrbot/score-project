@@ -52,8 +52,8 @@ export class CourseComponent implements AfterViewInit, OnInit {
   }
 
   private calculateGridSize(): void {
-    this.gridWidth = (this.gridContainer.clientWidth - 2) / this.grid.getWidth(); // this.cellWidth;
-    this.gridHeight = (this.gridContainer.clientHeight - 2) / this.grid.getHeight(); // this.cellHeight;
+    this.gridWidth = (this.gridContainer.clientHeight - 2) / this.grid.getWidth();
+    this.gridHeight = (this.gridContainer.clientHeight - 2) / this.grid.getHeight();
     this.squareSide = Math.round((this.gridWidth > this.gridHeight) ? this.gridHeight : this.gridWidth);
     this.svgPath = 'M ' + this.squareSide + ' 0 L 0 0 0 ' + this.squareSide;
   }
