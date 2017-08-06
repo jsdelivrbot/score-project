@@ -1,5 +1,5 @@
 <h1 *ngIf="trip !== undefined">{{ trip.getTeam() }}</h1>
 <section *ngIf="trip !== undefined" class="trips-view">
-  <app-course [grid]="trip.getGrid()" class="board-course"></app-course>
-  <app-messages class="board-msg" [messages]="trip.getMessages()"></app-messages>
-<section>
+    <app-course [grid]="trip.getGrid()" [course]="trip.getCourse()" class="board-course"></app-course>
+    <app-messages class="board-msg" [messages]="trip.getMessages()"></app-messages>
+    <section>

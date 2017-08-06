@@ -4,12 +4,14 @@ export class Trip {
     private team: string;
     private messages: string[];
     private grid: Grid;
+    private course: Location[];
 
-    constructor(id: string, team: string, messages: string[], grid: Grid) {
+    constructor(id: string, team: string, messages: string[], grid: Grid, course: Location[]) {
         this.id = id;
         this.team = team;
         this.messages = messages;
         this.grid = grid;
+        this.course = course;
     }
 
     getId(): string {
@@ -28,6 +30,10 @@ export class Trip {
         return this.grid;
     }
 
+    getCourse(): Location[] {
+        return this.course;
+    }
+
     setId(id: string): void {
         this.id = id;
     }
@@ -42,6 +48,10 @@ export class Trip {
 
     setGrid(grid: Grid): void {
         this.grid = grid;
+    }
+
+    setCourse(course: Location[]): void {
+        this.course = course;
     }
 }
 
@@ -115,7 +125,7 @@ export class Location {
         this.posX = posX;
         this.posY = posY;
     }
-    
+
     getPosX(): number {
         return this.posX;
     }

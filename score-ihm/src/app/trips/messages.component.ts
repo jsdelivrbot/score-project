@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class MessagesComponent implements OnInit {
 
   @Input() messages: string[];
-  
+
   constructor() { }
 
   ngOnInit() {

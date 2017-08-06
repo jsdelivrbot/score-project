@@ -1,4 +1,4 @@
-import { GridItem, Grid } from '../trips/trip.model';
+import { GridItem, Grid, Location } from '../trips/trip.model';
 import { Component, OnInit, Input, ElementRef, ViewChild, Renderer2, AfterViewInit } from '@angular/core';
 
 @Component({
@@ -9,6 +9,7 @@ import { Component, OnInit, Input, ElementRef, ViewChild, Renderer2, AfterViewIn
 export class CourseComponent implements AfterViewInit, OnInit {
 
   @Input() grid: Grid;
+  @Input() course: Location[];
   @ViewChild('content') gridElmt: ElementRef;
   @ViewChild('cell') gridCellElmt: ElementRef;
 
@@ -16,6 +17,7 @@ export class CourseComponent implements AfterViewInit, OnInit {
   private gridCell: any;
   private viewBox = '0 0 100 100';
   graphicalItems: any[];
+  graphicalLocations: any[];
   cellWidth = 20;
   cellHeight = 20;
   gridWidth = 0;
@@ -27,6 +29,7 @@ export class CourseComponent implements AfterViewInit, OnInit {
 
   ngOnInit() {
     this.graphicalItems = [];
+    this.graphicalLocations = [];
   }
 
   ngAfterViewInit() {
@@ -38,6 +41,7 @@ export class CourseComponent implements AfterViewInit, OnInit {
       setTimeout(_ => {
         this.calculateGridSize();
         this.placeObjectsOnGrid();
+        this.drawCourseOnGrid();
       });
     }
   }
@@ -50,10 +54,14 @@ export class CourseComponent implements AfterViewInit, OnInit {
   }
 
   private placeObjectsOnGrid(): void {
-    this.graphicalItems = this.grid.getContent().map(it => this.addGraphicalAttributes(it, this.squareSide));
+    this.graphicalItems = this.grid.getContent().map(it => this.addObjectGraphicalAttributes(it, this.squareSide));
   }
 
-  private addGraphicalAttributes(item: GridItem, objectSize: number): any {
+  private drawCourseOnGrid(): void {
+    this.graphicalLocations = this.course.map(it => this.addCourseGraphicalAttributes(it, this.squareSide));
+  }
+
+  private addObjectGraphicalAttributes(item: GridItem, objectSize: number): any {
     return {
       object: item.getObject(),
       posX: (item.getLocation().getPosX() * this.squareSide) + (this.squareSide / 2),
@@ -61,6 +69,16 @@ export class CourseComponent implements AfterViewInit, OnInit {
       size: this.squareSide,
       ray: this.squareSide / 2,
       color: this.getColorClass(item.getObject())
+    };
+  }
+
+  private addCourseGraphicalAttributes(location: Location, objectSize: number): any {
+    return {
+      posX: (location.getPosX() * this.squareSide) + (this.squareSide / 2),
+      posY: (location.getPosY() * this.squareSide) + (this.squareSide / 2),
+      size: this.squareSide,
+      ray: this.squareSide / 4,
+      color: this.getColorClass('L')
     };
   }
 
@@ -81,6 +99,10 @@ export class CourseComponent implements AfterViewInit, OnInit {
       }
       case 'M': {
         className = className + 'meteorite';
+        break;
+      }
+      case 'L': {
+        className = className + 'location';
         break;
       }
     }

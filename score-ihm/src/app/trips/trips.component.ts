@@ -12,7 +12,7 @@ export class TripsComponent implements OnInit {
   trips: Trip[];
   trip: Trip;
 
-  constructor(private tripService: TripService) { 
+  constructor(private tripService: TripService) {
     this.tripService.getTrips().subscribe(data => {
       this.trips = data.map(elmt => this.buildTrip(elmt));
       this.trip = this.trips[0];
@@ -24,7 +24,7 @@ export class TripsComponent implements OnInit {
   }
 
   private buildTrip(jsonElmt: any) {
-    return  new Trip(jsonElmt.id, jsonElmt.team, jsonElmt.messages, this.buildGrid(jsonElmt.grid));
+    return  new Trip(jsonElmt.id, jsonElmt.team, jsonElmt.messages, this.buildGrid(jsonElmt.grid), this.buildCourse(jsonElmt.course));
   }
 
   private buildGrid(jsonElmt: any) {
@@ -33,6 +33,10 @@ export class TripsComponent implements OnInit {
 
   private buildItems(jsonElmt: any[]) {
     return jsonElmt.map(elt => new GridItem(elt.object, new Location(elt.location.posX, elt.location.posY) ));
+  }
+
+  private buildCourse(jsonElmt: any[]) {
+    return jsonElmt.map(elt => new Location(elt.posX, elt.posY) );
   }
 
 }

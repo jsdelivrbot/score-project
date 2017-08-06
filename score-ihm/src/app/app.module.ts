@@ -14,13 +14,9 @@ import { ChartsModule } from './chart/chart.module';
 import { SprintService } from './shared/sprint.service';
 import { RouterModule, Routes } from '@angular/router';
 import { TripsComponent } from './trips/trips.component';
-import { MessagesComponent } from './messages/messages.component';
-import { CourseComponent } from './course/course.component';
+import { MessagesComponent } from './trips/messages.component';
+import { CourseComponent } from './trips/course.component';
 
- 
-
-
-      
 const appRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'trips',      component: TripsComponent },
@@ -49,7 +45,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
   ],
   providers: [
-    ScoreDataService, 
+    ScoreDataService,
     Configuration,
     SprintService,
     TripService
