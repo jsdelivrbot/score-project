@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Observable';
 import { TripAnimation } from './animations';
 import { GridItem, Grid, Location } from '../trips/trip.model';
 import { Component, OnInit, Input, ElementRef, ViewChild, Renderer2, AfterViewInit } from '@angular/core';
@@ -20,6 +21,8 @@ export class CourseComponent implements AfterViewInit, OnInit {
   private viewBox = '0 0 100 100';
   graphicalItems: any[];
   graphicalLocations: any[];
+  stars: any[];
+  randomArray: any[];
   cellWidth = 20;
   cellHeight = 20;
   gridWidth = 0;
@@ -28,12 +31,15 @@ export class CourseComponent implements AfterViewInit, OnInit {
   svgPath: string;
   courseVisible: string;
 
-  constructor(private _renderer: Renderer2) { }
+  constructor(private _renderer: Renderer2) {
+
+  }
 
   ngOnInit() {
     this.graphicalItems = [];
     this.graphicalLocations = [];
     this.courseVisible = 'false';
+    this.stars = [];
   }
 
   ngAfterViewInit() {
@@ -45,6 +51,7 @@ export class CourseComponent implements AfterViewInit, OnInit {
       setTimeout(_ => {
         this.calculateGridSize();
         this.placeObjectsOnGrid();
+        this.placeSomeStars(100);
         this.drawCourseOnGrid();
         this.courseVisible = 'true';
       });
@@ -85,6 +92,16 @@ export class CourseComponent implements AfterViewInit, OnInit {
       ray: this.squareSide / 4,
       color: this.getColorClass('L')
     };
+  }
+
+  private placeSomeStars(nb: number) {
+    Observable.from(Array(nb)) //
+              .forEach(elt =>
+                this.stars.push({ posX: this.getRandomGridPos(), posY: this.getRandomGridPos(), size: 1, ray: 1, color: 'white' } ));
+  }
+
+  private getRandomGridPos(): number {
+    return Math.floor(Math.random() * this.grid.getWidth() * this.squareSide) + 1;
   }
 
   private getColorClass(obj: string): string {

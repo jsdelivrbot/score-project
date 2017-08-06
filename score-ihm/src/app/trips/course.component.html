@@ -13,7 +13,11 @@
         <circle [attr.cx]="item.posX" [attr.cy]="item.posY" [attr.r]="item.ray" stroke="white" width="100%" height="100%" />
       </svg>
 
-        <svg *ngFor="let item of graphicalLocations" xmlns="http://www.w3.org/2000/svg" id="loc" [attr.class]="item.color">
+        <svg *ngFor="let item of stars" xmlns="http://www.w3.org/2000/svg" id="star">
+        <circle [attr.cx]="item.posX" [attr.cy]="item.posY" [attr.r]="item.ray" stroke="none" [attr.fill]="item.color" width="100%" height="100%" />
+      </svg
+      >
+      <svg *ngFor="let item of graphicalLocations" xmlns="http://www.w3.org/2000/svg" id="loc" [attr.class]="item.color">
         <circle [attr.cx]="item.posX" [attr.cy]="item.posY" [attr.r]="item.ray" stroke="gray" width="100%" height="100%" />
       </svg>
         </svg>
