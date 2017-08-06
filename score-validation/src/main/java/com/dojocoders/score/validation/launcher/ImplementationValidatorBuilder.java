@@ -18,7 +18,7 @@ public class ImplementationValidatorBuilder<Implementation> {
 	private ImplementationValidatorBuilder() {
 	}
 
-	public static <Implementation> ImplementationValidatorBuilder<Implementation> start() {
+	public static <Implementation> ImplementationValidatorBuilder<Implementation> start(Class<Implementation> implementationClass) {
 		return new ImplementationValidatorBuilder<>();
 	}
 

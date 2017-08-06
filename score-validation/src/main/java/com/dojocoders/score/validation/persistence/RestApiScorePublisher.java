@@ -13,24 +13,27 @@ import org.apache.http.util.EntityUtils;
 
 public class RestApiScorePublisher implements ScorePublisher {
 
+	public static final String REST_API_URL_TEAM_PARAM = "${team}";
+	public static final String REST_API_URL_POINTS_PARAM = "${points}";
+
 	private static final HttpClient DEFAULT_HTTP_CLIENT = HttpClientBuilder.create().build();
 
-	public RestApiScorePublisherConfiguration restApiPersistenceConfiguration;
+	public String scorePublisherApiUrl;
 
 	private HttpClient client;
 
-	public RestApiScorePublisher() {
-		this(DEFAULT_HTTP_CLIENT, new RestApiScorePublisherConfiguration());
+	public RestApiScorePublisher(String scorePublisherApiUrl) {
+		this(DEFAULT_HTTP_CLIENT, scorePublisherApiUrl);
 	}
 
-	public RestApiScorePublisher(HttpClient client, RestApiScorePublisherConfiguration restApiPersistenceConfiguration) {
+	public RestApiScorePublisher(HttpClient client, String scorePublisherApiUrl) {
 		this.client = client;
-		this.restApiPersistenceConfiguration = restApiPersistenceConfiguration;
+		this.scorePublisherApiUrl = scorePublisherApiUrl;
 	}
 
 	@Override
 	public void putScore(String team, int points) {
-		HttpPost post = new HttpPost(restApiPersistenceConfiguration.computeRestApiUrl(team, points));
+		HttpPost post = new HttpPost(computeRestApiUrl(team, points));
 		try {
 			HttpResponse postResponse = client.execute(post);
 
@@ -41,5 +44,11 @@ public class RestApiScorePublisher implements ScorePublisher {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+	}
+
+	private String computeRestApiUrl(String team, int points) {
+		return scorePublisherApiUrl //
+				.replace(REST_API_URL_TEAM_PARAM, team) //
+				.replace(REST_API_URL_POINTS_PARAM, String.valueOf(points));
 	}
 }

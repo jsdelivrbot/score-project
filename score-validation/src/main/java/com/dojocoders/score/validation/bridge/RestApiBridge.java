@@ -42,7 +42,8 @@ public class RestApiBridge {
 			HttpResponse postResponse = client.execute(post);
 
 			if (postResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() + ", code " + postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
+				throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() + ", code "
+						+ postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
 			}
 
 			return jsonMapper.readValue(postResponse.getEntity().getContent(), responseClass);
