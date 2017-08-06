@@ -38,8 +38,9 @@ public class EmbeddedDataInitializer {
 	
 	@PostConstruct
 	public void init() {
-		setupTeam("Atlanta Falcons");
-		setupTeam("LA Warriors");
+		setupTeam("Green Bay Packers");
+		setupTeam("New England Patriots");
+		setupTeam("Pittsburgh Steelers");
 		setupTeam("Dallas Cowboys");
 		setupTeam("Philadelphia Snakes");
 	}
@@ -86,8 +87,8 @@ public class EmbeddedDataInitializer {
 	}
 	
 	private Item buildItem(String letter, String team) {
-		Double x = new Double(Math.random() * team.length() * 10);
-		Double y = new Double(Math.random() * team.length() * 10);
+		Double x = new Double(Math.random() * team.length());
+		Double y = new Double(Math.random() * team.length());
 		Location position = new Location(x.intValue(), y.intValue());
 
 		return new Item(letter.toUpperCase(), position);

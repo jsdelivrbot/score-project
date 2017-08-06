@@ -4,3 +4,19 @@
     height: 100%;
     overflow: hidden;
 }
+
+.color-bomb {
+    fill: red;
+}
+
+.color-enemy {
+    fill: orange;
+}
+
+.color-asteroid {
+    fill: yellow;
+}
+
+.color-meteorite {
+    fill: yellow;
+}
