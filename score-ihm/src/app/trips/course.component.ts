@@ -1,10 +1,12 @@
+import { TripAnimation } from './animations';
 import { GridItem, Grid, Location } from '../trips/trip.model';
 import { Component, OnInit, Input, ElementRef, ViewChild, Renderer2, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-course',
   templateUrl: './course.component.html',
-  styleUrls: ['./course.component.css']
+  styleUrls: ['./course.component.css'],
+  animations: [TripAnimation.buildTripLocation()]
 })
 export class CourseComponent implements AfterViewInit, OnInit {
 
@@ -24,12 +26,14 @@ export class CourseComponent implements AfterViewInit, OnInit {
   gridHeight = 0;
   squareSide = 0;
   svgPath: string;
+  courseVisible: string;
 
   constructor(private _renderer: Renderer2) { }
 
   ngOnInit() {
     this.graphicalItems = [];
     this.graphicalLocations = [];
+    this.courseVisible = 'false';
   }
 
   ngAfterViewInit() {
@@ -42,6 +46,7 @@ export class CourseComponent implements AfterViewInit, OnInit {
         this.calculateGridSize();
         this.placeObjectsOnGrid();
         this.drawCourseOnGrid();
+        this.courseVisible = 'true';
       });
     }
   }
