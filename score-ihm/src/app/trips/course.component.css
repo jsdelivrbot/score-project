@@ -24,3 +24,11 @@
 .color-location {
     fill: greenyellow;
 }
+
+#loc {
+    opacity: 0;
+}
+
+#ship {
+    height: 100%;
+}

@@ -2,6 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { TripAnimation } from './animations';
 import { GridItem, Grid, Location } from '../trips/trip.model';
 import { Component, OnInit, Input, ElementRef, ViewChild, Renderer2, AfterViewInit } from '@angular/core';
+import {TweenLite} from 'gsap';
 
 @Component({
   selector: 'app-course',
@@ -14,10 +15,10 @@ export class CourseComponent implements AfterViewInit, OnInit {
   @Input() grid: Grid;
   @Input() course: Location[];
   @ViewChild('content') gridElmt: ElementRef;
-  @ViewChild('cell') gridCellElmt: ElementRef;
+  @ViewChild('ship') shipElmt: ElementRef;
 
   private gridContainer: any;
-  private gridCell: any;
+  private shipContainer: any;
   private viewBox = '0 0 100 100';
   graphicalItems: any[];
   graphicalLocations: any[];
@@ -29,7 +30,12 @@ export class CourseComponent implements AfterViewInit, OnInit {
   gridHeight = 0;
   squareSide = 0;
   svgPath: string;
+  shipPath: string;
+  shipPos: string;
+  shipSize: string;
   courseVisible: string;
+  shipX = 0;
+  shipY = 0;
 
   constructor(private _renderer: Renderer2) {
 
@@ -45,7 +51,7 @@ export class CourseComponent implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     if (this.grid !== undefined) {
       this.gridContainer = this.gridElmt.nativeElement;
-      this.gridCell = this.gridCellElmt.nativeElement;
+      this.shipContainer = document.getElementById('ship');
       // wait a tick to avoid one-time devMode
       // unidirectional-data-flow-violation erro
       setTimeout(_ => {
@@ -54,6 +60,7 @@ export class CourseComponent implements AfterViewInit, OnInit {
         this.placeSomeStars(100);
         this.drawCourseOnGrid();
         this.courseVisible = 'true';
+        this.startShipTrip();
       });
     }
   }
@@ -102,6 +109,21 @@ export class CourseComponent implements AfterViewInit, OnInit {
 
   private getRandomGridPos(): number {
     return Math.floor(Math.random() * this.grid.getWidth() * this.squareSide) + 1;
+  }
+
+  private startShipTrip() {
+
+    const subs = Observable
+      .interval(100)
+      .map(pos => pos + 1).subscribe(
+        pos => {
+          const posX = (this.course[pos].getPosX() * this.squareSide) + (this.squareSide / 2);
+          const posY = (this.course[pos].getPosY() * this.squareSide) + (this.squareSide / 2);
+          TweenLite.to(this.shipContainer, .2, {x: posX , y: posY });
+          if (pos === (this.course.length - 1)) {
+            subs.unsubscribe();
+          }
+        });
   }
 
   private getColorClass(obj: string): string {

@@ -3,7 +3,7 @@ import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import {ScoreResult, SprintTimer, Metric} from './score.model';
 import {Configuration} from '../app.configuration';
-import { environment } from "../../environments/environment";
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ScoreDataService {
@@ -36,7 +36,7 @@ export class ScoreDataService {
 
 
     public PauseSprintTimer = (): Observable<SprintTimer> => {
-        return this._http.put(this.actionUrl + '/sprint/pause',{})
+        return this._http.put(this.actionUrl + '/sprint/pause', {})
             .map((response: Response) => <SprintTimer>response.json())
             .catch(this.handleError);
     }
