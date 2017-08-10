@@ -7,7 +7,7 @@ Project for coding dojos with tests in junit
 * Maven 3 or +
 * Java 8
 * Npm
-* Angular 2
+* Angular 4
 
 ## SCORE JUNIT ##
 
