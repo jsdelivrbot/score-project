@@ -1,56 +1,68 @@
 package com.dojocoders.score.validation.bridge;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class RestApiBridge {
+public class RestApiBridge implements Closeable {
 
-	private static final HttpClient DEFAULT_HTTP_CLIENT = HttpClientBuilder.create().build();
+	private String remoteApiUrl;
 
-	public String remoteApiUrl;
+	private CloseableHttpClient client;
 
-	private HttpClient client;
+	private ObjectMapper jsonMapper = new ObjectMapper();
 
 	public RestApiBridge(String remoteApiUrl) {
-		this(DEFAULT_HTTP_CLIENT, remoteApiUrl);
+		this(remoteApiUrl, HttpClients.createDefault());
 	}
 
-	public RestApiBridge(HttpClient client, String remoteApiUrl) {
-		this.client = client;
+	public RestApiBridge(String remoteApiUrl, int maxParallelRequests) {
 		this.remoteApiUrl = remoteApiUrl;
+		PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
+		poolingHttpClientConnectionManager.setDefaultMaxPerRoute(maxParallelRequests);
+		this.client = HttpClients.createMinimal(poolingHttpClientConnectionManager);
+	}
+
+	public RestApiBridge(String remoteApiUrl, CloseableHttpClient client) {
+		this.remoteApiUrl = remoteApiUrl;
+		this.client = client;
 	}
 
 	public <Request, Response> Response execute(Request request, Class<Response> responseClass) {
 		try {
-			ObjectMapper jsonMapper = new ObjectMapper();
 			String jsonInString = jsonMapper.writeValueAsString(request);
 
 			HttpPost post = new HttpPost(remoteApiUrl);
 			post.setEntity(new StringEntity(jsonInString, ContentType.APPLICATION_JSON));
 
-			HttpResponse postResponse = client.execute(post);
+			try (CloseableHttpResponse postResponse = client.execute(post)) {
 
-			if (postResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() + ", code "
-						+ postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
+				if (postResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+					throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() + ", code "
+							+ postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
+				}
+
+				return jsonMapper.readValue(postResponse.getEntity().getContent(), responseClass);
 			}
-
-			return jsonMapper.readValue(postResponse.getEntity().getContent(), responseClass);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
 	}
 
+	public void close() throws IOException {
+		client.close();
+	}
 }

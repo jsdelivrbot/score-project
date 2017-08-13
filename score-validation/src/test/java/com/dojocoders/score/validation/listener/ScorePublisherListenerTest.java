@@ -23,12 +23,14 @@ public class ScorePublisherListenerTest {
 	private static final Method METHOD_WITH_SCORE_22;
 	private static final Method METHOD_WITH_SCORE_19;
 	private static final Method METHOD_WITH_SCORE_47;
+	private static final Method METHOD_WITH_SCORE_33;
 	static {
 		try {
 			METHOD_WITH_NO_SCORE = ScorePublisherListenerTest.class.getDeclaredMethod("methodWithNoScore");
 			METHOD_WITH_SCORE_22 = ScorePublisherListenerTest.class.getDeclaredMethod("methodWithScore22");
 			METHOD_WITH_SCORE_19 = ScorePublisherListenerTest.class.getDeclaredMethod("methodWithScore19");
 			METHOD_WITH_SCORE_47 = ScorePublisherListenerTest.class.getDeclaredMethod("methodWithScore47");
+			METHOD_WITH_SCORE_33 = ScorePublisherListenerTest.class.getDeclaredMethod("methodWithScore33");
 		} catch (NoSuchMethodException e) {
 			throw propagate(e);
 		}
@@ -59,6 +61,7 @@ public class ScorePublisherListenerTest {
 		// Test
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_SCORE_22);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_22);
 		persistenceListener.validationFinished();
 
@@ -72,7 +75,9 @@ public class ScorePublisherListenerTest {
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_SCORE_22);
 		persistenceListener.startCase(METHOD_WITH_SCORE_19);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_22);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_19);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_19);
 		persistenceListener.validationFinished();
 
@@ -85,6 +90,7 @@ public class ScorePublisherListenerTest {
 		// Test
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_NO_SCORE);
+		persistenceListener.caseSuccess(METHOD_WITH_NO_SCORE);
 		persistenceListener.caseFinished(METHOD_WITH_NO_SCORE);
 		persistenceListener.validationFinished();
 
@@ -94,10 +100,13 @@ public class ScorePublisherListenerTest {
 
 	@Test
 	public void test_no_score_increment_after_failure_test() throws Exception {
+		// Setup
+		AssertionError failure = new AssertionError();
+
 		// Test
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_SCORE_22);
-		persistenceListener.caseFailure(METHOD_WITH_SCORE_22);
+		persistenceListener.caseFailure(METHOD_WITH_SCORE_22, failure);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_22);
 		persistenceListener.validationFinished();
 
@@ -106,16 +115,41 @@ public class ScorePublisherListenerTest {
 	}
 
 	@Test
-	public void test_2_score_increment_after_2_success_and_1_failed_test() throws Exception {
+	public void test_no_score_increment_after_error_test() throws Exception {
+		// Setup
+		Throwable error = new RuntimeException();
+
+		// Test
+		persistenceListener.startValidation();
+		persistenceListener.startCase(METHOD_WITH_SCORE_22);
+		persistenceListener.caseError(METHOD_WITH_SCORE_22, error);
+		persistenceListener.caseFinished(METHOD_WITH_SCORE_22);
+		persistenceListener.validationFinished();
+
+		// Assert
+		verify(scorePublisher).putScore(TEAM, 0);
+	}
+
+	@Test
+	public void test_2_score_increment_after_2_success_1_failed_and_1_error_test() throws Exception {
+		// Setup
+		AssertionError failure = new AssertionError();
+		Throwable error = new RuntimeException();
+
 		// Test
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_SCORE_22);
 		persistenceListener.startCase(METHOD_WITH_SCORE_19);
 		persistenceListener.startCase(METHOD_WITH_SCORE_47);
-		persistenceListener.caseFailure(METHOD_WITH_SCORE_19);
+		persistenceListener.startCase(METHOD_WITH_SCORE_33);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22);
+		persistenceListener.caseFailure(METHOD_WITH_SCORE_19, failure);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_47);
+		persistenceListener.caseError(METHOD_WITH_SCORE_33, error);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_19);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_22);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_47);
+		persistenceListener.caseFinished(METHOD_WITH_SCORE_33);
 		persistenceListener.validationFinished();
 
 		// Assert
@@ -135,6 +169,10 @@ public class ScorePublisherListenerTest {
 
 	@Score(47)
 	private void methodWithScore47() {
+	}
+
+	@Score(33)
+	private void methodWithScore33() {
 	}
 
 }

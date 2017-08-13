@@ -33,7 +33,14 @@ public class ScorePublisherListener implements ValidationListener {
 	public void startCase(Method caseDescription) {
 	}
 
-	public void caseFailure(Method caseDescription) {
+	public void caseSuccess(Method caseDescription) {
+	}
+
+	public void caseFailure(Method caseDescription, AssertionError failure) {
+		failedTests.add(caseDescription);
+	}
+
+	public void caseError(Method caseDescription, Throwable error) {
 		failedTests.add(caseDescription);
 	}
 

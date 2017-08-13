@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.dojocoders.score.validation.listener.LoggerListener;
 import com.dojocoders.score.validation.listener.ScorePublisherListener;
 import com.dojocoders.score.validation.persistence.DisabledScorePublisher;
 import com.dojocoders.score.validation.persistence.ScorePublisher;
@@ -49,7 +50,7 @@ public class ImplementationValidatorBuilder<Implementation> {
 	public ImplementationValidator<Implementation> build() {
 		validateState();
 		ExecutorService executor = threadPoolSize > 1 ? Executors.newFixedThreadPool(threadPoolSize) : Executors.newSingleThreadExecutor();
-		return new ImplementationValidator<Implementation>(implementation, executor, new ScorePublisherListener(scorePublisherImplementation, team));
+		return new ImplementationValidator<Implementation>(implementation, executor, new ScorePublisherListener(scorePublisherImplementation, team), new LoggerListener());
 	}
 
 	private void validateState() {

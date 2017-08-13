@@ -4,6 +4,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -11,6 +12,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -25,11 +27,14 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.dojocoders.score.validation.listener.ValidationListener;
+import com.google.common.collect.Lists;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImplementationValidatorTest {
 
-	private static final int IMPLEMENTATION = 10;
+	private static final Integer TESTED_IMPLEMENTATION = new Integer(new Random().nextInt());
+
+	private ImplementationValidator<Integer> implementationValidator;
 
 	@Mock
 	private ValidationListener firstValidationListener;
@@ -38,79 +43,109 @@ public class ImplementationValidatorTest {
 	private ValidationListener secondValidationListener;
 
 	@Mock
-	private ValidationCase<Integer> firstValidationCase;
+	private ValidationCase<Integer> validationCaseWithSuccess;
 
 	@Mock
-	private Consumer<Integer> firstConsumer;
+	private Consumer<Integer> consumerWithSuccess;
 
-	private Method firstMethod;
-
-	@Mock
-	private ValidationCase<Integer> secondValidationCase;
+	private Method methodWithSuccess;
 
 	@Mock
-	private Consumer<Integer> secondConsumer;
+	private ValidationCase<Integer> validationCaseWithFailure;
 
-	private Method secondMethod;
+	@Mock
+	private Consumer<Integer> consumerWithFailure;
 
-	private ImplementationValidator<Integer> implementationValidator;
+	private Method methodWithFailure;
+
+	private AssertionError validationCaseFailure;
+
+	@Mock
+	private ValidationCase<Integer> validationCaseWithError;
+
+	@Mock
+	private Consumer<Integer> consumerWithError;
+
+	private Method methodWithError;
+
+	private RuntimeException validationCaseError;
 
 	@Before
 	public void setup() throws NoSuchMethodException {
-		implementationValidator = new ImplementationValidator<>(IMPLEMENTATION, Executors.newSingleThreadExecutor(), firstValidationListener, secondValidationListener);
-		firstMethod = ImplementationValidatorTest.class.getDeclaredMethod("firstMethod");
-		secondMethod = ImplementationValidatorTest.class.getDeclaredMethod("secondMethod");
+		implementationValidator = new ImplementationValidator<>(TESTED_IMPLEMENTATION, Executors.newSingleThreadExecutor(), firstValidationListener, secondValidationListener);
 
-		when(firstValidationCase.getCaseAccessor()).thenReturn(firstConsumer);
-		when(firstValidationCase.getCaseDescription()).thenReturn(firstMethod);
-		when(secondValidationCase.getCaseAccessor()).thenReturn(secondConsumer);
-		when(secondValidationCase.getCaseDescription()).thenReturn(secondMethod);
-		doThrow(RuntimeException.class).when(secondConsumer).accept(IMPLEMENTATION);
+		methodWithSuccess = ImplementationValidatorTest.class.getDeclaredMethod("methodWithSuccess");
+		when(validationCaseWithSuccess.getCaseAccessor()).thenReturn(consumerWithSuccess);
+		when(validationCaseWithSuccess.getCaseDescription()).thenReturn(methodWithSuccess);
+
+		methodWithFailure = ImplementationValidatorTest.class.getDeclaredMethod("methodWithFailure");
+		when(validationCaseWithFailure.getCaseAccessor()).thenReturn(consumerWithFailure);
+		when(validationCaseWithFailure.getCaseDescription()).thenReturn(methodWithFailure);
+		validationCaseFailure = new AssertionError("thrown by third consumer");
+		doThrow(validationCaseFailure).when(consumerWithFailure).accept(TESTED_IMPLEMENTATION);
+
+		methodWithError = ImplementationValidatorTest.class.getDeclaredMethod("methodWithError");
+		when(validationCaseWithError.getCaseAccessor()).thenReturn(consumerWithError);
+		when(validationCaseWithError.getCaseDescription()).thenReturn(methodWithError);
+		validationCaseError = new RuntimeException("thrown by second consumer");
+		doThrow(validationCaseError).when(consumerWithError).accept(TESTED_IMPLEMENTATION);
 	}
 
 	@Test
 	public void test_listener_consumer_calls_in_order() {
 		// Setup
 		List<ValidationCase<Integer>> validationCases = new ArrayList<>();
-		validationCases.add(firstValidationCase);
-		validationCases.add(secondValidationCase);
+		validationCases.add(validationCaseWithSuccess);
+		validationCases.add(validationCaseWithFailure);
+		validationCases.add(validationCaseWithError);
 
 		// Test
 		implementationValidator.validate(validationCases);
 
 		// Assert
-		InOrder inOrder = inOrder(firstConsumer, secondConsumer, firstValidationListener, secondValidationListener);
+		InOrder inOrder = inOrder(consumerWithSuccess, consumerWithError, consumerWithFailure, firstValidationListener, secondValidationListener);
 		inOrder.verify(firstValidationListener).startValidation();
 		inOrder.verify(secondValidationListener).startValidation();
 
-		inOrder.verify(firstValidationListener).startCase(firstMethod);
-		inOrder.verify(secondValidationListener).startCase(firstMethod);
-		inOrder.verify(firstConsumer).accept(IMPLEMENTATION);
-		inOrder.verify(firstValidationListener).caseFinished(firstMethod);
-		inOrder.verify(secondValidationListener).caseFinished(firstMethod);
+		inOrder.verify(firstValidationListener).startCase(methodWithSuccess);
+		inOrder.verify(secondValidationListener).startCase(methodWithSuccess);
+		inOrder.verify(consumerWithSuccess).accept(TESTED_IMPLEMENTATION);
+		inOrder.verify(firstValidationListener).caseSuccess(methodWithSuccess);
+		inOrder.verify(secondValidationListener).caseSuccess(methodWithSuccess);
+		inOrder.verify(firstValidationListener).caseFinished(methodWithSuccess);
+		inOrder.verify(secondValidationListener).caseFinished(methodWithSuccess);
 
-		inOrder.verify(firstValidationListener).startCase(secondMethod);
-		inOrder.verify(secondValidationListener).startCase(secondMethod);
-		inOrder.verify(secondConsumer).accept(IMPLEMENTATION);
-		inOrder.verify(firstValidationListener).caseFailure(secondMethod);
-		inOrder.verify(secondValidationListener).caseFailure(secondMethod);
-		inOrder.verify(firstValidationListener).caseFinished(secondMethod);
-		inOrder.verify(secondValidationListener).caseFinished(secondMethod);
+		inOrder.verify(firstValidationListener).startCase(methodWithFailure);
+		inOrder.verify(secondValidationListener).startCase(methodWithFailure);
+		inOrder.verify(consumerWithFailure).accept(TESTED_IMPLEMENTATION);
+		inOrder.verify(firstValidationListener).caseFailure(methodWithFailure, validationCaseFailure);
+		inOrder.verify(secondValidationListener).caseFailure(methodWithFailure, validationCaseFailure);
+		inOrder.verify(firstValidationListener).caseFinished(methodWithFailure);
+		inOrder.verify(secondValidationListener).caseFinished(methodWithFailure);
+
+		inOrder.verify(firstValidationListener).startCase(methodWithError);
+		inOrder.verify(secondValidationListener).startCase(methodWithError);
+		inOrder.verify(consumerWithError).accept(TESTED_IMPLEMENTATION);
+		inOrder.verify(firstValidationListener).caseError(methodWithError, validationCaseError);
+		inOrder.verify(secondValidationListener).caseError(methodWithError, validationCaseError);
+		inOrder.verify(firstValidationListener).caseFinished(methodWithError);
+		inOrder.verify(secondValidationListener).caseFinished(methodWithError);
 
 		inOrder.verify(firstValidationListener).validationFinished();
 		inOrder.verify(secondValidationListener).validationFinished();
 
-		verifyNoMoreInteractions(firstConsumer, secondConsumer, firstValidationListener, secondValidationListener);
+		verifyNoMoreInteractions(consumerWithSuccess, consumerWithError, consumerWithFailure, firstValidationListener, secondValidationListener);
 	}
 
 	@Test
 	public void test_executorService_calls_in_order() throws InterruptedException {
 		// Setup
 		ExecutorService executor = Mockito.mock(ExecutorService.class);
-		implementationValidator = new ImplementationValidator<>(IMPLEMENTATION, executor);
+		when(executor.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(true);
+		implementationValidator = new ImplementationValidator<>(TESTED_IMPLEMENTATION, executor);
 
 		// Test
-		implementationValidator.validate(Collections.singleton(firstValidationCase));
+		implementationValidator.validate(Collections.singleton(validationCaseWithSuccess));
 
 		// Assert
 		InOrder inOrder = inOrder(executor);
@@ -122,9 +157,56 @@ public class ImplementationValidatorTest {
 		verifyNoMoreInteractions(executor);
 	}
 
-	protected void firstMethod() {
+	@Test
+	public void test_listener_errors_not_fail_success_execution() {
+		// Setup
+		doThrow(new RuntimeException("startValidation catching test")).when(firstValidationListener).startValidation();
+		doThrow(new RuntimeException("startCase catching test")).when(firstValidationListener).startCase(any(Method.class));
+		doThrow(new RuntimeException("caseSuccess catching test")).when(firstValidationListener).caseSuccess(any(Method.class));
+		doThrow(new RuntimeException("caseFinished catching test")).when(firstValidationListener).caseFinished(any(Method.class));
+		doThrow(new RuntimeException("validationFinished catching test")).when(firstValidationListener).validationFinished();
+
+		// Test
+		implementationValidator.validate(Collections.singleton(validationCaseWithSuccess));
+
+		// Assert
+		verify(consumerWithSuccess).accept(TESTED_IMPLEMENTATION);
+		for (ValidationListener listener : Lists.newArrayList(firstValidationListener, secondValidationListener)) {
+			verify(listener).startValidation();
+			verify(listener).startCase(methodWithSuccess);
+			verify(listener).caseSuccess(methodWithSuccess);
+			verify(listener).caseFinished(methodWithSuccess);
+			verify(listener).validationFinished();
+		}
 	}
 
-	protected void secondMethod() {
+	@Test
+	public void test_listener_errors_not_fail_failure_execution() {
+		// Setup
+		doThrow(new RuntimeException("caseFailure catching test")).when(firstValidationListener).caseFailure(any(Method.class), any(AssertionError.class));
+		doThrow(new RuntimeException("caseError catching test")).when(firstValidationListener).caseError(any(Method.class), any(Throwable.class));
+		List<ValidationCase<Integer>> validationCases = new ArrayList<>();
+		validationCases.add(validationCaseWithFailure);
+		validationCases.add(validationCaseWithError);
+
+		// Test
+		implementationValidator.validate(validationCases);
+
+		// Assert
+		verify(consumerWithFailure).accept(TESTED_IMPLEMENTATION);
+		verify(consumerWithError).accept(TESTED_IMPLEMENTATION);
+		verify(firstValidationListener).caseFailure(methodWithFailure, validationCaseFailure);
+		verify(secondValidationListener).caseFailure(methodWithFailure, validationCaseFailure);
+		verify(firstValidationListener).caseError(methodWithError, validationCaseError);
+		verify(secondValidationListener).caseError(methodWithError, validationCaseError);
+	}
+
+	protected void methodWithSuccess() {
+	}
+
+	protected void methodWithError() {
+	}
+
+	protected void methodWithFailure() {
 	}
 }
