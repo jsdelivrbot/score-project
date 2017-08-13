@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-public class InMemoryScorePersistenceUnit implements ScorePersistenceUnit {
+public class InMemoryScorePublisher implements ScorePublisher {
 
 	private static final Map<String, Integer> SCORE_MAP = Maps.newConcurrentMap();
 

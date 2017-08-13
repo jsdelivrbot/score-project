@@ -11,28 +11,29 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import com.dojocoders.score.validation.config.RestApiPersistenceConfiguration;
+public class RestApiScorePublisher implements ScorePublisher {
 
-public class RestApiScorePersistenceUnit implements ScorePersistenceUnit {
+	public static final String REST_API_URL_TEAM_PARAM = "${team}";
+	public static final String REST_API_URL_POINTS_PARAM = "${points}";
 
 	private static final HttpClient DEFAULT_HTTP_CLIENT = HttpClientBuilder.create().build();
 
-	public RestApiPersistenceConfiguration restApiPersistenceConfiguration;
+	public String scorePublisherApiUrl;
 
 	private HttpClient client;
 
-	public RestApiScorePersistenceUnit() {
-		this(DEFAULT_HTTP_CLIENT, new RestApiPersistenceConfiguration());
+	public RestApiScorePublisher(String scorePublisherApiUrl) {
+		this(DEFAULT_HTTP_CLIENT, scorePublisherApiUrl);
 	}
 
-	public RestApiScorePersistenceUnit(HttpClient client, RestApiPersistenceConfiguration restApiPersistenceConfiguration) {
+	public RestApiScorePublisher(HttpClient client, String scorePublisherApiUrl) {
 		this.client = client;
-		this.restApiPersistenceConfiguration = restApiPersistenceConfiguration;
+		this.scorePublisherApiUrl = scorePublisherApiUrl;
 	}
 
 	@Override
 	public void putScore(String team, int points) {
-		HttpPost post = new HttpPost(restApiPersistenceConfiguration.computeRestApiUrl(team, points));
+		HttpPost post = new HttpPost(computeRestApiUrl(team, points));
 		try {
 			HttpResponse postResponse = client.execute(post);
 
@@ -43,5 +44,11 @@ public class RestApiScorePersistenceUnit implements ScorePersistenceUnit {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+	}
+
+	private String computeRestApiUrl(String team, int points) {
+		return scorePublisherApiUrl //
+				.replace(REST_API_URL_TEAM_PARAM, team) //
+				.replace(REST_API_URL_POINTS_PARAM, String.valueOf(points));
 	}
 }
