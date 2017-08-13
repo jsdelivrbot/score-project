@@ -25,34 +25,18 @@ public class ScorePublisherListener implements ValidationListener {
 		this.concernedTeam = concernedTeam;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.dojocoders.score.validation.listener.ValidationListener#startValidation()
-	 */
-	@Override
 	public void startValidation() {
 		this.failedTests = Sets.newConcurrentHashSet();
 		this.totalPoints = new AtomicInteger(0);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.dojocoders.score.validation.listener.ValidationListener#startCase(java.lang.reflect.Method)
-	 */
-	@Override
 	public void startCase(Method caseDescription) {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.dojocoders.score.validation.listener.ValidationListener#caseFailure(java.lang.reflect.Method)
-	 */
-	@Override
 	public void caseFailure(Method caseDescription) {
 		failedTests.add(caseDescription);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.dojocoders.score.validation.listener.ValidationListener#caseFinished(java.lang.reflect.Method)
-	 */
-	@Override
 	public void caseFinished(Method caseDescription) {
 		if (!failedTests.contains(caseDescription)) {
 			int testScore = getPointsActualTest(caseDescription);
@@ -60,10 +44,6 @@ public class ScorePublisherListener implements ValidationListener {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.dojocoders.score.validation.listener.ValidationListener#validationFinished()
-	 */
-	@Override
 	public void validationFinished() {
 		scorePublisher.putScore(concernedTeam, totalPoints.get());
 	}

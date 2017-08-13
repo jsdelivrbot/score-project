@@ -8,6 +8,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -37,7 +38,7 @@ public class RestApiBridge {
 			String jsonInString = jsonMapper.writeValueAsString(request);
 
 			HttpPost post = new HttpPost(remoteApiUrl);
-			post.setEntity(new StringEntity(jsonInString));
+			post.setEntity(new StringEntity(jsonInString, ContentType.APPLICATION_JSON));
 
 			HttpResponse postResponse = client.execute(post);
 

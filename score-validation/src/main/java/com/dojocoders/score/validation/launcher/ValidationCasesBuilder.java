@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 public class ValidationCasesBuilder<Implementation> {
 
-	private List<ValidationCase<Implementation>> validationCases;
+	private List<ValidationCase<Implementation>> validationCases = new ArrayList<>();
 
 	private ValidationCasesBuilder() {
 	}
