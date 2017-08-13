@@ -28,14 +28,14 @@ public class ImplementationValidator<Implementation> {
 		this.threadPool = threadPool;
 	}
 
-	public void validate(Iterable<ValidationCase<Implementation>> cases) {
+	public void validate(Iterable<ValidationCase<Implementation>> cases, long maximumTimeInSeconds) {
 		callListenersSafely("startValidation", ValidationListener::startValidation);
 
 		cases.forEach(oneCase -> threadPool.submit(() -> validateCase(oneCase)));
 
 		threadPool.shutdown();
 		try {
-			boolean allValidationCasesExecuted = threadPool.awaitTermination(30, TimeUnit.SECONDS);
+			boolean allValidationCasesExecuted = threadPool.awaitTermination(maximumTimeInSeconds, TimeUnit.SECONDS);
 			if (!allValidationCasesExecuted) {
 				LOGGER.error("Timeout is reached before all validation cases are finished");
 			}

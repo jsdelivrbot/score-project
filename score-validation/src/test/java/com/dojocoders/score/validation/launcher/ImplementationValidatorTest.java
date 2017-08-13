@@ -32,6 +32,8 @@ import com.google.common.collect.Lists;
 @RunWith(MockitoJUnitRunner.class)
 public class ImplementationValidatorTest {
 
+	private static final int MAXIMUM_TEST_TIME_IN_SECONDS = 3;
+
 	private static final Integer TESTED_IMPLEMENTATION = new Integer(new Random().nextInt());
 
 	private ImplementationValidator<Integer> implementationValidator;
@@ -100,7 +102,7 @@ public class ImplementationValidatorTest {
 		validationCases.add(validationCaseWithError);
 
 		// Test
-		implementationValidator.validate(validationCases);
+		implementationValidator.validate(validationCases, MAXIMUM_TEST_TIME_IN_SECONDS);
 
 		// Assert
 		InOrder inOrder = inOrder(consumerWithSuccess, consumerWithError, consumerWithFailure, firstValidationListener, secondValidationListener);
@@ -145,7 +147,7 @@ public class ImplementationValidatorTest {
 		implementationValidator = new ImplementationValidator<>(TESTED_IMPLEMENTATION, executor);
 
 		// Test
-		implementationValidator.validate(Collections.singleton(validationCaseWithSuccess));
+		implementationValidator.validate(Collections.singleton(validationCaseWithSuccess), MAXIMUM_TEST_TIME_IN_SECONDS);
 
 		// Assert
 		InOrder inOrder = inOrder(executor);
@@ -167,7 +169,7 @@ public class ImplementationValidatorTest {
 		doThrow(new RuntimeException("validationFinished catching test")).when(firstValidationListener).validationFinished();
 
 		// Test
-		implementationValidator.validate(Collections.singleton(validationCaseWithSuccess));
+		implementationValidator.validate(Collections.singleton(validationCaseWithSuccess), MAXIMUM_TEST_TIME_IN_SECONDS);
 
 		// Assert
 		verify(consumerWithSuccess).accept(TESTED_IMPLEMENTATION);
@@ -190,7 +192,7 @@ public class ImplementationValidatorTest {
 		validationCases.add(validationCaseWithError);
 
 		// Test
-		implementationValidator.validate(validationCases);
+		implementationValidator.validate(validationCases, MAXIMUM_TEST_TIME_IN_SECONDS);
 
 		// Assert
 		verify(consumerWithFailure).accept(TESTED_IMPLEMENTATION);
