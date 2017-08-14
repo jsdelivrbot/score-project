@@ -11,29 +11,31 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-public class RestApiScorePublisher implements ScorePublisher {
+import com.dojocoders.score.validation.persistence.pojo.ValidationResult;
+
+public class RestApiValidationPublisher implements ValidationPublisher {
 
 	public static final String REST_API_URL_TEAM_PARAM = "${team}";
 	public static final String REST_API_URL_POINTS_PARAM = "${points}";
 
 	private static final HttpClient DEFAULT_HTTP_CLIENT = HttpClientBuilder.create().build();
 
-	public String scorePublisherApiUrl;
+	public String validationPublisherApiUrl;
 
 	private HttpClient client;
 
-	public RestApiScorePublisher(String scorePublisherApiUrl) {
-		this(DEFAULT_HTTP_CLIENT, scorePublisherApiUrl);
+	public RestApiValidationPublisher(String validationPublisherApiUrl) {
+		this(DEFAULT_HTTP_CLIENT, validationPublisherApiUrl);
 	}
 
-	public RestApiScorePublisher(HttpClient client, String scorePublisherApiUrl) {
+	public RestApiValidationPublisher(HttpClient client, String validationPublisherApiUrl) {
 		this.client = client;
-		this.scorePublisherApiUrl = scorePublisherApiUrl;
+		this.validationPublisherApiUrl = validationPublisherApiUrl;
 	}
 
 	@Override
-	public void putScore(String team, int points) {
-		HttpPost post = new HttpPost(computeRestApiUrl(team, points));
+	public void publishValidation(ValidationResult validationResult) {
+		HttpPost post = new HttpPost(computeRestApiUrl(validationResult.getTeam(), validationResult.getTotalPoints()));
 		try {
 			HttpResponse postResponse = client.execute(post);
 
@@ -47,7 +49,7 @@ public class RestApiScorePublisher implements ScorePublisher {
 	}
 
 	private String computeRestApiUrl(String team, int points) {
-		return scorePublisherApiUrl //
+		return validationPublisherApiUrl //
 				.replace(REST_API_URL_TEAM_PARAM, team) //
 				.replace(REST_API_URL_POINTS_PARAM, String.valueOf(points));
 	}
