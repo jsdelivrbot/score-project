@@ -28,6 +28,11 @@ public class ValidationCasesBuilder<Implementation> {
 		return this;
 	}
 
+	public ValidationCasesBuilder<Implementation> withLambdaCases(Iterable<Consumer<Implementation>> lambdaValidationCases) {
+		lambdaValidationCases.forEach(this::withLambdaCase);
+		return this;
+	}
+
 	public ValidationCasesBuilder<Implementation> withStaticMethodCase(Method staticMethodValidationCase) {
 		ValidationCase<Implementation> validationCaseToAdd = new ValidationCase<Implementation>(staticMethodValidationCase);
 		this.validationCases.add(validationCaseToAdd);
@@ -39,6 +44,11 @@ public class ValidationCasesBuilder<Implementation> {
 		return this;
 	}
 
+	public ValidationCasesBuilder<Implementation> withStaticMethodCases(Iterable<Method> staticMethodValidationCases) {
+		staticMethodValidationCases.forEach(this::withStaticMethodCase);
+		return this;
+	}
+
 	public ValidationCasesBuilder<Implementation> withInstanceMethodCase(Object validationInstance, Method instanceMethodValidationCase) {
 		ValidationCase<Implementation> validationCaseToAdd = new ValidationCase<Implementation>(instanceMethodValidationCase, validationInstance);
 		this.validationCases.add(validationCaseToAdd);
@@ -47,6 +57,11 @@ public class ValidationCasesBuilder<Implementation> {
 
 	public ValidationCasesBuilder<Implementation> withInstanceMethodCases(Object validationInstance, Method... instanceMethodValidationCases) {
 		Arrays.asList(instanceMethodValidationCases).forEach(validationCase -> withInstanceMethodCase(validationInstance, validationCase));
+		return this;
+	}
+
+	public ValidationCasesBuilder<Implementation> withInstanceMethodCases(Object validationInstance, Iterable<Method> instanceMethodValidationCases) {
+		instanceMethodValidationCases.forEach(validationCase -> withInstanceMethodCase(validationInstance, validationCase));
 		return this;
 	}
 
