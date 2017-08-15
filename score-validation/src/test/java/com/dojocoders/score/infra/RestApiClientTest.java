@@ -1,4 +1,4 @@
-package com.dojocoders.score.validation.bridge;
+package com.dojocoders.score.infra;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RestApiBridgeTest {
+public class RestApiClientTest {
 
 	@Mock
 	private CloseableHttpClient httpClient;
@@ -36,11 +36,11 @@ public class RestApiBridgeTest {
 	@Captor
 	private ArgumentCaptor<HttpPost> httpRequest;
 
-	private RestApiBridge restApiBridge;
+	private RestApiClient restApiClient;
 
 	@Before
 	public void setup() {
-		restApiBridge = new RestApiBridge("http://remoteRestApi/", httpClient);
+		restApiClient = new RestApiClient("http://remoteRestApi/", RestApiClient.WITHOUT_ERROR_HTTP_CODES, httpClient);
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class RestApiBridgeTest {
 		when(httpClient.execute(httpRequest.capture())).thenReturn(httpResponse);
 
 		// Test
-		Boolean response = restApiBridge.execute(false, Boolean.class);
+		Boolean response = restApiClient.post(false, Boolean.class);
 
 		// Assert
 		assertThat(response).isTrue();
@@ -69,7 +69,7 @@ public class RestApiBridgeTest {
 
 		// Test
 		try {
-			restApiBridge.execute(false, Boolean.class);
+			restApiClient.post(false, Boolean.class);
 			fail(UncheckedIOException.class + " was not thrown");
 
 		} catch (UncheckedIOException e) {

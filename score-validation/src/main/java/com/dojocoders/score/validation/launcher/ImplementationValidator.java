@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dojocoders.score.validation.listener.ValidationListener;
-import com.google.common.base.Throwables;
 
 public class ImplementationValidator<Implementation> {
 
@@ -41,7 +40,7 @@ public class ImplementationValidator<Implementation> {
 			}
 		} catch (InterruptedException e) {
 			LOGGER.error("InterruptedException during awaiting of validation cases", e);
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		} finally {
 			callListenersSafely("validationFinished", ValidationListener::validationFinished);
 			threadPool.shutdownNow();

@@ -45,10 +45,10 @@ public class ValidationCase<Implementation> {
 		try {
 			caseDescription.invoke(instance, implementation);
 		} catch (InvocationTargetException e) {
-			Throwables.propagateIfPossible(e.getTargetException());
-			throw Throwables.propagate(e.getTargetException());
-		} catch (IllegalAccessException | IllegalArgumentException e) {
-			throw Throwables.propagate(e);
+			Throwables.throwIfUnchecked(e.getTargetException());
+			throw new RuntimeException(e.getTargetException());
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -73,7 +73,7 @@ public class ValidationCase<Implementation> {
 			Class<?> calledClass = Class.forName(calledMethod.getClassName());
 			return findMethod(calledMethod.getMethodName(), Arrays.asList(calledClass.getDeclaredMethods()));
 		} catch (ClassNotFoundException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 	}
 
