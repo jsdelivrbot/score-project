@@ -19,6 +19,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
@@ -74,7 +75,7 @@ public class RestApiClient implements AutoCloseable {
 	}
 
 	public RestApiClient(String restApiBaseUrl, RangeSet<Integer> defaultValidResponseHttpCodes, CloseableHttpClient client) {
-		this.restApiBaseUrl = restApiBaseUrl;
+		this.restApiBaseUrl = Strings.nullToEmpty(restApiBaseUrl).endsWith("/") ? restApiBaseUrl.substring(0, restApiBaseUrl.length() - 1) : restApiBaseUrl;
 		this.defaultValidResponseHttpCodes = defaultValidResponseHttpCodes;
 		this.client = client;
 	}
@@ -87,7 +88,7 @@ public class RestApiClient implements AutoCloseable {
 
 	/** Define the sub-path for the next executed request */
 	public RestApiClient withPath(String path) {
-		nextRequestPath = path;
+		nextRequestPath = Strings.nullToEmpty(path).startsWith("/") ? path.substring(1, path.length()) : path;
 		return this;
 	}
 
@@ -112,8 +113,6 @@ public class RestApiClient implements AutoCloseable {
 		// Use reference equality to ensure that parameter has been defined
 		if (currentRequestPath == NOT_DEFINED_REQUEST_PATH) {
 			return restApiBaseUrl;
-		} else if (restApiBaseUrl.endsWith("/")) {
-			return restApiBaseUrl + currentRequestPath;
 		} else {
 			return restApiBaseUrl + "/" + currentRequestPath;
 		}
@@ -133,7 +132,13 @@ public class RestApiClient implements AutoCloseable {
 	public <Request> void post(Request request) {
 		startRequestExecution();
 		HttpPost httpRequest = new HttpPost(getRequestPath());
-		execute(httpRequest, request);
+		executeWithBody(httpRequest, request);
+	}
+
+	public <Response> Response post(Class<Response> responseType) {
+		startRequestExecution();
+		HttpPost httpRequest = new HttpPost(getRequestPath());
+		return executeWithoutBody(httpRequest, responseType);
 	}
 
 	public <Request, Response> Response post(Request request, Class<Response> responseType) {
@@ -151,18 +156,18 @@ public class RestApiClient implements AutoCloseable {
 	public <Response> Response get(Class<Response> responseType) {
 		startRequestExecution();
 		HttpGet httpRequest = new HttpGet(getRequestPath());
-		return execute(httpRequest, responseType);
+		return executeWithoutBody(httpRequest, responseType);
 	}
 
 	private void execute(HttpRequestBase requestWithoutBody) {
 		internalExecute(requestWithoutBody, Optional.empty());
 	}
 
-	private <Request> void execute(HttpEntityEnclosingRequestBase requestWithBody, Request request) {
+	private <Request> void executeWithBody(HttpEntityEnclosingRequestBase requestWithBody, Request request) {
 		internalExecute(requestWithBody, request, Optional.empty());
 	}
 
-	private <Response> Response execute(HttpRequestBase requestWithoutBody, Class<Response> responseType) {
+	private <Response> Response executeWithoutBody(HttpRequestBase requestWithoutBody, Class<Response> responseType) {
 		return internalExecute(requestWithoutBody, Optional.of(responseType));
 	}
 
