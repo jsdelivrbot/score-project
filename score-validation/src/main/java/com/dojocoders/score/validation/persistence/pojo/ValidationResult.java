@@ -5,9 +5,9 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 public final class ValidationResult {
-	private String team;
-	private int totalPoints;
-	private List<CaseResult> caseResults;
+	private final String team;
+	private final int totalPoints;
+	private final List<CaseResult> caseResults;
 
 	public ValidationResult(String team, int totalPoints, List<CaseResult> caseResults) {
 		this.team = team;

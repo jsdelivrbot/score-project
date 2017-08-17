@@ -3,7 +3,7 @@ package com.dojocoders.score.validation.persistence.pojo;
 import java.lang.reflect.Method;
 
 public final class FailureCase extends CaseResult {
-	private AssertionError failure;
+	private final AssertionError failure;
 
 	public FailureCase(Method description, AssertionError failure) {
 		super(description);

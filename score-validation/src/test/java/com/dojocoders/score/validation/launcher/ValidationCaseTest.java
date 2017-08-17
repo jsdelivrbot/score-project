@@ -1,6 +1,6 @@
 package com.dojocoders.score.validation.launcher;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;

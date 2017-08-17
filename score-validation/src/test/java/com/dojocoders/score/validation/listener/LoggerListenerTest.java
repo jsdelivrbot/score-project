@@ -1,10 +1,11 @@
 package com.dojocoders.score.validation.listener;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
-import org.fest.assertions.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,9 +55,9 @@ public class LoggerListenerTest {
 
 		// Assert
 		totalTime.stop();
-		Assertions.assertThat(getCombinedCasesElapsedTime()).isEqualTo(getCaseElapsedTime());
-		Assertions.assertThat(getTotalElapsedTime()).isGreaterThanOrEqualTo(getCaseElapsedTime());
-		Assertions.assertThat(getTotalElapsedTime()).isLessThanOrEqualTo(totalTime.elapsed(TimeUnit.NANOSECONDS));
+		assertThat(getCombinedCasesElapsedTime()).isEqualTo(getCaseElapsedTime());
+		assertThat(getTotalElapsedTime()).isGreaterThanOrEqualTo(getCaseElapsedTime());
+		assertThat(getTotalElapsedTime()).isLessThanOrEqualTo(totalTime.elapsed(TimeUnit.NANOSECONDS));
 	}
 
 	@Test
@@ -89,9 +90,9 @@ public class LoggerListenerTest {
 
 		// Assert
 		totalTime.stop();
-		Assertions.assertThat(getCombinedCasesElapsedTime()).isEqualTo(firstCaseElapsedTime + secondCaseElapsedTime + thirdCaseElapsedTime);
-		Assertions.assertThat(getTotalElapsedTime()).isGreaterThanOrEqualTo(getCaseElapsedTime());
-		Assertions.assertThat(getTotalElapsedTime()).isLessThanOrEqualTo(totalTime.elapsed(TimeUnit.NANOSECONDS));
+		assertThat(getCombinedCasesElapsedTime()).isEqualTo(firstCaseElapsedTime + secondCaseElapsedTime + thirdCaseElapsedTime);
+		assertThat(getTotalElapsedTime()).isGreaterThanOrEqualTo(getCaseElapsedTime());
+		assertThat(getTotalElapsedTime()).isLessThanOrEqualTo(totalTime.elapsed(TimeUnit.NANOSECONDS));
 	}
 
 	private long getTotalElapsedTime() throws IllegalAccessException {

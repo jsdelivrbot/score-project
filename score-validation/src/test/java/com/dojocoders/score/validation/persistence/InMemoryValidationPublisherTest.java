@@ -1,8 +1,9 @@
 package com.dojocoders.score.validation.persistence;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 
-import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 
 import com.dojocoders.score.validation.persistence.pojo.ValidationResult;
@@ -19,9 +20,9 @@ public class InMemoryValidationPublisherTest {
 		publisher.publishValidation(validationResult);
 
 		// Assert
-		Assertions.assertThat(publisher.getAllResults()).hasSize(1).containsKey("team");
-		Assertions.assertThat(publisher.getAllResults().get("team")).isSameAs(validationResult);
-		Assertions.assertThat(publisher.getTeamResult("team")).isSameAs(validationResult);
+		assertThat(publisher.getAllResults()).hasSize(1).containsKey("team");
+		assertThat(publisher.getAllResults().get("team")).isSameAs(validationResult);
+		assertThat(publisher.getTeamResult("team")).isSameAs(validationResult);
 	}
 
 	@Test
@@ -29,13 +30,13 @@ public class InMemoryValidationPublisherTest {
 		// Setup
 		InMemoryValidationPublisher publisher = new InMemoryValidationPublisher();
 		publisher.publishValidation(new ValidationResult("team", 153, new ArrayList<>()));
-		Assertions.assertThat(publisher.getAllResults()).isNotEmpty();
+		assertThat(publisher.getAllResults()).isNotEmpty();
 
 		// Test
 		publisher.clear();
 
 		// Assert
-		Assertions.assertThat(publisher.getAllResults()).isEmpty();
+		assertThat(publisher.getAllResults()).isEmpty();
 	}
 
 }

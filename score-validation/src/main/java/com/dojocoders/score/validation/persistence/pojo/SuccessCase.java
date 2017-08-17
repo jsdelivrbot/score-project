@@ -3,7 +3,7 @@ package com.dojocoders.score.validation.persistence.pojo;
 import java.lang.reflect.Method;
 
 public final class SuccessCase extends CaseResult {
-	private int points;
+	private final int points;
 
 	public SuccessCase(Method description, int points) {
 		super(description);

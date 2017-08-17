@@ -3,7 +3,7 @@ package com.dojocoders.score.validation.persistence.pojo;
 import java.lang.reflect.Method;
 
 public final class ErrorCase extends CaseResult {
-	private Throwable error;
+	private final Throwable error;
 
 	public ErrorCase(Method description, Throwable error) {
 		super(description);
