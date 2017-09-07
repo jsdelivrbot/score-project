@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dojocoders.score.model.ScoreResult;
 import com.dojocoders.score.model.trip.Trip;
 import com.dojocoders.score.service.TripService;
 
@@ -21,11 +20,11 @@ public class TripController {
 	@Autowired
 	private TripService tripService;
 
-    @RequestMapping
-    public List<Trip> trips() {
-        return tripService.getTrips();
-    }
-	
+	@RequestMapping
+	public List<Trip> trips() {
+		return tripService.getTrips();
+	}
+
 	@RequestMapping(method = RequestMethod.POST)
 	public void addTrip(@RequestBody Trip trip) {
 		tripService.addTrip(trip);
