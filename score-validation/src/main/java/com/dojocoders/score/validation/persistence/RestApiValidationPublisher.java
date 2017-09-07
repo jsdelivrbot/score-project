@@ -1,56 +1,41 @@
 package com.dojocoders.score.validation.persistence;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
 
+import com.dojocoders.score.infra.RestApiClient;
+import com.dojocoders.score.infra.validation.JsonCaseResult;
+import com.dojocoders.score.validation.persistence.pojo.CaseResult;
 import com.dojocoders.score.validation.persistence.pojo.ValidationResult;
 
-public class RestApiValidationPublisher implements ValidationPublisher {
+public class RestApiValidationPublisher implements ValidationPublisher, AutoCloseable {
 
 	public static final String REST_API_URL_TEAM_PARAM = "${team}";
 	public static final String REST_API_URL_POINTS_PARAM = "${points}";
 
-	private static final HttpClient DEFAULT_HTTP_CLIENT = HttpClientBuilder.create().build();
-
-	public String validationPublisherApiUrl;
-
-	private HttpClient client;
+	private RestApiClient restApiClient;
 
 	public RestApiValidationPublisher(String validationPublisherApiUrl) {
-		this(DEFAULT_HTTP_CLIENT, validationPublisherApiUrl);
+		this.restApiClient = new RestApiClient(validationPublisherApiUrl, RestApiClient.STRICT_SUCCESS_HTTP_CODE);
 	}
 
-	public RestApiValidationPublisher(HttpClient client, String validationPublisherApiUrl) {
-		this.client = client;
-		this.validationPublisherApiUrl = validationPublisherApiUrl;
+	public RestApiValidationPublisher(String validationPublisherApiUrl, CloseableHttpClient client) {
+		this.restApiClient = new RestApiClient(validationPublisherApiUrl, RestApiClient.STRICT_SUCCESS_HTTP_CODE, client);
 	}
 
 	@Override
 	public void publishValidation(ValidationResult validationResult) {
-		HttpPost post = new HttpPost(computeRestApiUrl(validationResult.getTeam(), validationResult.getTotalPoints()));
-		try {
-			HttpResponse postResponse = client.execute(post);
+		List<CaseResult> jsonCaseResults = validationResult.getCaseResults().stream().map(JsonCaseResult::new).collect(Collectors.toList());
+		ValidationResult jsonValidationResult = new ValidationResult(validationResult.getTeam(), validationResult.getTotalPoints(), jsonCaseResults);
 
-			if (postResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() + ", code "
-						+ postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
-			}
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
+		restApiClient.post(jsonValidationResult);
 	}
 
-	private String computeRestApiUrl(String team, int points) {
-		return validationPublisherApiUrl //
-				.replace(REST_API_URL_TEAM_PARAM, team) //
-				.replace(REST_API_URL_POINTS_PARAM, String.valueOf(points));
+	@Override
+	public void close() throws IOException {
+		restApiClient.close();
 	}
 }

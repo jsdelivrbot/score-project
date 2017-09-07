@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URISyntaxException;
 
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpResponseException;
@@ -56,7 +55,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_post_with_status_code_OK() throws IOException, URISyntaxException {
+	public void test_post_with_status_code_OK() throws IOException {
 		// Setup
 		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
 		when(httpClient.execute(httpRequest.capture())).thenReturn(httpResponse);
@@ -73,7 +72,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_post_with_request_and_status_code_OK() throws IOException, URISyntaxException {
+	public void test_post_with_request_and_status_code_OK() throws IOException {
 		// Setup
 		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
 		when(httpClient.execute(httpRequest.capture())).thenReturn(httpResponse);
@@ -90,7 +89,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_post_with_response_and_status_code_OK() throws IOException, URISyntaxException {
+	public void test_post_with_response_and_status_code_OK() throws IOException {
 		// Setup
 		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
 		httpResponse.setEntity(new StringEntity("true"));
@@ -109,7 +108,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_post_with_request_and_response_and_status_code_OK() throws IOException, URISyntaxException {
+	public void test_post_with_request_and_response_and_status_code_OK() throws IOException {
 		// Setup
 		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
 		httpResponse.setEntity(new StringEntity("true"));
@@ -128,7 +127,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_get_with_status_code_OK() throws IOException, URISyntaxException {
+	public void test_get_with_status_code_OK() throws IOException {
 		// Setup
 		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
 		when(httpClient.execute(httpRequest.capture())).thenReturn(httpResponse);
@@ -144,7 +143,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_get_with_response_and_status_code_OK() throws IOException, URISyntaxException {
+	public void test_get_with_response_and_status_code_OK() throws IOException {
 		// Setup
 		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
 		httpResponse.setEntity(new StringEntity("true"));
@@ -162,7 +161,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_use_and_reset_of_path_and_specific_valid_codes_with_request_OK() throws IOException, URISyntaxException {
+	public void test_use_and_reset_of_path_and_specific_valid_codes_with_request_OK() throws IOException {
 		for (RequestType requestType : RequestType.values()) {
 			// Setup
 			BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 527, "Specific Error");
@@ -190,7 +189,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_use_and_reset_of_path_and_specific_valid_codes_with_request_KO() throws IOException, URISyntaxException {
+	public void test_use_and_reset_of_path_and_specific_valid_codes_with_request_KO() throws IOException {
 		for (RequestType requestType : RequestType.values()) {
 			// Setup
 			BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 301, "Redirect");
@@ -218,7 +217,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_post_with_request_with_json_serialization_KO() throws IOException, URISyntaxException {
+	public void test_post_with_request_with_json_serialization_KO() {
 		// Test
 		try {
 			BasicCloseableHttpResponse impossibleToSerialize = new BasicCloseableHttpResponse(protocolVersion, 200, "");
@@ -232,7 +231,7 @@ public class RestApiClientTest {
 	}
 
 	@Test
-	public void test_get_with_response_with_json_deserialization_KO() throws IOException, URISyntaxException {
+	public void test_get_with_response_with_json_deserialization_KO() throws IOException {
 		// Setup
 		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
 		httpResponse.setEntity(new StringEntity("toto"));
@@ -276,7 +275,7 @@ public class RestApiClientTest {
 		}
 	}
 
-	private static class BasicCloseableHttpResponse extends BasicHttpResponse implements CloseableHttpResponse {
+	public static class BasicCloseableHttpResponse extends BasicHttpResponse implements CloseableHttpResponse {
 		public boolean closed = false;
 
 		public BasicCloseableHttpResponse(ProtocolVersion version, int code, String reason) {
