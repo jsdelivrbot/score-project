@@ -29,7 +29,7 @@ public class JsonFileValidationPublisherTest {
 
 		// Assert
 		File createdFile = new File(directory, "myTeam.json");
-		assertThat(createdFile).exists().hasContent("{\"team\":\"myTeam\",\"points\":431}");
+		assertThat(createdFile).exists().hasContent("{\"team\":\"myTeam\",\"totalPoints\":431,\"caseResults\":[]}");
 	}
 
 }

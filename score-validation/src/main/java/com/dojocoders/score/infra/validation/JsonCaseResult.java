@@ -47,9 +47,7 @@ public final class JsonCaseResult extends CaseResult {
 		properties.put("message", exception.getMessage());
 		StringWriter strackTrace = new StringWriter();
 		exception.printStackTrace(new PrintWriter(strackTrace));
-		// String normalizedStrackTrace = strackTrace.toString() //
-		// .replace("\r", "").replace("\n", "").replace("\t", " - ");
-		properties.put("stackTrace", strackTrace.toString());// normalizedStrackTrace);
+		properties.put("stackTrace", strackTrace.toString());
 	}
 
 	@JsonIgnore
