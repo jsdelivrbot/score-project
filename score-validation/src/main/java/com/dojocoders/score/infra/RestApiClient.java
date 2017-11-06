@@ -18,7 +18,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Range;
@@ -34,7 +37,7 @@ public class RestApiClient implements AutoCloseable {
 
 	public static final RangeSet<Integer> STRICT_SUCCESS_HTTP_CODE = ImmutableRangeSet.of(Range.singleton(200));
 
-	public static final RangeSet<Integer> WITHOUT_ERROR_HTTP_CODES = ImmutableRangeSet.<Integer>builder() //
+	public static final RangeSet<Integer> WITHOUT_ERROR_HTTP_CODES = ImmutableRangeSet.<Integer> builder() //
 			.addAll(HTTP_INFORMATION_CODES).addAll(HTTP_SUCCESS_CODES).addAll(HTTP_REDIRECT_CODES) //
 			.build();
 
@@ -45,8 +48,8 @@ public class RestApiClient implements AutoCloseable {
 	private final CloseableHttpClient client;
 	private final RangeSet<Integer> defaultValidResponseHttpCodes;
 
-	private final static String NOT_DEFINED_REQUEST_PATH = new String();
-	private final static RangeSet<Integer> NOT_DEFINED_VALID_RESPONSE_HTTP_CODES = ImmutableRangeSet.of();
+	private static final String NOT_DEFINED_REQUEST_PATH = new String();
+	private static final RangeSet<Integer> NOT_DEFINED_VALID_RESPONSE_HTTP_CODES = ImmutableRangeSet.of();
 
 	private String nextRequestPath = NOT_DEFINED_REQUEST_PATH;
 	private RangeSet<Integer> nextRequestValidResponseHttpCodes = NOT_DEFINED_VALID_RESPONSE_HTTP_CODES;
@@ -75,7 +78,8 @@ public class RestApiClient implements AutoCloseable {
 	}
 
 	public RestApiClient(String restApiBaseUrl, RangeSet<Integer> defaultValidResponseHttpCodes, CloseableHttpClient client) {
-		this.restApiBaseUrl = Strings.nullToEmpty(restApiBaseUrl).endsWith("/") ? restApiBaseUrl.substring(0, restApiBaseUrl.length() - 1) : restApiBaseUrl;
+		this.restApiBaseUrl = Strings.nullToEmpty(restApiBaseUrl).endsWith("/") ? restApiBaseUrl.substring(0, restApiBaseUrl.length() - 1)
+				: restApiBaseUrl;
 		this.defaultValidResponseHttpCodes = defaultValidResponseHttpCodes;
 		this.client = client;
 	}
@@ -110,17 +114,18 @@ public class RestApiClient implements AutoCloseable {
 	}
 
 	private String getRequestPath() {
+		StringBuilder requestPath = new StringBuilder(restApiBaseUrl);
 		// Use reference equality to ensure that parameter has been defined
-		if (currentRequestPath == NOT_DEFINED_REQUEST_PATH) {
-			return restApiBaseUrl;
-		} else {
-			return restApiBaseUrl + "/" + currentRequestPath;
+		if (currentRequestPath != NOT_DEFINED_REQUEST_PATH) {
+			requestPath.append("/").append(currentRequestPath);
 		}
+		return requestPath.toString();
 	}
 
 	private RangeSet<Integer> getValidResponseHttpCodes() {
 		// Use reference equality to ensure that parameter has been defined
-		return (currentRequestValidResponseHttpCodes == NOT_DEFINED_VALID_RESPONSE_HTTP_CODES) ? defaultValidResponseHttpCodes : currentRequestValidResponseHttpCodes;
+		return (currentRequestValidResponseHttpCodes == NOT_DEFINED_VALID_RESPONSE_HTTP_CODES) ? defaultValidResponseHttpCodes
+				: currentRequestValidResponseHttpCodes;
 	}
 
 	public void post() {
@@ -136,12 +141,28 @@ public class RestApiClient implements AutoCloseable {
 	}
 
 	public <Response> Response post(Class<Response> responseType) {
+		return post(TypeFactory.defaultInstance().constructType(responseType));
+	}
+
+	public <Response> Response post(TypeReference<Response> responseType) {
+		return post(TypeFactory.defaultInstance().constructType(responseType));
+	}
+
+	public <Response> Response post(JavaType responseType) {
 		startRequestExecution();
 		HttpPost httpRequest = new HttpPost(getRequestPath());
 		return executeWithoutBody(httpRequest, responseType);
 	}
 
 	public <Request, Response> Response post(Request request, Class<Response> responseType) {
+		return post(request, TypeFactory.defaultInstance().constructType(responseType));
+	}
+
+	public <Request, Response> Response post(Request request, TypeReference<Response> responseType) {
+		return post(request, TypeFactory.defaultInstance().constructType(responseType));
+	}
+
+	public <Request, Response> Response post(Request request, JavaType responseType) {
 		startRequestExecution();
 		HttpPost httpRequest = new HttpPost(getRequestPath());
 		return execute(httpRequest, request, responseType);
@@ -154,6 +175,14 @@ public class RestApiClient implements AutoCloseable {
 	}
 
 	public <Response> Response get(Class<Response> responseType) {
+		return get(TypeFactory.defaultInstance().constructType(responseType));
+	}
+
+	public <Response> Response get(TypeReference<Response> responseType) {
+		return get(TypeFactory.defaultInstance().constructType(responseType));
+	}
+
+	public <Response> Response get(JavaType responseType) {
 		startRequestExecution();
 		HttpGet httpRequest = new HttpGet(getRequestPath());
 		return executeWithoutBody(httpRequest, responseType);
@@ -167,15 +196,16 @@ public class RestApiClient implements AutoCloseable {
 		internalExecute(requestWithBody, request, Optional.empty());
 	}
 
-	private <Response> Response executeWithoutBody(HttpRequestBase requestWithoutBody, Class<Response> responseType) {
+	private <Response> Response executeWithoutBody(HttpRequestBase requestWithoutBody, JavaType responseType) {
 		return internalExecute(requestWithoutBody, Optional.of(responseType));
 	}
 
-	private <Request, Response> Response execute(HttpEntityEnclosingRequestBase requestWithBody, Request request, Class<Response> responseType) {
+	private <Request, Response> Response execute(HttpEntityEnclosingRequestBase requestWithBody, Request request, JavaType responseType) {
 		return internalExecute(requestWithBody, request, Optional.of(responseType));
 	}
 
-	private <Request, Response> Response internalExecute(HttpEntityEnclosingRequestBase requestWithBody, Request request, Optional<Class<Response>> responseType) {
+	private <Request, Response> Response internalExecute(HttpEntityEnclosingRequestBase requestWithBody, Request request,
+			Optional<JavaType> responseType) {
 		try {
 			String requestAsJsonString = jsonMapper.writeValueAsString(request);
 			requestWithBody.setEntity(new StringEntity(requestAsJsonString, ContentType.APPLICATION_JSON));
@@ -186,12 +216,13 @@ public class RestApiClient implements AutoCloseable {
 		return internalExecute(requestWithBody, responseType);
 	}
 
-	private <Request, Response> Response internalExecute(HttpRequestBase requestWithoutBody, Optional<Class<Response>> responseType) {
+	private <Response> Response internalExecute(HttpRequestBase requestWithoutBody, Optional<JavaType> responseType) {
 		try (CloseableHttpResponse postResponse = client.execute(requestWithoutBody)) {
 
 			if (hasFailed(postResponse)) {
-				throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(), postResponse.getStatusLine().getReasonPhrase() + ", code "
-						+ postResponse.getStatusLine().getStatusCode() + ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
+				throw new HttpResponseException(postResponse.getStatusLine().getStatusCode(),
+						postResponse.getStatusLine().getReasonPhrase() + ", code " + postResponse.getStatusLine().getStatusCode()
+								+ ", body of response :\n" + EntityUtils.toString(postResponse.getEntity()));
 			}
 
 			Response responseValue = null;
@@ -208,6 +239,7 @@ public class RestApiClient implements AutoCloseable {
 		return !getValidResponseHttpCodes().contains(requestResponse.getStatusLine().getStatusCode());
 	}
 
+	@Override
 	public void close() throws IOException {
 		client.close();
 	}

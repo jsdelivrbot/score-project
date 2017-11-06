@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.List;
 
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpResponseException;
@@ -26,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Range;
@@ -78,7 +80,7 @@ public class RestApiClientTest {
 		when(httpClient.execute(httpRequest.capture())).thenReturn(httpResponse);
 
 		// Test
-		restApiClient.post(false);
+		restApiClient.post(Boolean.FALSE);
 
 		// Assert
 		assertThat(httpRequest.getValue().getURI().toASCIIString()).isEqualTo("http://remoteRestApi");
@@ -100,6 +102,26 @@ public class RestApiClientTest {
 
 		// Assert
 		assertThat(response).isTrue();
+		assertThat(httpRequest.getValue().getURI().toASCIIString()).isEqualTo("http://remoteRestApi");
+		assertThat(httpRequest.getValue().getMethod()).isEqualTo("POST");
+		assertThat(httpRequest.getValue()).isExactlyInstanceOf(HttpPost.class);
+		assertThat(((HttpPost) httpRequest.getValue()).getEntity()).isNull();
+		assertThat(httpResponse.closed).isTrue();
+	}
+
+	@Test
+	public void test_post_with_generic_response_and_status_code_OK() throws IOException {
+		// Setup
+		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
+		httpResponse.setEntity(new StringEntity("[10,25,69]"));
+		when(httpClient.execute(httpRequest.capture())).thenReturn(httpResponse);
+
+		// Test
+		List<Integer> response = restApiClient.post(new TypeReference<List<Integer>>() {
+		});
+
+		// Assert
+		assertThat(response).containsExactly(10, 25, 69);
 		assertThat(httpRequest.getValue().getURI().toASCIIString()).isEqualTo("http://remoteRestApi");
 		assertThat(httpRequest.getValue().getMethod()).isEqualTo("POST");
 		assertThat(httpRequest.getValue()).isExactlyInstanceOf(HttpPost.class);
@@ -154,6 +176,25 @@ public class RestApiClientTest {
 
 		// Assert
 		assertThat(response).isTrue();
+		assertThat(httpRequest.getValue().getURI().toASCIIString()).isEqualTo("http://remoteRestApi");
+		assertThat(httpRequest.getValue().getMethod()).isEqualTo("GET");
+		assertThat(httpRequest.getValue()).isExactlyInstanceOf(HttpGet.class);
+		assertThat(httpResponse.closed).isTrue();
+	}
+
+	@Test
+	public void test_get_with_generic_response_and_status_code_OK() throws IOException {
+		// Setup
+		BasicCloseableHttpResponse httpResponse = new BasicCloseableHttpResponse(protocolVersion, 200, "");
+		httpResponse.setEntity(new StringEntity("[10,25,69]"));
+		when(httpClient.execute(httpRequest.capture())).thenReturn(httpResponse);
+
+		// Test
+		List<Integer> response = restApiClient.get(new TypeReference<List<Integer>>() {
+		});
+
+		// Assert
+		assertThat(response).containsExactly(10, 25, 69);
 		assertThat(httpRequest.getValue().getURI().toASCIIString()).isEqualTo("http://remoteRestApi");
 		assertThat(httpRequest.getValue().getMethod()).isEqualTo("GET");
 		assertThat(httpRequest.getValue()).isExactlyInstanceOf(HttpGet.class);
@@ -256,7 +297,7 @@ public class RestApiClientTest {
 			restApiClient.post();
 			break;
 		case POST_WITH_BODY:
-			restApiClient.post(false);
+			restApiClient.post(Boolean.FALSE);
 			break;
 		case POST_WITH_RESPONSE:
 			restApiClient.post(String.class);
