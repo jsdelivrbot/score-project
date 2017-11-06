@@ -6,6 +6,7 @@ public class DisabledValidationPublisher implements ValidationPublisher {
 
 	@Override
 	public void publishValidation(ValidationResult validationResult) {
+		// Disable
 	}
 
 }

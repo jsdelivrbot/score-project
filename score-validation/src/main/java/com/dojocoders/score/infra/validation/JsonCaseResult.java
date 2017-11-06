@@ -51,6 +51,7 @@ public final class JsonCaseResult extends CaseResult {
 	}
 
 	@JsonIgnore
+	@Override
 	public Method getDescription() {
 		return super.getDescription();
 	}
@@ -60,6 +61,7 @@ public final class JsonCaseResult extends CaseResult {
 	}
 
 	@JsonProperty("resultType")
+	@Override
 	public CaseResultType getType() {
 		return resultType;
 	}

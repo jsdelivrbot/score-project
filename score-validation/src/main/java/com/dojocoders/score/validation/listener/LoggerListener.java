@@ -17,8 +17,9 @@ public class LoggerListener implements ValidationListener {
 	private Stopwatch totalElapsedTime;
 	private Stopwatch combinedCasesElapsedTime;
 	private final CombinedTimeTicker combinedCasesElapsedTimeTicker = new CombinedTimeTicker();
-	private final ThreadLocal<Stopwatch> caseElapsedTime = new ThreadLocal<Stopwatch>();
+	private final ThreadLocal<Stopwatch> caseElapsedTime = new ThreadLocal<>();
 
+	@Override
 	public void startValidation() {
 		LOGGER.info("Start validation");
 		totalElapsedTime = Stopwatch.createStarted();
@@ -26,29 +27,35 @@ public class LoggerListener implements ValidationListener {
 		combinedCasesElapsedTime = Stopwatch.createStarted(combinedCasesElapsedTimeTicker);
 	}
 
+	@Override
 	public void startCase(Method caseDescription) {
 		LOGGER.info("Start case {}.{}", caseDescription.getDeclaringClass().getName(), caseDescription.getName());
 		caseElapsedTime.set(Stopwatch.createStarted());
 	}
 
+	@Override
 	public void caseSuccess(Method caseDescription) {
 		LOGGER.info("Success for case {}.{}", caseDescription.getDeclaringClass().getName(), caseDescription.getName());
 	}
 
+	@Override
 	public void caseFailure(Method caseDescription, AssertionError failure) {
 		LOGGER.warn("Failure for case " + caseDescription.getDeclaringClass().getName() + "." + caseDescription.getName(), failure);
 	}
 
+	@Override
 	public void caseError(Method caseDescription, Throwable error) {
 		LOGGER.error("Error for case " + caseDescription.getDeclaringClass().getName() + "." + caseDescription.getName(), error);
 	}
 
+	@Override
 	public void caseFinished(Method caseDescription) {
 		caseElapsedTime.get().stop();
 		combinedCasesElapsedTimeTicker.addTime(caseElapsedTime.get());
 		LOGGER.info("Finished case {}.{} in {}", caseDescription.getDeclaringClass().getName(), caseDescription.getName(), caseElapsedTime.get());
 	}
 
+	@Override
 	public void validationFinished() {
 		totalElapsedTime.stop();
 		LOGGER.info("End of validation. Take {}. All combined cases take {} (sequential time)", totalElapsedTime, combinedCasesElapsedTime);

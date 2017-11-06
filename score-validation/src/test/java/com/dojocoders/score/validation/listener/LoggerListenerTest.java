@@ -36,7 +36,7 @@ public class LoggerListenerTest {
 	}
 
 	@Before
-	public void setup() throws NoSuchMethodException, NoSuchFieldException {
+	public void setup() {
 		loggerListener = new LoggerListener();
 	}
 

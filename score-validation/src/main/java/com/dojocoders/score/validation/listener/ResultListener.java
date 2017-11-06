@@ -59,6 +59,7 @@ public class ResultListener implements ValidationListener {
 		return totalPoints.get();
 	}
 
+	@Override
 	public void startValidation() {
 		this.successCases.clear();
 		this.failureCases.clear();
@@ -67,10 +68,12 @@ public class ResultListener implements ValidationListener {
 		this.totalPoints.set(0);
 	}
 
+	@Override
 	public void startCase(Method caseDescription) {
 		allCasesInStartedOrder.add(caseDescription);
 	}
 
+	@Override
 	public void caseSuccess(Method caseDescription) {
 		int caseSuccessPoints = getCasePoints(caseDescription);
 		totalPoints.addAndGet(caseSuccessPoints);
@@ -82,17 +85,22 @@ public class ResultListener implements ValidationListener {
 		return scoreAnnotation != null ? scoreAnnotation.value() : UNDEFINED_SCORE_ANNOTATION_POINTS;
 	}
 
+	@Override
 	public void caseFailure(Method caseDescription, AssertionError failure) {
 		failureCases.put(caseDescription, failure);
 	}
 
+	@Override
 	public void caseError(Method caseDescription, Throwable error) {
 		errorCases.put(caseDescription, error);
 	}
 
+	@Override
 	public void caseFinished(Method caseDescription) {
+		// not used here
 	}
 
+	@Override
 	public void validationFinished() {
 		Stream<SuccessCase> successAsCaseResult = successCases.entrySet().stream().map(entry -> new SuccessCase(entry.getKey(), entry.getValue()));
 		Stream<FailureCase> failuresAsCaseResult = failureCases.entrySet().stream().map(entry -> new FailureCase(entry.getKey(), entry.getValue()));

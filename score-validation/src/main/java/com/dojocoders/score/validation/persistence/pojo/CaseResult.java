@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 public abstract class CaseResult {
 
-	public static enum CaseResultType {
+	public enum CaseResultType {
 		SUCCESS, FAILURE, ERROR
 	}
 
