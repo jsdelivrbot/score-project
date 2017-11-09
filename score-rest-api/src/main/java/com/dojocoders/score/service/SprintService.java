@@ -1,13 +1,14 @@
 package com.dojocoders.score.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.dojocoders.score.model.Configuration;
 import com.dojocoders.score.model.Sprint;
 import com.dojocoders.score.model.SprintTimer;
 import com.dojocoders.score.repository.SprintRepository;
 import com.dojocoders.score.timer.SprintTimerComponent;
 import com.google.common.base.MoreObjects;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class SprintService {
@@ -19,10 +20,10 @@ public class SprintService {
 	private ConfigurationService configurationService;
 
 	@Autowired
-    private SprintTimerComponent sprintTimer;
+	private SprintTimerComponent sprintTimer;
 
 	@Autowired
-    private JenkinsService jenkinsService;
+	private JenkinsService jenkinsService;
 
 	public Sprint prepareNextSprintFor(String team) {
 		Sprint sprint = getSprint();
@@ -42,28 +43,27 @@ public class SprintService {
 	}
 
 	public SprintTimer startSprintTimer() {
-        sprintTimer.start(getPreviousCountdown());
-        sprintTimer.addScheduler(this::resetCountdown);
-        sprintTimer.addScheduler(this::launchJob);
-        return sprintTimer.getTimer();
+		sprintTimer.start(getPreviousCountdown());
+		sprintTimer.addScheduler(this::resetCountdown);
+		sprintTimer.addScheduler(this::launchJob);
+		return sprintTimer.getTimer();
 	}
 
 	public SprintTimer pauseSprintTimer() {
-        sprintTimer.stop();
-        sprintTimer.clearSchedulers();
-        return sprintTimer.getTimer();
-    }
+		sprintTimer.stop();
+		sprintTimer.clearSchedulers();
+		return sprintTimer.getTimer();
+	}
 
-    public SprintTimer getSprintTimer() {
-        return sprintTimer.getTimer();
-    }
+	public SprintTimer getSprintTimer() {
+		return sprintTimer.getTimer();
+	}
 
 	private int getPreviousCountdown() {
-        if (sprintTimer.getTimer().getCountdown() <= 0) {
-            return configurationService.getCurrentConfiguration().getSprintTime();
-        } else {
-            return sprintTimer.getTimer().getCountdown();
-        }
+		if (sprintTimer.getTimer().getCountdown() <= 0) {
+			return configurationService.getCurrentConfiguration().getSprintTime();
+		}
+		return sprintTimer.getTimer().getCountdown();
 	}
 
 	private void resetCountdown() {
@@ -72,7 +72,7 @@ public class SprintService {
 	}
 
 	private void launchJob() {
-        Configuration configuration = configurationService.getCurrentConfiguration();
+		Configuration configuration = configurationService.getCurrentConfiguration();
 		jenkinsService.launchJobJenkins(configuration.getJenkinsUrl(), configuration.getJenkinsJobName(), configuration.getJenkinsJobToken());
 	}
 

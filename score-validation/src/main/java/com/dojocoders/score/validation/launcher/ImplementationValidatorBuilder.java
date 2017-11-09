@@ -9,53 +9,53 @@ import com.dojocoders.score.validation.listener.ResultListener;
 import com.dojocoders.score.validation.persistence.DisabledValidationPublisher;
 import com.dojocoders.score.validation.persistence.ValidationPublisher;
 
-public class ImplementationValidatorBuilder<Implementation> {
+public class ImplementationValidatorBuilder<T> {
 
 	private ValidationPublisher validationPublisherImplementation = new DisabledValidationPublisher();
 	private int threadPoolSize = 1;
-	private Implementation implementation;
+	private T implementation;
 	private String team;
 
 	private ImplementationValidatorBuilder() {
 	}
 
-	public static <Implementation> ImplementationValidatorBuilder<Implementation> start(Class<Implementation> implementationClass) {
+	public static <R> ImplementationValidatorBuilder<R> start() {
 		return new ImplementationValidatorBuilder<>();
 	}
 
-	public ImplementationValidatorBuilder<Implementation> forTeam(String team) {
+	public ImplementationValidatorBuilder<T> forTeam(String team) {
 		this.team = team;
 		return this;
 	}
 
-	public ImplementationValidatorBuilder<Implementation> withImplementation(Implementation implementation) {
+	public ImplementationValidatorBuilder<T> withImplementation(T implementation) {
 		this.implementation = implementation;
 		return this;
 	}
 
-	public ImplementationValidatorBuilder<Implementation> withParallelValidation() {
+	public ImplementationValidatorBuilder<T> withParallelValidation() {
 		return withParallelValidation(Runtime.getRuntime().availableProcessors());
 	}
 
-	public ImplementationValidatorBuilder<Implementation> withParallelValidation(int nbParallelValidationThreads) {
+	public ImplementationValidatorBuilder<T> withParallelValidation(int nbParallelValidationThreads) {
 		threadPoolSize = nbParallelValidationThreads;
 		return this;
 	}
 
-	public ImplementationValidatorBuilder<Implementation> withValidationPublisher(ValidationPublisher validationPublisher) {
+	public ImplementationValidatorBuilder<T> withValidationPublisher(ValidationPublisher validationPublisher) {
 		validationPublisherImplementation = validationPublisher;
 		return this;
 	}
 
-	public ImplementationValidator<Implementation> build() {
+	public ImplementationValidator<T> build() {
 		validateState();
 		ExecutorService executor = threadPoolSize > 1 ? Executors.newFixedThreadPool(threadPoolSize) : Executors.newSingleThreadExecutor();
-		return new ImplementationValidator<Implementation>(implementation, executor, new ResultListener(validationPublisherImplementation, team), new LoggerListener());
+		return new ImplementationValidator<T>(implementation, executor, new ResultListener(validationPublisherImplementation, team),
+				new LoggerListener());
 	}
 
 	private void validateState() {
 		Objects.requireNonNull(implementation, "Implementation must be defined via the withImplementation method");
 		Objects.requireNonNull(team, "Team must be defined via the forTeam method");
 	}
-
 }

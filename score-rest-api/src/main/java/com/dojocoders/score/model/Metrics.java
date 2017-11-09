@@ -1,12 +1,12 @@
 package com.dojocoders.score.model;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.couchbase.client.java.repository.annotation.Id;
-import com.google.common.collect.Maps;
+import java.util.Map;
 
 import org.springframework.data.couchbase.core.mapping.Document;
 
-import java.util.Map;
+import com.couchbase.client.java.repository.annotation.Field;
+import com.couchbase.client.java.repository.annotation.Id;
+import com.google.common.collect.Maps;
 
 @Document
 public class Metrics {
@@ -17,18 +17,15 @@ public class Metrics {
 	@Field
 	private Map<String, String> metrics = Maps.newHashMap();
 
-    private Metrics() {
-    }
-
 	public Metrics(String team) {
 		this.team = team;
-    }
+	}
 
 	public String getTeam() {
 		return team;
 	}
 
-    public Map<String, String> getMetrics() {
+	public Map<String, String> getMetrics() {
 		return this.metrics;
 	}
 }
