@@ -8,7 +8,7 @@ public interface ValidationListener {
 
 	void startCase(Method caseDescription);
 
-	void caseSuccess(Method caseDescription);
+	void caseSuccess(Method caseDescription, Object result);
 
 	void caseFailure(Method caseDescription, AssertionError failure);
 

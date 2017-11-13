@@ -49,7 +49,7 @@ public class LoggerListenerTest {
 		loggerListener.startValidation();
 		loggerListener.startCase(method);
 		Thread.sleep(100);
-		loggerListener.caseSuccess(method);
+		loggerListener.caseSuccess(method, null);
 		loggerListener.caseFinished(method);
 		loggerListener.validationFinished();
 
@@ -70,7 +70,7 @@ public class LoggerListenerTest {
 
 		loggerListener.startCase(method);
 		Thread.sleep(100);
-		loggerListener.caseSuccess(method);
+		loggerListener.caseSuccess(method, null);
 		loggerListener.caseFinished(method);
 		long firstCaseElapsedTime = getCaseElapsedTime();
 

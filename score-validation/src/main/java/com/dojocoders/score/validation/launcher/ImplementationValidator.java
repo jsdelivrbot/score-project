@@ -1,11 +1,9 @@
 package com.dojocoders.score.validation.launcher;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -13,28 +11,33 @@ import org.slf4j.LoggerFactory;
 
 import com.dojocoders.score.validation.listener.ValidationListener;
 
-public class ImplementationValidator<Implementation> {
+public class ImplementationValidator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationValidator.class);
 
-	private Iterable<ValidationListener> validationListeners;
-	private Implementation implementation;
-	private ExecutorService threadPool;
+	private final ExecutorService threadPool;
+	private final long maximumValidationTimeInSeconds;
+	private final Iterable<ValidationCase> validationCases;
+	private final Iterable<ValidationListener> validationListeners;
 
-	public ImplementationValidator(Implementation implementation, ExecutorService threadPool, ValidationListener... validationListeners) {
-		this.implementation = implementation;
-		this.validationListeners = Arrays.asList(validationListeners);
+	protected ImplementationValidator(ExecutorService threadPool, long maximumValidationTimeInSeconds, List<ValidationCase> validationCases,
+			List<ValidationListener> validationListeners) {
 		this.threadPool = threadPool;
+		this.maximumValidationTimeInSeconds = maximumValidationTimeInSeconds;
+		this.validationCases = validationCases;
+		this.validationListeners = validationListeners;
 	}
 
-	public void validate(Iterable<ValidationCase<Implementation>> cases, long maximumTimeInSeconds) {
-		callListenersSafely("startValidation", ValidationListener::startValidation);
+	public void validate() {
+		callListenersSafely(ValidationListener::startValidation, "startValidation");
 
-		cases.forEach(oneCase -> threadPool.submit(() -> validateCase(oneCase)));
+		for (ValidationCase oneCase : validationCases) {
+			threadPool.submit(() -> validateCase(oneCase));
+		}
 
 		threadPool.shutdown();
 		try {
-			boolean allValidationCasesExecuted = threadPool.awaitTermination(maximumTimeInSeconds, TimeUnit.SECONDS);
+			boolean allValidationCasesExecuted = threadPool.awaitTermination(maximumValidationTimeInSeconds, TimeUnit.SECONDS);
 			if (!allValidationCasesExecuted) {
 				LOGGER.error("Timeout is reached before all validation cases are finished");
 			}
@@ -42,49 +45,54 @@ public class ImplementationValidator<Implementation> {
 			LOGGER.error("InterruptedException during awaiting of validation cases", e);
 			throw new RuntimeException(e);
 		} finally {
-			callListenersSafely("validationFinished", ValidationListener::validationFinished);
+			callListenersSafely(ValidationListener::validationFinished, "validationFinished");
 			threadPool.shutdownNow();
 		}
 	}
 
-	private void validateCase(ValidationCase<Implementation> oneCase) {
-		Method caseMethod = oneCase.getCaseDescription();
+	private void callListenersSafely(Consumer<ValidationListener> listenerCall, String listenerMethodName) {
+		callListenersSafely(listenerCall, listenerMethodName, null);
+	}
 
-		callListenersSafely("startCase", ValidationListener::startCase, caseMethod);
+	private void validateCase(ValidationCase caseToValidate) {
+		Method caseMethod = caseToValidate.getCaseDescription();
+
+		callListenersSafely(listener -> listener.startCase(caseMethod), "startCase", caseMethod);
 		try {
 
-			oneCase.getCaseAccessor().accept(implementation);
+			Object result = caseToValidate.callValidationCase();
 
-			callListenersSafely("caseSuccess", ValidationListener::caseSuccess, caseMethod);
+			callListenersSafely(listener -> listener.caseSuccess(caseMethod, result), "caseSuccess", caseMethod);
 		} catch (AssertionError e) {
-			callListenersSafely("caseFailure", listener -> listener.caseFailure(caseMethod, e), caseMethod);
+			callListenersSafely(listener -> listener.caseFailure(caseMethod, e), "caseFailure", caseMethod);
 		} catch (Throwable e) {
-			callListenersSafely("caseError", listener -> listener.caseError(caseMethod, e), caseMethod);
+			callListenersSafely(listener -> listener.caseError(caseMethod, e), "caseError", caseMethod);
 		} finally {
-			callListenersSafely("caseFinished", ValidationListener::caseFinished, caseMethod);
+			callListenersSafely(listener -> listener.caseFinished(caseMethod), "caseFinished", caseMethod);
 		}
 	}
 
-	private void callListenersSafely(String listenerMethodName, Consumer<ValidationListener> listenerCall) {
-		validationListeners.forEach(wrapListenerExecution(listener -> listenerCall.accept(listener), Optional.empty(), listenerMethodName));
-	}
-
-	private void callListenersSafely(String listenerMethodName, Consumer<ValidationListener> listenerCall, Method caseInformations) {
-		validationListeners.forEach(wrapListenerExecution(listener -> listenerCall.accept(listener), Optional.of(caseInformations), listenerMethodName));
-	}
-
-	private void callListenersSafely(String listenerMethodName, BiConsumer<ValidationListener, Method> listenerCall, Method caseInformations) {
-		validationListeners.forEach(wrapListenerExecution(listener -> listenerCall.accept(listener, caseInformations), Optional.of(caseInformations), listenerMethodName));
-	}
-
-	private Consumer<ValidationListener> wrapListenerExecution(Consumer<ValidationListener> listenerCall, Optional<Method> caseInformations, String listenerMethodName) {
-		return listener -> {
+	private void callListenersSafely(Consumer<ValidationListener> listenerCall, String listenerMethodName, Method caseInformations) {
+		for (ValidationListener listener : validationListeners) {
 			try {
+
 				listenerCall.accept(listener);
-			} catch (RuntimeException error) {
-				String caseInfos = caseInformations.isPresent() ? " for case " + caseInformations.get().getDeclaringClass() + "." + caseInformations.get().getName() : "";
-				LOGGER.error("Fail to call " + listener.getClass().getName() + "." + listenerMethodName + caseInfos, error);
+
+			} catch (Throwable error) {
+				StringBuilder errorMessage = new StringBuilder() // 
+						.append("Fail to call ") //
+						.append(listener.getClass().getName()) //
+						.append(".") //
+						.append(listenerMethodName);
+				if (caseInformations != null) {
+					errorMessage.append(" for case ") //
+							.append(caseInformations.getDeclaringClass().getName()) //
+							.append(".") //
+							.append(caseInformations.getName());
+				}
+				LOGGER.error(errorMessage.toString(), error);
 			}
-		};
+		}
 	}
+
 }

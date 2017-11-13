@@ -4,99 +4,53 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.lang.reflect.Modifier;
+
+import org.springframework.util.ClassUtils;
 
 import com.google.common.base.Throwables;
 
-public class ValidationCase<Implementation> {
+// TODO Add Smart failure (validation) exception management
+// TODO Add a javadoc
+public class ValidationCase {
+
+	private static final Object STATIC_INSTANCE = null;
 
 	private Method caseDescription;
-	private Consumer<Implementation> caseAccessor;
+	private Object implementationToValidate;
 
-	public ValidationCase(Method caseDescription) {
+	public ValidationCase(Method caseDescription, Object implementationToValidate) {
 		this.caseDescription = caseDescription;
-		this.caseAccessor = (implementation -> callCase(implementation, null));
-	}
-
-	public ValidationCase(Method caseDescription, Object caseInstance) {
-		this.caseDescription = caseDescription;
-		this.caseAccessor = (implementation -> callCase(implementation, caseInstance));
-	}
-
-	public ValidationCase(Consumer<Implementation> caseAccessor) {
-		this.caseAccessor = caseAccessor;
-		this.caseDescription = createCaseDescription();
+		this.implementationToValidate = implementationToValidate;
+		assertStaticValidationCase();
 	}
 
 	public Method getCaseDescription() {
 		return caseDescription;
 	}
 
-	public Consumer<Implementation> getCaseAccessor() {
-		return caseAccessor;
-	}
-
-	private void callCase(Implementation implementation, Object instance) {
+	public Object callValidationCase() throws Exception {
 		try {
-			caseDescription.invoke(instance, implementation);
+			return caseDescription.invoke(STATIC_INSTANCE, implementationToValidate);
 		} catch (InvocationTargetException e) {
 			Throwables.throwIfUnchecked(e.getTargetException());
-			throw new RuntimeException(e.getTargetException());
+			Throwables.throwIfInstanceOf(e.getTargetException(), Exception.class);
+			// Sould never append, as a Throwable in an Error or an Exception
+			throw e;
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private Method createCaseDescription() {
-		StackTraceElement currentMethod = null;
-		try {
-			caseDescription.getClass();
-		} catch (NullPointerException e) {
-			currentMethod = e.getStackTrace()[0];
-		}
-		checkState(currentMethod != null, "NullPointerException must be thrown");
-
-		StackTraceElement calledMethod = null;
-		try {
-			caseAccessor.accept(null);
-		} catch (NullPointerException e) {
-			calledMethod = foundCalledMethod(currentMethod, e.getStackTrace());
-		}
-		checkState(calledMethod != null, "NullPointerException must be thrown");
-
-		try {
-			Class<?> calledClass = Class.forName(calledMethod.getClassName());
-			return findMethod(calledMethod.getMethodName(), Arrays.asList(calledClass.getDeclaredMethods()));
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
+	private void assertStaticValidationCase() {
+		checkMethod(Modifier.isStatic(caseDescription.getModifiers()), "Validation method must be static");
+		checkMethod(Modifier.isPublic(caseDescription.getModifiers()), "Validation method must be public");
+		checkMethod(caseDescription.getParameterCount() == 1, "Validation method must take only one parameter");
+		checkMethod(ClassUtils.isAssignable(caseDescription.getParameterTypes()[0], implementationToValidate.getClass()),
+				"Validation method does not take an instance of " + implementationToValidate.getClass().getSimpleName() + " as parameter");
 	}
 
-	private Method findMethod(String methodName, Collection<Method> methods) {
-		List<Method> matchedMethods = methods.stream() //
-				.filter(m -> m.getName().equals(methodName)) //
-				.filter(m -> m.getReturnType().equals(Void.TYPE)) //
-				.filter(m -> m.getParameterTypes().length == 1) //
-				.collect(Collectors.toList());
-		checkState(matchedMethods.size() == 1, "Incorrect number of method " + methodName);
-		return matchedMethods.get(0);
-	}
-
-	private StackTraceElement foundCalledMethod(StackTraceElement currentMethod, StackTraceElement[] callStackTrace) {
-		Comparator<StackTraceElement> comparator = Comparator.comparing(StackTraceElement::getMethodName).thenComparing(StackTraceElement::getClassName);
-		StackTraceElement previousMethod = null;
-		for (StackTraceElement stackTraceElement : callStackTrace) {
-			if (comparator.compare(currentMethod, stackTraceElement) == 0) {
-				checkState(previousMethod != null, "Incorrect stacktrace " + callStackTrace);
-				return previousMethod;
-			}
-			previousMethod = stackTraceElement;
-		}
-		throw new IllegalStateException("currentMethod " + currentMethod + " not found in callStackTrace " + callStackTrace);
+	private void checkMethod(boolean assertion, String faillingMessage) {
+		checkState(assertion, "%s.%s : %s", caseDescription.getDeclaringClass().getName(), caseDescription.getName(), faillingMessage);
 	}
 }

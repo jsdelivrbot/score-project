@@ -64,7 +64,7 @@ public class ResultListenerTest {
 		// Test
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_NO_SCORE);
-		persistenceListener.caseSuccess(METHOD_WITH_NO_SCORE);
+		persistenceListener.caseSuccess(METHOD_WITH_NO_SCORE, null);
 		persistenceListener.caseFailure(METHOD_WITH_NO_SCORE, new AssertionError());
 		persistenceListener.caseError(METHOD_WITH_NO_SCORE, new RuntimeException());
 		persistenceListener.caseFinished(METHOD_WITH_NO_SCORE);
@@ -100,7 +100,7 @@ public class ResultListenerTest {
 		// Test
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_SCORE_22);
-		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22, null);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_22);
 		persistenceListener.validationFinished();
 
@@ -121,9 +121,9 @@ public class ResultListenerTest {
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_SCORE_22);
 		persistenceListener.startCase(METHOD_WITH_SCORE_19);
-		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22, null);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_22);
-		persistenceListener.caseSuccess(METHOD_WITH_SCORE_19);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_19, null);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_19);
 		persistenceListener.validationFinished();
 
@@ -144,7 +144,7 @@ public class ResultListenerTest {
 		// Test
 		persistenceListener.startValidation();
 		persistenceListener.startCase(METHOD_WITH_NO_SCORE);
-		persistenceListener.caseSuccess(METHOD_WITH_NO_SCORE);
+		persistenceListener.caseSuccess(METHOD_WITH_NO_SCORE, null);
 		persistenceListener.caseFinished(METHOD_WITH_NO_SCORE);
 		persistenceListener.validationFinished();
 
@@ -217,9 +217,9 @@ public class ResultListenerTest {
 		persistenceListener.startCase(METHOD_WITH_SCORE_19);
 		persistenceListener.startCase(METHOD_WITH_SCORE_47);
 		persistenceListener.startCase(METHOD_WITH_SCORE_33);
-		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_22, null);
 		persistenceListener.caseFailure(METHOD_WITH_SCORE_19, failure);
-		persistenceListener.caseSuccess(METHOD_WITH_SCORE_47);
+		persistenceListener.caseSuccess(METHOD_WITH_SCORE_47, null);
 		persistenceListener.caseError(METHOD_WITH_SCORE_33, error);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_19);
 		persistenceListener.caseFinished(METHOD_WITH_SCORE_22);

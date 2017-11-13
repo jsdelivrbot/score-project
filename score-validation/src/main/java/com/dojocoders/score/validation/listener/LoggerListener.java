@@ -34,7 +34,7 @@ public class LoggerListener implements ValidationListener {
 	}
 
 	@Override
-	public void caseSuccess(Method caseDescription) {
+	public void caseSuccess(Method caseDescription, Object result) {
 		LOGGER.info("Success for case {}.{}", caseDescription.getDeclaringClass().getName(), caseDescription.getName());
 	}
 

@@ -74,7 +74,7 @@ public class ResultListener implements ValidationListener {
 	}
 
 	@Override
-	public void caseSuccess(Method caseDescription) {
+	public void caseSuccess(Method caseDescription, Object result) {
 		int caseSuccessPoints = getCasePoints(caseDescription);
 		totalPoints.addAndGet(caseSuccessPoints);
 		successCases.put(caseDescription, caseSuccessPoints);
