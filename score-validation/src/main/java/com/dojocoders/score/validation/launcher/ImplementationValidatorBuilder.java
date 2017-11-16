@@ -3,8 +3,8 @@ package com.dojocoders.score.validation.launcher;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,10 +13,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 
 import com.dojocoders.score.validation.listener.LoggerListener;
-import com.dojocoders.score.validation.listener.ResultListener;
 import com.dojocoders.score.validation.listener.ValidationListener;
-import com.dojocoders.score.validation.persistence.DisabledValidationPublisher;
-import com.dojocoders.score.validation.persistence.ValidationPublisher;
 
 public class ImplementationValidatorBuilder {
 
@@ -26,16 +23,11 @@ public class ImplementationValidatorBuilder {
 	private Object implementationToValidate;
 
 	private List<ValidationCase> validationCases = new ArrayList<>();
-	private ValidationPublisher validationPublisherImplementation = new DisabledValidationPublisher();
+	private List<ValidationListener> validationListeners = new ArrayList<>();
+	private boolean withLoggingListener = true;
 
 	private int threadPoolSize = ONE_THREAD_POOL_SIZE;
 	private long maximumValidationTimeInSeconds = NO_MAXIMUM_VALIDATION_TIME;
-
-	/**
-	 * @deprecated TODO put team as program parameter (mandatory or optional)
-	 */
-	@Deprecated
-	private String team;
 
 	private ImplementationValidatorBuilder(Object implementationToValidate) {
 		this.implementationToValidate = implementationToValidate;
@@ -46,20 +38,23 @@ public class ImplementationValidatorBuilder {
 	}
 
 	public ImplementationValidator build() {
-		validateState();
-
 		ExecutorService executor = threadPoolSize > ONE_THREAD_POOL_SIZE ? Executors.newFixedThreadPool(threadPoolSize)
 				: Executors.newSingleThreadExecutor();
 
-		List<ValidationListener> listeners = new ArrayList<>();
-		listeners.add(new ResultListener(validationPublisherImplementation, team));
-		listeners.add(new LoggerListener());
+		if (withLoggingListener) {
+			validationListeners.add(new LoggerListener());
+		}
 
-		return new ImplementationValidator(executor, maximumValidationTimeInSeconds, validationCases, listeners);
+		return new ImplementationValidator(executor, maximumValidationTimeInSeconds, validationCases, validationListeners);
 	}
 
-	public ImplementationValidatorBuilder forTeam(String team) {
-		this.team = team;
+	public ImplementationValidatorBuilder withoutLogging() {
+		this.withLoggingListener = false;
+		return this;
+	}
+
+	public ImplementationValidatorBuilder withListeners(ValidationListener... listener) {
+		this.validationListeners.addAll(Arrays.asList(listener));
 		return this;
 	}
 
@@ -69,7 +64,8 @@ public class ImplementationValidatorBuilder {
 	}
 
 	public ImplementationValidatorBuilder withParallelValidation() {
-		return withParallelValidation(Runtime.getRuntime().availableProcessors());
+		threadPoolSize = Runtime.getRuntime().availableProcessors();
+		return this;
 	}
 
 	public ImplementationValidatorBuilder withParallelValidation(int nbParallelValidationThreads) {
@@ -77,32 +73,24 @@ public class ImplementationValidatorBuilder {
 		return this;
 	}
 
-	public ImplementationValidatorBuilder withValidationPublisher(ValidationPublisher validationPublisher) {
-		validationPublisherImplementation = validationPublisher;
+	public ImplementationValidatorBuilder withValidationCasesAnnotedBy(Class<? extends Annotation> annotation) {
+		String basePackage = implementationToValidate.getClass().getPackage().getName();
+		addValidationCasesAnnotedBy(basePackage, annotation);
 		return this;
 	}
 
-	public ImplementationValidatorBuilder withValidationCasesAnnotedBy(Class<? extends Annotation> annotation) {
-		return this.withValidationCasesAnnotedBy(implementationToValidate.getClass().getPackage().getName(), annotation);
+	public ImplementationValidatorBuilder withValidationCasesAnnotedBy(String basePackage, Class<? extends Annotation> annotation) {
+		addValidationCasesAnnotedBy(basePackage, annotation);
+		return this;
 	}
 
-	public ImplementationValidatorBuilder withValidationCasesAnnotedBy(String basePackage, Class<? extends Annotation> annotation) {
+	private void addValidationCasesAnnotedBy(String basePackage, Class<? extends Annotation> annotation) {
 		Reflections reflections = new Reflections(basePackage, new MethodAnnotationsScanner());
 		Set<Method> reflectiveValidationCases = reflections.getMethodsAnnotatedWith(annotation);
 
 		for (Method validationCase : reflectiveValidationCases) {
 			this.validationCases.add(new ValidationCase(validationCase, implementationToValidate));
 		}
-
-		return this;
-	}
-
-	/**
-	 * @deprecated TODO put team as program parameter (mandatory or optional)
-	 */
-	@Deprecated
-	private void validateState() {
-		Objects.requireNonNull(team, "Team must be defined via the forTeam method");
 	}
 
 }
