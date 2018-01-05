@@ -1,0 +1,19 @@
+version: '3'
+services:
+  codingwars-dashboard-front:
+    image: "nginx:stable-alpine"
+    ports:
+     - "11000:80"
+    volumes:
+     - ./nginx-config:/etc/nginx/conf.d
+     - ./score-ihm:/usr/share/nginx/codingwars-dashboard
+    links:
+    - codingwars-dashboard-back
+  codingwars-dashboard-back:
+    image: "openjdk:8-jre-alpine"
+    command: java -jar score-rest-api.jar
+    ports:
+     - "11080:8080"
+    volumes:
+     - ./score-rest-api:/usr/src/codingwars-dashboard
+    working_dir: /usr/src/codingwars-dashboard
