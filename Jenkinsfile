@@ -32,7 +32,10 @@ pipeline {
 			steps {
 				def retreiveVersionScript="mvn -Dexec.executable='echo' -Dexec.args='\${project.version}' --non-recursive --batch-mode exec:exec -q"
 				projectVersion = sh(returnStdout: true, script: retreiveVersionScript).trim()
-				sh 'mvn clean deploy -DperformRelease=true'
+
+				configFileProvider([configFile(fileId: 'maven-deploy-settings', variable: 'MAVEN_SETTINGS')]) {
+					sh 'mvn -s $MAVEN_SETTINGS clean deploy -DperformRelease=true'
+				}
 			}
 			post {
 				always {
