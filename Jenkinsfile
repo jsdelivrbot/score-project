@@ -49,6 +49,7 @@ pipeline {
 		}
 		stage('Deploy Prepare') {
 			when {
+//				branch 'master'
 				branch 'deploy-optimizing'
 			}
 			agent {
@@ -75,6 +76,7 @@ pipeline {
 		}
 		stage('Deploy Perform') {
 			when {
+//				branch 'master'
 				branch 'deploy-optimizing'
 			}
 			agent {
