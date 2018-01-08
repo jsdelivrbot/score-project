@@ -12,11 +12,6 @@ pipeline {
 				label 'npm'
 			}
 			steps {
-				// Optimize deployment
-				dir('score-deploy') {
-					stash includes: '**', name: 'deployment'
-				}
-
 				dir('score-ihm') {
 					sh '''
 						rm -rf node_modules
@@ -36,12 +31,17 @@ pipeline {
 				maven 'Maven'
 			}
 			steps {
-				// For deployment configuration
-				def retreiveVersionScript="mvn -Dexec.executable='echo' -Dexec.args='\${project.version}' --non-recursive --batch-mode exec:exec -q"
-				projectVersion = sh(returnStdout: true, script: retreiveVersionScript).trim()
-
 				configFileProvider([configFile(fileId: 'maven-deploy-settings', variable: 'MAVEN_SETTINGS')]) {
 					sh 'mvn -s $MAVEN_SETTINGS clean deploy -DperformRelease=true'
+				}
+
+				// For deployment configuration
+				script {
+					def retreiveVersionScript = "mvn -Dexec.executable='echo' -Dexec.args='\${project.version}' --non-recursive --batch-mode exec:exec -q"
+					projectVersion = sh(returnStdout: true, script: retreiveVersionScript).trim()
+				}
+				dir('score-deploy') {
+					stash includes: '**', name: 'deployment'
 				}
 			}
 			post {
