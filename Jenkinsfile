@@ -1,5 +1,4 @@
 def projectVersion
-def deployedBranches = 'master || deploy-optimizing'
 
 pipeline {
 	agent none
@@ -49,7 +48,7 @@ pipeline {
 		}
 		stage('Deploy Prepare') {
 			when {
-				branch deployedBranches
+				branch 'deploy-optimizing'
 			}
 			agent {
 				label 'maven'
@@ -75,7 +74,7 @@ pipeline {
 		}
 		stage('Deploy Perform') {
 			when {
-				branch deployedBranches
+				branch 'deploy-optimizing'
 			}
 			agent {
 				node {
