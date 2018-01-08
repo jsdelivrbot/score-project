@@ -19,7 +19,8 @@ pipeline {
 						rm -rf node_modules dist
 						npm config set proxy http://soft:coucou@dvdsi110w.creteil.francetelecom.fr:8080
 						npm install
-						node_modules/@angular/cli/bin/ng build # --prod
+//						node_modules/@angular/cli/bin/ng build --prod
+						node_modules/@angular/cli/bin/ng build
 					'''
 				}
 				stash includes: 'score-ihm/dist/**', name: 'front-app' // Zipped and uploaded to Nexus via Maven in back build
@@ -93,10 +94,11 @@ pipeline {
 				unstash 'deployment'
 
 				sh "wget 'http://softcu-nexus.si.francetelecom.fr/nexus/service/local/artifact/maven/content?r=public&g=com.dojocoders&a=score-rest-api&v=${projectVersion}' -O score-rest-api.jar"
-				sh 'mv spring-boot-config score-rest-api && mv score-rest-api.jar score-rest-api'
+				sh 'mv spring-boot-config score-rest-api && mv score-rest-api.jar score-rest-api && rm -f score-rest-api/application.properties'
+//				sh 'mv spring-boot-config score-rest-api && mv score-rest-api.jar score-rest-api'
 
 				sh "wget 'http://softcu-nexus.si.francetelecom.fr/nexus/service/local/artifact/maven/content?r=public&g=com.dojocoders&a=score-ihm&v=${projectVersion}&e=zip' -O score-ihm.zip"
-				sh 'unzip score-ihm.zip'
+				sh 'unzip score-ihm.zip && rm -f score-ihm.zip'
 
 				sh 'docker-compose up -d'
 			}
