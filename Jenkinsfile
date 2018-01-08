@@ -1,10 +1,11 @@
+def projectVersion
+
 pipeline {
 	agent none
 	options {
 		timeout(time: 1, unit: 'HOURS')
 		timestamps()
 	}
-	def projectVersion
 	stages {
 		stage('Front build & Test') {
 			agent {
