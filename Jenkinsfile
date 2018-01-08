@@ -16,12 +16,13 @@ pipeline {
 				checkout scm
 				dir('score-ihm') {
 					sh '''
-						rm -rf node_modules
+						rm -rf node_modules dist
 						npm config set proxy http://soft:coucou@dvdsi110w.creteil.francetelecom.fr:8080
 						npm install
-						npm run tsc
+						node_modules/@angular/cli/bin/ng build --prod
 					'''
 				}
+				stash includes: 'score-ihm/dist/**', name: 'front-app' // Zipped and uploaded to Nexus via Maven in back build
 			}
 		}
 		stage('Back build & Test') {
@@ -34,6 +35,7 @@ pipeline {
 			}
 			steps {
 				checkout scm
+				unstash 'front-app'
 				configFileProvider([configFile(fileId: 'maven-deploy-settings', variable: 'MAVEN_SETTINGS')]) {
 					sh 'mvn -s $MAVEN_SETTINGS clean deploy -DperformRelease=true'
 				}
