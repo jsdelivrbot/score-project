@@ -5,6 +5,7 @@ pipeline {
 	options {
 		timeout(time: 1, unit: 'HOURS')
 		timestamps()
+		skipDefaultCheckout() // No checkout on deploy stage custom workspace
 	}
 	stages {
 		stage('Front build & Test') {
@@ -12,6 +13,7 @@ pipeline {
 				label 'npm'
 			}
 			steps {
+				checkout scm
 				dir('score-ihm') {
 					sh '''
 						rm -rf node_modules
@@ -31,6 +33,7 @@ pipeline {
 				maven 'Maven'
 			}
 			steps {
+				checkout scm
 				configFileProvider([configFile(fileId: 'maven-deploy-settings', variable: 'MAVEN_SETTINGS')]) {
 					sh 'mvn -s $MAVEN_SETTINGS clean deploy -DperformRelease=true'
 				}
@@ -62,9 +65,6 @@ pipeline {
 			}
 			tools {
 				'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'Docker Compose'
-			}
-			options {
-				skipDefaultCheckout true
 			}
 			steps {
 				sh 'docker-compose down || true'
