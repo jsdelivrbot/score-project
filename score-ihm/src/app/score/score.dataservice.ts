@@ -11,7 +11,7 @@ export class ScoreDataService {
     private actionUrl: string;
 
     constructor(private _http: Http, private _configuration: Configuration) {
-        this.actionUrl = environment.backend + '/api';
+        this.actionUrl = '/api';
     }
 
     public GetAllScores = (): Observable<ScoreResult[]> => {
