@@ -17,6 +17,11 @@ public class Metrics {
 	@Field
 	private Map<String, String> metrics = Maps.newHashMap();
 
+	@SuppressWarnings("unused")
+	private Metrics() {
+		// Used by jackson
+	}
+
 	public Metrics(String team) {
 		this.team = team;
 	}
