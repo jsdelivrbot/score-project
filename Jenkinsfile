@@ -19,8 +19,7 @@ pipeline {
 						rm -rf node_modules dist
 						npm config set proxy http://soft:coucou@dvdsi110w.creteil.francetelecom.fr:8080
 						npm install
-#						node_modules/@angular/cli/bin/ng build --prod
-						node_modules/@angular/cli/bin/ng build
+						node_modules/@angular/cli/bin/ng build --prod
 					'''
 				}
 				stash includes: 'score-ihm/dist/**', name: 'front-app' // Zipped and uploaded to Nexus via Maven in back build
@@ -81,7 +80,7 @@ pipeline {
 			}
 			agent {
 				node {
-					label 'master'
+					label 'docker'
 					customWorkspace "${JENKINS_HOME}/DockerApps/codingwars-dashboard"
 				}
 			}
