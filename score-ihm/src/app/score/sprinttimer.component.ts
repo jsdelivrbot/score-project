@@ -1,22 +1,26 @@
-import {Component, OnInit} from '@angular/core';
-import {Observable} from "rxjs/Observable";
-import {Subscription} from "rxjs";
-import {ScoreDataService} from "./score.dataservice";
-import {SprintTimer} from "./score.model";
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { ScoreDataService } from './score.dataservice';
+import { SprintTimer } from './score.model';
 
 @Component({
     selector: 'score-timer',
-    template: `
-        <div class="col-md-12">Prochain décollage dans :</div>
-        <div class="col-md-8">{{sprintTimer.countdown}} secondes</div>
-        <div class="col-md-4">
-            <div class="btn-group">
-                <button (click)="pauseClicked()" class="btn btn-warning btn-lg" [disabled]="!sprintTimer.started"><strong>Pause</strong></button>
-                <button (click)="startClicked()" class="btn btn-info btn-lg" [disabled]="sprintTimer.started"><strong>Start</strong></button>
-            </div>
-        </div>`
+    templateUrl: './sprinttimer.component.html'
 })
 export class SprintTimerComponent implements OnInit {
+
+    private subscription: Subscription;
+    private observableTimer: Observable<any>;
+
+    sprintTimer: SprintTimer = {
+        countdown: 0,
+        started: false
+    };
+
+    constructor(private _scoreDataService: ScoreDataService) {
+
+    }
 
     ngOnInit(): void {
         this.launchOnceSynchroCounter();
@@ -24,30 +28,17 @@ export class SprintTimerComponent implements OnInit {
         Observable.interval(10000).subscribe(this.launchOnceSynchroCounter);
     }
 
-    private subscription: Subscription;
-    private observableTimer: Observable<any>;
-
-    private sprintTimer: SprintTimer = {
-        countdown: 0,
-        started: false
-    };
-
-
-    constructor(private _scoreDataService: ScoreDataService) {
-
-    }
-
-    pauseClicked(event) {
+    pauseClicked() {
         this._scoreDataService.PauseSprintTimer()
             .subscribe((response: SprintTimer) => this.updateComponentState(response),
-                error => console.log(error));
+            error => console.log(error));
         this.subscription.unsubscribe();
     }
 
-    startClicked(event) {
+    startClicked() {
         this._scoreDataService.StartSprintTimer()
             .subscribe((response: SprintTimer) => this.updateComponentState(response),
-                error => console.log(error));
+            error => console.log(error));
     }
 
     private updateLaunchNextSprintCountdown = (): void => {
@@ -62,7 +53,7 @@ export class SprintTimerComponent implements OnInit {
     private launchOnceSynchroCounter = (): void => {
         this._scoreDataService.SynchroSprintTimer()
             .subscribe((response: SprintTimer) => this.updateComponentState(response),
-                error => console.log(error)
+            error => console.log(error)
             );
     }
 
