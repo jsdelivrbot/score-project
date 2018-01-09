@@ -8,9 +8,9 @@ import { Observable } from 'rxjs/Observable';
 export class TripService {
 
   private baseUrl: string;
-  
-  constructor(private _httpClient: HttpClient) { 
-    this.baseUrl = environment.backend + '/api';
+
+  constructor(private _httpClient: HttpClient) {
+    this.baseUrl = '/api';
   }
 
   getTrips(): Observable<any> {
