@@ -1,0 +1,8 @@
+<div class="col-md-12">Prochain décollage dans :</div>
+<div class="col-md-8">{{sprintTimer.countdown}} secondes</div>
+<div class="col-md-4">
+    <div class="btn-group">
+        <button (click)="pauseClicked()" class="btn btn-warning btn-lg" [disabled]="!sprintTimer.started"><strong>Pause</strong></button>
+        <button (click)="startClicked()" class="btn btn-info btn-lg" [disabled]="sprintTimer.started"><strong>Start</strong></button>
+    </div>
+</div>
