@@ -1,24 +1,26 @@
 package com.dojocoders.score.model;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.couchbase.client.java.repository.annotation.Id;
 import com.google.common.collect.Lists;
-import org.springframework.data.couchbase.core.mapping.Document;
 
 import java.util.List;
 
-@Document
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+@Document(indexName = "softgames", type = "sprint")
+@org.springframework.data.couchbase.core.mapping.Document
 public class Sprint {
 
     public static final String SPRINT_ID = "score-ihm-sprint";
 
-    @Id
+	@Id
+	@com.couchbase.client.java.repository.annotation.Id
     private String gameName = SPRINT_ID;
 
-    @Field
+    @com.couchbase.client.java.repository.annotation.Field
     private Integer number;
 
-    @Field
+    @com.couchbase.client.java.repository.annotation.Field
     private List<String> teams = Lists.newArrayList();
 
     public Sprint(Integer number) {

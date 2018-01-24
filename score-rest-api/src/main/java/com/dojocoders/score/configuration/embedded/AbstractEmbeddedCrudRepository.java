@@ -1,15 +1,19 @@
 package com.dojocoders.score.configuration.embedded;
 
-import org.springframework.data.repository.CrudRepository;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-abstract public class AbstractEmbeddedCrudRepository<V, K extends Serializable> implements CrudRepository<V, K> {
+public abstract class AbstractEmbeddedCrudRepository<V, K extends Serializable> implements ElasticsearchRepository<V, K> {
 
 	private Map<K, V> values = Maps.newHashMap();
 
@@ -22,22 +26,8 @@ abstract public class AbstractEmbeddedCrudRepository<V, K extends Serializable> 
 	}
 
 	@Override
-	public <S extends V> Iterable<S> save(Iterable<S> entities) {
-		List<S> persistedEntities = Lists.newArrayList();
-		for(S entity : entities) {
-			persistedEntities.add(save(entity));
-		}
-		return persistedEntities;
-	}
-
-	@Override
-	public V findOne(K id) {
-		return values.get(id);
-	}
-
-	@Override
-	public boolean exists(K id) {
-		return values.containsKey(id);
+	public Optional<V> findById(K id) {
+		return Optional.ofNullable(values.get(id));
 	}
 
 	@Override
@@ -46,23 +36,10 @@ abstract public class AbstractEmbeddedCrudRepository<V, K extends Serializable> 
 	}
 
 	@Override
-	public Iterable<V> findAll(Iterable<K> ids) {
-		List<V> result = Lists.newArrayList();
-		for(K id : ids) {
-			V value = values.get(id);
-			if(value != null) {
-				result.add(value);
-			}
-		}
-		return result;
-	}
-
-	@Override
 	public long count() {
 		return values.size();
 	}
 
-	@Override
 	public void delete(K id) {
 		values.remove(id);
 	}
@@ -73,15 +50,92 @@ abstract public class AbstractEmbeddedCrudRepository<V, K extends Serializable> 
 	}
 
 	@Override
-	public void delete(Iterable<? extends V> entities) {
-		for(V entity : entities) {
-			delete(entity);
-		}
+	public void deleteAll() {
+		values.clear();
 	}
 
 	@Override
-	public void deleteAll() {
-		values.clear();
+	public Iterable<V> findAll(Sort sort) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Page<V> findAll(Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <S extends V> S index(S entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Iterable<V> search(QueryBuilder query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Page<V> search(QueryBuilder query, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Page<V> search(SearchQuery searchQuery) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Page<V> searchSimilar(V entity, String[] fields, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Class<V> getEntityClass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <S extends V> Iterable<S> saveAll(Iterable<S> entities) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean existsById(K id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Iterable<V> findAllById(Iterable<K> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteById(K id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteAll(Iterable<? extends V> entities) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

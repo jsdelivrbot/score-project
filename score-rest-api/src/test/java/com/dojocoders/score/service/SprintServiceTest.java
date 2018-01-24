@@ -3,11 +3,13 @@ package com.dojocoders.score.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.dojocoders.score.model.Sprint;
 import com.dojocoders.score.repository.SprintRepository;
@@ -37,7 +39,7 @@ public class SprintServiceTest {
 	public void checkGetSprint_secondSprint() {
 
 		Sprint sprint = new Sprint(2);
-		when(repository.findOne(Sprint.SPRINT_ID)).thenReturn(sprint);
+		when(repository.findById(Sprint.SPRINT_ID)).thenReturn(Optional.of(sprint));
 
 		// Test
 		Sprint result = sprintService.getSprint();
@@ -56,7 +58,7 @@ public class SprintServiceTest {
 		Sprint sprint = new Sprint(2);
 		sprint.getTeams().add(team);
 		sprint.getTeams().add(otherTeam);
-		when(repository.findOne(Sprint.SPRINT_ID)).thenReturn(sprint);
+		when(repository.findById(Sprint.SPRINT_ID)).thenReturn(Optional.of(sprint));
 
 		// Test
 		Sprint result = sprintService.prepareNextSprintFor(team);
@@ -74,7 +76,7 @@ public class SprintServiceTest {
 
 		Sprint sprint = new Sprint(2);
 		sprint.getTeams().add(otherTeam);
-		when(repository.findOne(Sprint.SPRINT_ID)).thenReturn(sprint);
+		when(repository.findById(Sprint.SPRINT_ID)).thenReturn(Optional.of(sprint));
 
 		// Test
 		Sprint result = sprintService.prepareNextSprintFor(team);

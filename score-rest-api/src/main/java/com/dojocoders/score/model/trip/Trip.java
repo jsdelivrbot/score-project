@@ -2,8 +2,13 @@ package com.dojocoders.score.model.trip;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+@Document(indexName = "softgames", type = "trip")
 public class Trip {
 
+	@Id
 	private String id;
 	
 	private String team;

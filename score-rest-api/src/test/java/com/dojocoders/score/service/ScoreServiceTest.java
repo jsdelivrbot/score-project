@@ -7,13 +7,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.dojocoders.score.model.Score;
 import com.dojocoders.score.model.ScoreResult;
@@ -103,7 +104,7 @@ public class ScoreServiceTest {
 		String teamName = "team";
 		int points = 200;
 
-		when(repository.findOne(teamName)).thenReturn(null);
+		when(repository.findById(teamName)).thenReturn(Optional.empty());
 
 		Sprint sprint = new Sprint(1);
 		when(sprintService.prepareNextSprintFor(teamName)).thenReturn(sprint);
@@ -131,7 +132,7 @@ public class ScoreServiceTest {
 
 		ScoreResult scoreInDataBase = new ScoreResult(teamName);
 		scoreInDataBase.getScores().add(new Score(1, 200));
-		when(repository.findOne(teamName)).thenReturn(null);
+		when(repository.findById(teamName)).thenReturn(Optional.empty());
 
 		Sprint sprint = new Sprint(2);
 		when(sprintService.prepareNextSprintFor(teamName)).thenReturn(sprint);
@@ -162,7 +163,7 @@ public class ScoreServiceTest {
 
 		ScoreResult scoreInDataBase = new ScoreResult(teamName);
 		scoreInDataBase.getScores().add(new Score(1, 200));
-		when(repository.findOne(teamName)).thenReturn(null);
+		when(repository.findById(teamName)).thenReturn(Optional.empty());
 
 		Sprint sprint = new Sprint(5);
 		when(sprintService.prepareNextSprintFor(teamName)).thenReturn(sprint);

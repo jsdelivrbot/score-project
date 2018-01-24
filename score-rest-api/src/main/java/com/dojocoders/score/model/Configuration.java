@@ -1,25 +1,26 @@
 package com.dojocoders.score.model;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.couchbase.client.java.repository.annotation.Id;
-import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document
+@Document(indexName = "softgames", type = "config")
+@org.springframework.data.couchbase.core.mapping.Document
 public class Configuration {
 
-    @Id
+	@Id
+	@com.couchbase.client.java.repository.annotation.Id
     private String mode;
 
-    @Field
+    @com.couchbase.client.java.repository.annotation.Field
     private Integer sprintTime;
 
-    @Field
+    @com.couchbase.client.java.repository.annotation.Field
     private String jenkinsUrl;
 
-    @Field
+    @com.couchbase.client.java.repository.annotation.Field
     private String jenkinsJobName;
 
-    @Field
+    @com.couchbase.client.java.repository.annotation.Field
     private String jenkinsJobToken;
 
     public String getMode() {

@@ -21,15 +21,11 @@ public class MetricsService {
 	}
 
     public Metrics getMetrics(String team) {
-        return repository.findOne(team);
+        return repository.findById(team).get();
     }
 
     private Metrics getOrCreateMetrics(String team) {
-    	Metrics metrics = repository.findOne(team);
-    	if (metrics == null) {
-    		metrics = new Metrics(team);
-    	}
-    	return metrics;
+    	return repository.findById(team).orElse(new Metrics(team));
     }
 
     public void addOrUpdateMetrics(Metrics metrics) {

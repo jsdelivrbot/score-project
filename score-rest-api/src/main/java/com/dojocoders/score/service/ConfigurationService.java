@@ -27,7 +27,7 @@ public class ConfigurationService {
     }
 
     public Configuration getConfiguration(String mode) {
-        return repository.findOne(mode);
+        return repository.findById(mode).get();
     }
 
     public Configuration setConfiguration(Configuration conf) {

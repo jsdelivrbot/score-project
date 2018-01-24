@@ -30,11 +30,11 @@ public class ScoreService {
 	}
 
 	public ScoreResult getScore(String team) {
-		return scoreResultRepository.findOne(team);
+		return scoreResultRepository.findById(team).get();
 	}
 
 	public void deleteScore(String team) {
-		ScoreResult scoreResult = scoreResultRepository.findOne(team);
+		ScoreResult scoreResult = scoreResultRepository.findById(team).get();
 		if (scoreResult == null) {
 			throw new RuntimeException("Team doesn't exists");
 		}
@@ -43,7 +43,7 @@ public class ScoreService {
 
 	public ScoreResult incrementScore(String team, int score) {
 		Sprint nextSprint = sprintService.prepareNextSprintFor(team);
-		ScoreResult scoreResult = scoreFillerService.fillScores(MoreObjects.firstNonNull(scoreResultRepository.findOne(team), new ScoreResult(team)), nextSprint.getNumber() - 1);
+		ScoreResult scoreResult = scoreFillerService.fillScores(scoreResultRepository.findById(team).orElse(new ScoreResult(team)), nextSprint.getNumber() - 1);
 		scoreResult.getScores().add(new Score(nextSprint.getNumber(), getLastScore(scoreResult).getPoints() + score));
 		scoreResultRepository.save(scoreResult);
 		return scoreResult;

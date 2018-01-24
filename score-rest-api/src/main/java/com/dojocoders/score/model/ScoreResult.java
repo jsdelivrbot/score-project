@@ -1,21 +1,23 @@
 package com.dojocoders.score.model;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.couchbase.client.java.repository.annotation.Id;
 import com.google.common.collect.Lists;
-import org.springframework.data.couchbase.core.mapping.Document;
 
 import java.util.List;
 
-@Document
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+@Document(indexName = "softgames", type = "score")
+@org.springframework.data.couchbase.core.mapping.Document
 public class ScoreResult {
 
 	private final static Score FIRST_SCORE = new Score(0,0);
 
 	@Id
+	@com.couchbase.client.java.repository.annotation.Id
 	private String team;
 
-	@Field
+	@com.couchbase.client.java.repository.annotation.Field
 	private List<Score> scores = Lists.newArrayList(FIRST_SCORE);
 
     public ScoreResult(String team) {

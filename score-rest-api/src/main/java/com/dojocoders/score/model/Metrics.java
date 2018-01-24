@@ -2,19 +2,20 @@ package com.dojocoders.score.model;
 
 import java.util.Map;
 
-import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.couchbase.client.java.repository.annotation.Id;
 import com.google.common.collect.Maps;
 
-@Document
+@Document(indexName = "softgames", type = "metrics")
+@org.springframework.data.couchbase.core.mapping.Document
 public class Metrics {
 
 	@Id
+	@com.couchbase.client.java.repository.annotation.Id
 	private String team;
 
-	@Field
+	@com.couchbase.client.java.repository.annotation.Field
 	private Map<String, String> metrics = Maps.newHashMap();
 
 	@SuppressWarnings("unused")

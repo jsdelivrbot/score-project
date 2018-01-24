@@ -8,7 +8,6 @@ import com.dojocoders.score.model.Sprint;
 import com.dojocoders.score.model.SprintTimer;
 import com.dojocoders.score.repository.SprintRepository;
 import com.dojocoders.score.timer.SprintTimerComponent;
-import com.google.common.base.MoreObjects;
 
 @Service
 public class SprintService {
@@ -39,7 +38,7 @@ public class SprintService {
 	}
 
 	public Sprint getSprint() {
-		return MoreObjects.firstNonNull(sprintRepository.findOne(Sprint.SPRINT_ID), new Sprint(1));
+		return sprintRepository.findById(Sprint.SPRINT_ID).orElse(new Sprint(1));
 	}
 
 	public SprintTimer startSprintTimer() {
