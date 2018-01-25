@@ -12,8 +12,27 @@ services:
   codingwars-dashboard-back:
     image: "openjdk:8-jre-alpine"
     command: java -jar score-rest-api.jar
+	# Ports for debug only
     ports:
      - "11080:8080"
     volumes:
      - ./score-rest-api:/usr/src/codingwars-dashboard
     working_dir: /usr/src/codingwars-dashboard
+    links:
+    - codingwars-dashboard-data
+  codingwars-dashboard-data:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:5.6.6"
+	# Ports for debug only
+    ports:
+     - "11020:9200"
+     - "11030:9300"
+    environment:
+      - cluster.name=codingwars
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+     - ../codingwars-dashboard-data:/usr/share/elasticsearch/data
