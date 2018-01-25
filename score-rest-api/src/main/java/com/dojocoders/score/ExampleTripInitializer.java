@@ -20,30 +20,30 @@ import com.dojocoders.score.model.trip.Location;
 import com.dojocoders.score.model.trip.Trip;
 
 @Component
-@Profile("embedded-persistence")
-public class EmbeddedTripInitializer {
+@Profile("example")
+public class ExampleTripInitializer {
 
 	private static String ITEMS = "AaMmEeBb"; // Asteorid/Meteorite, Enemy, Bomb
-	
+
 	@Autowired
 	private TeamController teamController;
-	
+
 	@Autowired
 	private TripController tripController;
-	
+
 	@SuppressWarnings("unused") // Injection ensures that teams are initialized before trips
 	@Autowired
-	private EmbeddedDataInitializer dataInitializer; 
-	
+	private ExampleDataInitializer dataInitializer;
+
 	@PostConstruct
 	public void init() {
 		setupTrips();
 	}
-	
+
 	private void setupTrips() {
 		teamController.teams().forEach(team -> setupTrip(team));
 	}
-	
+
 	private void setupTrip(String team) {
 		Date date = new Date();
 		Trip trip = new Trip();
@@ -54,14 +54,14 @@ public class EmbeddedTripInitializer {
 		trip.setCourse(buildLocations(team + team));
 		tripController.addTrip(trip);
 	}
-	
+
 	private List<String> buildMessages(String team) {
 		List<String> msg = new ArrayList<String>();
 		msg.add(team + "! Gonna crush you !");
 		msg.add("Enemy is trying to pass !");
 		return msg;
 	}
-	
+
 	private List<Location> buildLocations(String team) {
 		List<Location> locations = new ArrayList<Location>();
 		int posMax = team.length();
@@ -81,7 +81,7 @@ public class EmbeddedTripInitializer {
 		}
 		return locations;
 	}
-	
+
 	private Grid buildGrid(String team) {
 		Grid grid = new Grid();
 		grid.setHeight(team.length() + 1);
@@ -89,18 +89,16 @@ public class EmbeddedTripInitializer {
 		grid.setContent(buildGridContent(team));
 		return grid;
 	}
-	
+
 	private List<Item> buildGridContent(String team) {
 		return Arrays.stream(team.split("")) //
-			.filter(letter -> letterIsAnItem(letter))
-			.map(letter -> buildItem(letter, team))
-			.collect(Collectors.toList());
+				.filter(letter -> letterIsAnItem(letter)).map(letter -> buildItem(letter, team)).collect(Collectors.toList());
 	}
-	
+
 	private boolean letterIsAnItem(String letter) {
 		return (ITEMS.indexOf(letter) > -1);
 	}
-	
+
 	private Item buildItem(String letter, String team) {
 		Double x = new Double(Math.random() * team.length());
 		Double y = new Double(Math.random() * team.length());
@@ -108,6 +106,5 @@ public class EmbeddedTripInitializer {
 
 		return new Item(letter.toUpperCase(), position);
 	}
-	
-}
 
+}
