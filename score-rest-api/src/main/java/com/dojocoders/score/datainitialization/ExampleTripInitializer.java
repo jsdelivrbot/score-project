@@ -1,4 +1,4 @@
-package com.dojocoders.score;
+package com.dojocoders.score.datainitialization;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,17 +1,18 @@
 package com.dojocoders.score.service;
 
-import com.dojocoders.score.model.ScoreResult;
-import com.dojocoders.score.model.Sprint;
-import com.dojocoders.score.repository.ScoreResultRepository;
-import com.google.common.base.*;
-import com.google.common.collect.Lists;
-import com.dojocoders.score.model.Score;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.dojocoders.score.model.Score;
+import com.dojocoders.score.model.ScoreResult;
+import com.dojocoders.score.model.Sprint;
+import com.dojocoders.score.repository.ScoreResultRepository;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.Lists;
 
 @Service
 public class ScoreService {
@@ -33,25 +34,28 @@ public class ScoreService {
 		return scoreResultRepository.findById(team).get();
 	}
 
+	public boolean isScoreExists(String team) {
+		return scoreResultRepository.findById(team).isPresent();
+	}
+
 	public void deleteScore(String team) {
 		ScoreResult scoreResult = scoreResultRepository.findById(team).get();
-		if (scoreResult == null) {
-			throw new RuntimeException("Team doesn't exists");
-		}
 		scoreResultRepository.delete(scoreResult);
 	}
 
 	public ScoreResult incrementScore(String team, int score) {
 		Sprint nextSprint = sprintService.prepareNextSprintFor(team);
-		ScoreResult scoreResult = scoreFillerService.fillScores(scoreResultRepository.findById(team).orElse(new ScoreResult(team)), nextSprint.getNumber() - 1);
+		ScoreResult scoreResult = scoreFillerService.fillScores(scoreResultRepository.findById(team).orElse(new ScoreResult(team)),
+				nextSprint.getNumber() - 1);
 		scoreResult.getScores().add(new Score(nextSprint.getNumber(), getLastScore(scoreResult).getPoints() + score));
 		scoreResultRepository.save(scoreResult);
 		return scoreResult;
 	}
 
-    public List<ScoreResult> getAllScoresFilled() {
+	public List<ScoreResult> getAllScoresFilled() {
 		Sprint sprint = sprintService.getSprint();
-		return getAllScores().stream().map(scoreResult -> scoreFillerService.fillScores(scoreResult, sprint.getNumber())).collect(Collectors.toList());
+		return getAllScores().stream().map(scoreResult -> scoreFillerService.fillScores(scoreResult, sprint.getNumber()))
+				.collect(Collectors.toList());
 	}
 
 	public List<ScoreResult> getAllScores() {

@@ -17,6 +17,11 @@ public class ScoreResult {
 
 	private List<Score> scores = Lists.newArrayList(FIRST_SCORE);
 
+	@SuppressWarnings("unused")
+	private ScoreResult() {
+		// For deserialization
+	}
+
 	public ScoreResult(String team) {
 		this.team = team;
 	}

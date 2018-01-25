@@ -17,7 +17,7 @@ public class Metrics {
 
 	@SuppressWarnings("unused")
 	private Metrics() {
-		// Used by jackson
+		// For deserialization
 	}
 
 	public Metrics(String team) {

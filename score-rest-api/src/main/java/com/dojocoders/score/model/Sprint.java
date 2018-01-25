@@ -19,6 +19,11 @@ public class Sprint {
 
 	private List<String> teams = Lists.newArrayList();
 
+	@SuppressWarnings("unused")
+	private Sprint() {
+		// For deserialization
+	}
+
 	public Sprint(Integer number) {
 		this.number = number;
 	}

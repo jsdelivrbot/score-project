@@ -1,4 +1,4 @@
-package com.dojocoders.score;
+package com.dojocoders.score.datainitialization;
 
 import javax.annotation.PostConstruct;
 
@@ -21,6 +21,7 @@ public class ExampleDataInitializer {
 
 	@PostConstruct
 	public void init() {
+		teamController.delete();
 		setupTeam("New England Patriots");
 		setupTeam("Green Bay Packers");
 		setupTeam("Pittsburgh Steelers");

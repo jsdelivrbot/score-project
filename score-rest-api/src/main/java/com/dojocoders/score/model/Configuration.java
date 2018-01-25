@@ -9,7 +9,7 @@ public class Configuration {
 	@Id
 	private String mode;
 
-	private Integer sprintTime;
+	private int sprintTime;
 
 	private String jenkinsUrl;
 
@@ -25,11 +25,11 @@ public class Configuration {
 		this.mode = mode;
 	}
 
-	public Integer getSprintTime() {
+	public int getSprintTime() {
 		return sprintTime;
 	}
 
-	public void setSprintTime(Integer sprintTime) {
+	public void setSprintTime(int sprintTime) {
 		this.sprintTime = sprintTime;
 	}
 

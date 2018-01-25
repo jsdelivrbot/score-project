@@ -35,7 +35,7 @@ public class TeamController {
 
 	@RequestMapping(value = "/{team}", method = RequestMethod.POST)
 	public ScoreResult addTeam(@PathVariable String team) {
-		if (scoreService.getScore(team) != null) {
+		if (scoreService.isScoreExists(team)) {
 			throw new RuntimeException("Team already exists");
 		}
 		ScoreResult scoreResult = new ScoreResult(team);
@@ -44,10 +44,6 @@ public class TeamController {
 
 	@RequestMapping(value = "/{team}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String team) {
-		ScoreResult scoreResult = scoreService.getScore(team);
-		if (scoreResult == null) {
-			throw new RuntimeException("Team doesn't exists");
-		}
 		scoreService.deleteScore(team);
 	}
 
