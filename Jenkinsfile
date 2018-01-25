@@ -88,6 +88,10 @@ pipeline {
 				'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'Docker Compose'
 			}
 			steps {
+				dir("${JENKINS_HOME}/DockerApps/codingwars-dashboard-data") {
+					sh 'chmod 777 .'
+				}
+
 				sh 'docker-compose down || true'
 
 				deleteDir()
@@ -95,8 +99,7 @@ pipeline {
 				unstash 'deployment'
 
 				sh "wget 'http://softcu-nexus.si.francetelecom.fr/nexus/service/local/artifact/maven/content?r=public&g=com.dojocoders&a=score-rest-api&v=${projectVersion}' -O score-rest-api.jar"
-				sh 'mv spring-boot-config score-rest-api && mv score-rest-api.jar score-rest-api && rm -f score-rest-api/application.properties'
-//				sh 'mv spring-boot-config score-rest-api && mv score-rest-api.jar score-rest-api'
+				sh 'mv spring-boot-config score-rest-api && mv score-rest-api.jar score-rest-api'
 
 				sh "wget 'http://softcu-nexus.si.francetelecom.fr/nexus/service/local/artifact/maven/content?r=public&g=com.dojocoders&a=score-ihm&v=${projectVersion}&e=zip' -O score-ihm.zip"
 				sh 'unzip score-ihm.zip && rm -f score-ihm.zip'
