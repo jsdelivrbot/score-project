@@ -58,8 +58,8 @@
 
 	<modules>
 		<module>score-rest-api</module>
-		<module>score-ihm</module>
 		<module>score-validation</module>
+		<module>score-ihm</module>
 	</modules>
 
 	<build>
